@@ -60,6 +60,42 @@ The KrishiSetu design system reflects natural agricultural harmony:
 
 ---
 
+## 🚀 Development Quickstart
+
+### Prerequisites
+- Node.js 18+ (tested on v24)
+- Python 3.11+ (tested on v3.12)
+
+### 1. Backend Setup (Django 5 + DRF)
+```bash
+cd backend
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+# Linux/macOS:
+source .venv/bin/activate
+
+pip install -r requirements/dev.txt
+python manage.py migrate
+python manage.py runserver
+```
+Backend API will be live at `http://localhost:8000/api/health/`.
+
+### 2. Frontend Setup (React 18 + Vite + TS)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Frontend development server will be live at `http://localhost:5173/`.
+
+### 3. Running Checks & Tests
+- **Frontend test:** `cd frontend && npm test`
+- **Frontend lint & typecheck:** `cd frontend && npm run lint && npm run typecheck`
+- **Backend check & test:** `cd backend && python manage.py check && pytest`
+
+---
+
 ## 📜 Commit Conventions
 
 This project strictly follows [Conventional Commits](https://www.conventionalcommits.org/):

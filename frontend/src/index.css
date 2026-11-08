@@ -1,0 +1,15 @@
+@import './design/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--ks-color-cream);
+  color: var(--ks-color-soil);
+  font-family: var(--ks-font-sans);
+  line-height: var(--ks-leading-body);
+  -webkit-font-smoothing: antialiased;
+}
