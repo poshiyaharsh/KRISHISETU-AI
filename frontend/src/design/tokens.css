@@ -1,0 +1,75 @@
+/* KrishiSetu AI design tokens. Source of truth for CSS.
+   Keep in sync with tokens.ts. Prefix: --ks- */
+:root {
+  /* Color */
+  --ks-color-paddy: #0f4a32;       /* deep green: text, primary buttons, headers */
+  --ks-color-leaf: #3b8e4f;        /* graphics, icons, large accents */
+  --ks-color-sprout: #4fa35b;      /* illustrations only */
+  --ks-color-wheat: #d9a93f;       /* soft gold: highlights, secondary buttons */
+  --ks-color-cream: #f5f0dc;       /* page background */
+  --ks-color-mist: #e4ecdd;        /* cards, skeletons, dividers */
+  --ks-color-soil: #1d2b22;        /* body text on light backgrounds */
+
+  --ks-color-success: #2f8f4e;
+  --ks-color-warning: #a8730d;
+  --ks-color-danger: #b3402f;
+  --ks-color-info: #2b6c8f;
+
+  /* Typography: one family, per-script Noto fonts are loaded per language */
+  --ks-font-sans: "Noto Sans", "Noto Sans Devanagari", "Noto Sans Gujarati",
+    "Noto Sans Bengali", "Noto Sans Gurmukhi", "Noto Sans Tamil",
+    "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Malayalam",
+    "Noto Sans Oriya", "Noto Naskh Arabic", "Noto Sans Ol Chiki",
+    "Noto Sans Meetei Mayek", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --ks-text-xs: 0.875rem;
+  --ks-text-sm: 1rem;
+  --ks-text-base: 1.125rem;   /* 18px: farmer-friendly default */
+  --ks-text-lg: 1.25rem;
+  --ks-text-xl: 1.5rem;
+  --ks-text-2xl: 1.875rem;
+  --ks-text-3xl: 2.375rem;
+  --ks-text-4xl: 3rem;
+
+  --ks-leading-tight: 1.2;
+  --ks-leading-body: 1.7;     /* Indic scripts need extra height */
+
+  --ks-weight-regular: 400;
+  --ks-weight-medium: 500;
+  --ks-weight-bold: 700;
+  --ks-weight-heavy: 800;
+
+  /* Spacing (4px base) */
+  --ks-space-1: 0.25rem;
+  --ks-space-2: 0.5rem;
+  --ks-space-3: 0.75rem;
+  --ks-space-4: 1rem;
+  --ks-space-6: 1.5rem;
+  --ks-space-8: 2rem;
+  --ks-space-12: 3rem;
+  --ks-space-16: 4rem;
+
+  /* Shape */
+  --ks-radius-sm: 6px;
+  --ks-radius-md: 10px;
+  --ks-radius-lg: 18px;
+  --ks-radius-pill: 999px;
+
+  /* Elevation: green-tinted, not neutral grey */
+  --ks-shadow-sm: 0 2px 6px rgba(15, 74, 50, 0.1);
+  --ks-shadow-md: 0 8px 22px rgba(15, 74, 50, 0.14);
+
+  /* Motion */
+  --ks-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ks-dur-fast: 120ms;
+  --ks-dur-base: 220ms;
+  --ks-dur-slow: 480ms;
+
+  /* Touch target minimum */
+  --ks-tap-min: 48px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ks-color-wheat);
+  outline-offset: 2px;
+}

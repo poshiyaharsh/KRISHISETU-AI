@@ -1,0 +1,96 @@
+/* KrishiLoader: sprout grows through the bridge arch.
+   Static finished logo by default; animation only when motion is allowed. */
+.kl-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ks-space-4, 1rem);
+  padding: var(--ks-space-6, 1.5rem);
+  color: var(--ks-color-paddy, #0f4a32);
+  font-family: var(--ks-font-sans, system-ui, sans-serif);
+}
+
+.kl-root--fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--ks-color-cream, #f5f0dc);
+}
+
+.kl-mark { display: block; overflow: visible; }
+
+.kl-message {
+  margin: 0;
+  font-size: var(--ks-text-lg, 1.25rem);
+  font-weight: var(--ks-weight-bold, 700);
+  text-align: center;
+}
+
+.kl-tip {
+  margin: 0;
+  min-height: 3.4em;
+  max-width: 30ch;
+  text-align: center;
+  font-size: var(--ks-text-sm, 1rem);
+  line-height: var(--ks-leading-body, 1.7);
+  color: var(--ks-color-soil, #1d2b22);
+}
+
+.kl-leaf {
+  transform-box: view-box;
+  transform-origin: 60px 46px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .kl-arch  { stroke-dasharray: 1 1; animation: kl-arch 3.4s ease-in-out infinite; }
+  .kl-deck  { stroke-dasharray: 1 1; animation: kl-deck 3.4s ease-in-out infinite; }
+  .kl-stem  { stroke-dasharray: 1 1; animation: kl-stem 3.4s ease-in-out infinite; }
+  .kl-hangers { animation: kl-hangers 3.4s ease-in-out infinite; }
+  .kl-leaf--l { animation: kl-leaf-l 3.4s var(--ks-ease, ease-out) infinite; }
+  .kl-leaf--r { animation: kl-leaf-r 3.4s var(--ks-ease, ease-out) infinite; }
+  .kl-tip { animation: kl-tip-in 400ms var(--ks-ease, ease-out); }
+}
+
+@keyframes kl-deck {
+  0%        { stroke-dashoffset: 1; opacity: 1; }
+  22%       { stroke-dashoffset: 0; opacity: 1; }
+  90%       { stroke-dashoffset: 0; opacity: 1; }
+  100%      { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes kl-arch {
+  0%, 8%    { stroke-dashoffset: 1; opacity: 1; }
+  40%       { stroke-dashoffset: 0; opacity: 1; }
+  90%       { stroke-dashoffset: 0; opacity: 1; }
+  100%      { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes kl-hangers {
+  0%, 35%   { opacity: 0; }
+  50%       { opacity: 0.5; }
+  90%       { opacity: 0.5; }
+  100%      { opacity: 0; }
+}
+@keyframes kl-stem {
+  0%, 45%   { stroke-dashoffset: 1; opacity: 1; }
+  62%       { stroke-dashoffset: 0; opacity: 1; }
+  90%       { stroke-dashoffset: 0; opacity: 1; }
+  100%      { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes kl-leaf-l {
+  0%, 58%   { transform: scale(0) rotate(-24deg); opacity: 0; }
+  74%       { transform: scale(1.08) rotate(0); opacity: 1; }
+  80%       { transform: scale(1) rotate(0); opacity: 1; }
+  90%       { transform: scale(1) rotate(0); opacity: 1; }
+  100%      { transform: scale(1) rotate(0); opacity: 0; }
+}
+@keyframes kl-leaf-r {
+  0%, 58%   { transform: scale(0) rotate(24deg); opacity: 0; }
+  74%       { transform: scale(1.08) rotate(0); opacity: 1; }
+  80%       { transform: scale(1) rotate(0); opacity: 1; }
+  90%       { transform: scale(1) rotate(0); opacity: 1; }
+  100%      { transform: scale(1) rotate(0); opacity: 0; }
+}
+@keyframes kl-tip-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
