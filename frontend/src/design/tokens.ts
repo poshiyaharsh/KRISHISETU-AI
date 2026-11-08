@@ -7,8 +7,8 @@ export const colors = {
   cream: '#F5F0DC',
   mist: '#E4ECDD',
   soil: '#1D2B22',
-  success: '#2F8F4E',
-  warning: '#A8730D',
+  success: '#236E3B',
+  warning: '#8C5E06',
   danger: '#B3402F',
   info: '#2B6C8F',
 } as const;
