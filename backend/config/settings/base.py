@@ -50,6 +50,8 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "apps.core",
     "apps.crops",
+    "apps.locations",
+    "apps.weather",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -90,6 +92,17 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": env.db("DATABASE_URL", default=f"sqlite:///{BASE_DIR}/db.sqlite3")
 }
+
+# Caching configuration
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "krishisetu-cache",
+    }
+}
+
+WEATHER_CACHE_TTL = 1800  # 30 minutes in seconds
+WEATHER_REQUEST_TIMEOUT = 5  # 5 seconds
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

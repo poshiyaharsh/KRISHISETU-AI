@@ -137,5 +137,53 @@
     "pomegranate": "Pomegranate",
     "rice": "Rice (Paddy)",
     "watermelon": "Watermelon"
+  },
+  "weather": {
+    "title": "Hyperlocal Weather Intelligence",
+    "subtitle": "Accurate 7-day agricultural weather forecast, precipitation tracking, and farm management alerts.",
+    "locationPicker": {
+      "selectState": "Select State",
+      "selectDistrict": "Select District",
+      "searchPlaceholder": "Search village, town, or mandi...",
+      "useMyLocation": "Use My Location",
+      "locationDenied": "Location access was denied. You can select your state and district manually.",
+      "locationUnavailable": "Location information is unavailable on your device.",
+      "detecting": "Detecting location..."
+    },
+    "current": {
+      "title": "Current Weather",
+      "humidity": "Relative Humidity",
+      "wind": "Wind Speed",
+      "rain": "Precipitation",
+      "staleNotice": "Showing cached weather data due to temporary provider unavailability."
+    },
+    "forecast": {
+      "title": "7-Day Agricultural Forecast",
+      "chartTitle": "Temperature & Precipitation Outlook",
+      "tempMax": "Max Temp",
+      "tempMin": "Min Temp",
+      "rainfall": "Rainfall",
+      "rainProb": "Rain Probability",
+      "et0": "Evapotranspiration"
+    },
+    "alerts": {
+      "heavyRain": "Heavy rainfall expected ({{rain}} mm). Consider postponing fertilizer or pesticide spraying and prepare field drainage.",
+      "highWind": "High winds expected ({{wind}} km/h). Inspect field stakes and secure young fruit saplings or vine crops.",
+      "drySpell": "Dry and warm conditions ahead. Ensure adequate soil moisture and schedule irrigation."
+    },
+    "attribution": "Weather forecast data provided by Open-Meteo under Non-Commercial terms.",
+    "conditions": {
+      "clear": "Clear Sky",
+      "mainly_clear": "Mainly Clear",
+      "partly_cloudy": "Partly Cloudy",
+      "overcast": "Overcast",
+      "fog": "Fog / Mist",
+      "drizzle": "Light Drizzle",
+      "rain": "Rain",
+      "heavy_rain": "Heavy Rain",
+      "snow": "Snow",
+      "thunderstorm": "Thunderstorm",
+      "unknown": "Unknown"
+    }
   }
 }

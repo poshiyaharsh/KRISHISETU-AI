@@ -6,6 +6,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("apps.core.urls")),
     path("api/crops/", include("apps.crops.urls")),
+    path("api/locations/", include("apps.locations.urls")),
+    path("api/weather/", include("apps.weather.urls")),
     # OpenAPI Schema and Swagger UI
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(

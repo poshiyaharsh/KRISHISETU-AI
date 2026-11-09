@@ -113,20 +113,38 @@ function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
+function mergeMissing(target, source) {
+  for (const [key, val] of Object.entries(source)) {
+    if (val && typeof val === "object" && !Array.isArray(val)) {
+      if (!target[key] || typeof target[key] !== "object") {
+        target[key] = {};
+      }
+      mergeMissing(target[key], val);
+    } else if (target[key] === undefined) {
+      target[key] = val;
+    }
+  }
+  return target;
+}
+
 for (const [code, meta] of Object.entries(LOCALE_METADATA)) {
   const targetPath = path.join(LOCALES_DIR, `${code}.json`);
+  let localeData;
+
   if (fs.existsSync(targetPath)) {
-    continue; // Preserve existing files
-  }
+    const existing = JSON.parse(fs.readFileSync(targetPath, "utf-8"));
+    localeData = mergeMissing(existing, en);
+    console.log(`Updated locale keys: ${code} (${meta.name})`);
+  } else {
+    localeData = deepClone(en);
+    localeData.common.appName = `${en.common.appName} (${meta.native})`;
 
-  const localeData = deepClone(en);
-  localeData.common.appName = `${en.common.appName} (${meta.native})`;
-
-  // Apply crop translations if available
-  if (CROP_TRANSLATIONS[code]) {
-    localeData.crops = { ...localeData.crops, ...CROP_TRANSLATIONS[code] };
+    // Apply crop translations if available
+    if (CROP_TRANSLATIONS[code]) {
+      localeData.crops = { ...localeData.crops, ...CROP_TRANSLATIONS[code] };
+    }
+    console.log(`Generated locale: ${code} (${meta.name})`);
   }
 
   fs.writeFileSync(targetPath, JSON.stringify(localeData, null, 2), "utf-8");
-  console.log(`Generated locale: ${code} (${meta.name})`);
 }

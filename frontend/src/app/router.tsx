@@ -6,6 +6,7 @@ import { KrishiLoader } from "@/components/Loader/KrishiLoader";
 // Route-level code splitting
 const Home = lazy(() => import("@/pages/Home"));
 const Recommend = lazy(() => import("@/pages/Recommend"));
+const Weather = lazy(() => import("@/pages/Weather"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -38,6 +39,14 @@ export const router = createBrowserRouter([
         element: (
           <SuspenseWrapper>
             <Recommend />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "weather",
+        element: (
+          <SuspenseWrapper>
+            <Weather />
           </SuspenseWrapper>
         ),
       },
