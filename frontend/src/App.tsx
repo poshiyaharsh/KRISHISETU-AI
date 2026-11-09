@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { KrishiLoader, Skeleton } from './components';
+import { DevStatus } from './pages/DevStatus';
 
 export function App() {
   const [showFullLoader, setShowFullLoader] = useState(false);
@@ -33,40 +34,45 @@ export function App() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Loader Verification Card */}
-        <section className="bg-white p-6 rounded-lg border border-mist shadow-sm flex flex-col items-center">
-          <h2 className="text-xl font-bold text-paddy mb-4 self-start">
-            1. Animated KrishiLoader Verification
-          </h2>
-          <div className="w-full py-4">
-            <KrishiLoader
-              message="Analyzing agricultural parameters..."
-              size={100}
-              tipIntervalMs={3000}
-            />
-          </div>
-        </section>
+      <main className="max-w-4xl mx-auto mt-8 space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Loader Verification Card */}
+          <section className="bg-white p-6 rounded-lg border border-mist shadow-sm flex flex-col items-center">
+            <h2 className="text-xl font-bold text-paddy mb-4 self-start">
+              1. Animated KrishiLoader Verification
+            </h2>
+            <div className="w-full py-4">
+              <KrishiLoader
+                message="Analyzing agricultural parameters..."
+                size={100}
+                tipIntervalMs={3000}
+              />
+            </div>
+          </section>
 
-        {/* Skeleton Verification Card */}
-        <section className="bg-white p-6 rounded-lg border border-mist shadow-sm">
-          <h2 className="text-xl font-bold text-paddy mb-4">
-            2. Shimmer Skeleton State Verification
-          </h2>
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <Skeleton variant="circle" width={56} height={56} />
-              <div className="flex-1">
-                <Skeleton variant="text" lines={2} />
+          {/* Skeleton Verification Card */}
+          <section className="bg-white p-6 rounded-lg border border-mist shadow-sm">
+            <h2 className="text-xl font-bold text-paddy mb-4">
+              2. Shimmer Skeleton State Verification
+            </h2>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <Skeleton variant="circle" width={56} height={56} />
+                <div className="flex-1">
+                  <Skeleton variant="text" lines={2} />
+                </div>
+              </div>
+              <Skeleton variant="rect" height={120} />
+              <div className="flex justify-between items-center pt-2">
+                <Skeleton variant="text" width="40%" />
+                <Skeleton variant="text" width="25%" />
               </div>
             </div>
-            <Skeleton variant="rect" height={120} />
-            <div className="flex justify-between items-center pt-2">
-              <Skeleton variant="text" width="40%" />
-              <Skeleton variant="text" width="25%" />
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
+
+        {/* Live Backend Connection Card */}
+        <DevStatus />
       </main>
 
       <footer className="max-w-4xl mx-auto mt-12 pt-6 border-t border-mist text-center text-sm opacity-75">
