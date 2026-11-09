@@ -185,5 +185,40 @@
       "thunderstorm": "Thunderstorm",
       "unknown": "Unknown"
     }
+  },
+  "schemes": {
+    "title": "Government Agricultural Schemes",
+    "subtitle": "Verified central and state agricultural schemes offering financial subsidies, concessional loans, crop insurance, and solar pump support.",
+    "searchPlaceholder": "Search schemes by name, department, or keyword...",
+    "filters": {
+      "filterTitle": "Filter Schemes",
+      "allLevels": "All Levels",
+      "centralOnly": "Central Schemes",
+      "stateOnly": "State Schemes",
+      "allCategories": "All Categories",
+      "allStates": "All States",
+      "farmerTypes": "Target Farmers",
+      "clearFilters": "Clear Filters",
+      "showingResults": "Showing {{count}} schemes",
+      "noResults": "No schemes match your filter criteria.",
+      "noResultsAction": "Try clearing some filters or searching with a different term."
+    },
+    "card": {
+      "verifiedOn": "Verified: {{date}}",
+      "viewDetails": "View Details & Eligibility",
+      "centralBadge": "Central Scheme",
+      "stateBadge": "State Scheme ({{state}})"
+    },
+    "detail": {
+      "backToSchemes": "Back to Schemes",
+      "benefitsTitle": "Benefits & Financial Support",
+      "eligibilityTitle": "Eligibility Criteria",
+      "documentsTitle": "Documents Required",
+      "howToApplyTitle": "How to Apply",
+      "officialPortal": "Apply on Official Portal",
+      "verifiedNotice": "Information verified on {{date}} from official government records.",
+      "disclaimerNotice": "Scheme guidelines, subsidies, and application deadlines may be modified by government departments. Always verify latest requirements on the official portal before applying.",
+      "sourceAttribution": "Source: {{name}}"
+    }
   }
 }

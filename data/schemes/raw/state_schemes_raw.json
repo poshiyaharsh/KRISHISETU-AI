@@ -1,0 +1,25 @@
+[
+  {
+    "source_id": "MYS-MKSY-GJ-011",
+    "name": "Mukhyamantri Kisan Sahay Yojana (MKSY)",
+    "short_description": "Zero-premium natural disaster crop relief assistance up to ₹25,000/ha for Kharif crop losses exceeding 33% across Gujarat.",
+    "description": "Mukhyamantri Kisan Sahay Yojana is a 100% state-funded disaster compensation scheme by the Government of Gujarat. In the event of severe drought, excess unseasonal rainfall, or heavy flood resulting in 33% or more crop damage during the Kharif season, farmers receive direct compensation without paying any insurance premium.",
+    "level": "state",
+    "state_code": "GJ",
+    "department": "Department of Agriculture, Farmers Welfare & Co-operation, Government of Gujarat",
+    "category": "Crop Insurance & Risk Mitigation",
+    "farmer_types": [
+      "All Farmers",
+      "Small & Marginal Farmers"
+    ],
+    "eligibility": "All landholding farmers in Gujarat cultivating crops in the Kharif season who have suffered 33% or higher crop damage due to notified weather calamities.",
+    "benefits": "Direct financial aid: ₹20,000 per hectare for crop loss between 33% and 60%, and ₹25,000 per hectare for loss exceeding 60%, up to a maximum limit of 4 hectares.",
+    "documents_required": "7/12 & 8-A land ownership records, Aadhaar Card, Sowing declaration or Talati certification, Bank passbook IFSC copy.",
+    "how_to_apply": "Apply online through the iKhedut portal (ikhedut.gujarat.gov.in) through Village Computer Entrepreneurs (VCE) at Gram Panchayat eGram centres.",
+    "official_url": "https://ikhedut.gujarat.gov.in/",
+    "source_name": "Government of Gujarat / iKhedut Portal",
+    "source_url": "https://ikhedut.gujarat.gov.in/",
+    "last_verified_on": "2026-11-09",
+    "status": "active"
+  }
+]

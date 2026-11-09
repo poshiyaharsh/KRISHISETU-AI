@@ -7,6 +7,8 @@ import { KrishiLoader } from "@/components/Loader/KrishiLoader";
 const Home = lazy(() => import("@/pages/Home"));
 const Recommend = lazy(() => import("@/pages/Recommend"));
 const Weather = lazy(() => import("@/pages/Weather"));
+const Schemes = lazy(() => import("@/pages/Schemes"));
+const SchemeDetail = lazy(() => import("@/pages/SchemeDetail"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -47,6 +49,22 @@ export const router = createBrowserRouter([
         element: (
           <SuspenseWrapper>
             <Weather />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "schemes",
+        element: (
+          <SuspenseWrapper>
+            <Schemes />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "schemes/:slug",
+        element: (
+          <SuspenseWrapper>
+            <SchemeDetail />
           </SuspenseWrapper>
         ),
       },

@@ -12,7 +12,7 @@ export const MainLayout: React.FC = () => {
     { to: "/", label: t("nav.home"), available: true },
     { to: "/recommend", label: t("nav.recommend"), available: true },
     { to: "/weather", label: t("nav.weather"), available: true },
-    { to: "#", label: t("nav.schemes"), available: false },
+    { to: "/schemes", label: t("nav.schemes"), available: true },
     { to: "#", label: t("nav.nutrition"), available: false },
     { to: "#", label: t("nav.chatbot"), available: false },
   ];

@@ -52,6 +52,7 @@ LOCAL_APPS = [
     "apps.crops",
     "apps.locations",
     "apps.weather",
+    "apps.schemes",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -149,6 +150,7 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {
         "anon": "60/min",
         "recommend": "30/min",
+        "schemes": "60/min",
     },
 }
 
