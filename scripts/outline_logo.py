@@ -1,16 +1,20 @@
 import re
-from fontTools.ttLib import TTFont
-from fontTools.varLib.instancer import instantiateVariableFont
+
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
+from fontTools.ttLib import TTFont
+from fontTools.varLib.instancer import instantiateVariableFont
 
-def generate_outlined_logo(font_path, source_svg_path, output_svg_path, reversed_output_path=None):
+
+def generate_outlined_logo(
+    font_path, source_svg_path, output_svg_path, reversed_output_path=None
+):
     font = TTFont(font_path)
-    inst = instantiateVariableFont(font, {'wght': 800})
+    inst = instantiateVariableFont(font, {"wght": 800})
     glyph_set = inst.getGlyphSet()
     cmap = inst.getBestCmap()
-    upm = inst['head'].unitsPerEm
-    hmtx = inst['hmtx']
+    upm = inst["head"].unitsPerEm
+    hmtx = inst["hmtx"]
 
     font_size = 56
     scale = font_size / upm
@@ -18,7 +22,7 @@ def generate_outlined_logo(font_path, source_svg_path, output_svg_path, reversed
     def get_char_path(char):
         gid = cmap.get(ord(char))
         if not gid:
-            return '', 0
+            return "", 0
         glyph = glyph_set[gid]
         pen = SVGPathPen(glyph_set)
         tpen = TransformPen(pen, (scale, 0, 0, -scale, 0, 0))
@@ -32,23 +36,25 @@ def generate_outlined_logo(font_path, source_svg_path, output_svg_path, reversed
         for char in text:
             d, adv = get_char_path(char)
             if d:
-                paths.append(f'<path d="{d}" transform="translate({cur_x:.2f}, {baseline_y:.2f})" />')
+                paths.append(
+                    f'<path d="{d}" transform="translate({cur_x:.2f}, {baseline_y:.2f})" />'
+                )
             cur_x += adv + letter_spacing
-        return ''.join(paths), cur_x
+        return "".join(paths), cur_x
 
     # Render "KrishiSetu"
     paths_krishi, end_x1 = text_to_paths("KrishiSetu", 134, 82, letter_spacing=-0.5)
     # Render "AI" with dx=10 gap
-    paths_ai, end_x2 = text_to_paths("AI", end_x1 + 10, 82, letter_spacing=-0.5)
+    paths_ai, _end_x2 = text_to_paths("AI", end_x1 + 10, 82, letter_spacing=-0.5)
 
-    with open(source_svg_path, 'r', encoding='utf-8') as f:
+    with open(source_svg_path, "r", encoding="utf-8") as f:
         src = f.read()
 
     # Remove live <text> tag
-    base_graphic = re.sub(r'<text[\s\S]*?</text>', '', src)
+    base_graphic = re.sub(r"<text[\s\S]*?</text>", "", src)
     # Also clean metadata if any
-    base_graphic = re.sub(r'<metadata[\s\S]*?</metadata>', '', base_graphic).strip()
-    if base_graphic.endswith('</svg>'):
+    base_graphic = re.sub(r"<metadata[\s\S]*?</metadata>", "", base_graphic).strip()
+    if base_graphic.endswith("</svg>"):
         base_graphic = base_graphic[:-6].strip()
 
     standard_svg = f"""{base_graphic}
@@ -62,7 +68,7 @@ def generate_outlined_logo(font_path, source_svg_path, output_svg_path, reversed
   </g>
 </svg>
 """
-    with open(output_svg_path, 'w', encoding='utf-8') as f:
+    with open(output_svg_path, "w", encoding="utf-8") as f:
         f.write(standard_svg)
     print(f"Written outlined logo to {output_svg_path}")
 
@@ -91,14 +97,15 @@ def generate_outlined_logo(font_path, source_svg_path, output_svg_path, reversed
   </g>
 </svg>
 """
-        with open(reversed_output_path, 'w', encoding='utf-8') as f:
+        with open(reversed_output_path, "w", encoding="utf-8") as f:
             f.write(reversed_svg)
         print(f"Written reversed logo to {reversed_output_path}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     generate_outlined_logo(
-        'NotoSans.ttf',
-        'docs/brand/logo.source.svg',
-        'frontend/public/logo.svg',
-        'frontend/public/logo-reversed.svg'
+        "NotoSans.ttf",
+        "docs/brand/logo.source.svg",
+        "frontend/public/logo.svg",
+        "frontend/public/logo-reversed.svg",
     )

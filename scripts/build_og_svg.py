@@ -1,18 +1,19 @@
-import os
 import re
-from fontTools.ttLib import TTFont
-from fontTools.varLib.instancer import instantiateVariableFont
+
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
+from fontTools.ttLib import TTFont
+from fontTools.varLib.instancer import instantiateVariableFont
+
 
 def build_og_svg(logo_path, font_path, output_svg_path):
     # Load font for tagline
     font = TTFont(font_path)
-    inst = instantiateVariableFont(font, {'wght': 600})
+    inst = instantiateVariableFont(font, {"wght": 600})
     glyph_set = inst.getGlyphSet()
     cmap = inst.getBestCmap()
-    upm = inst['head'].unitsPerEm
-    hmtx = inst['hmtx']
+    upm = inst["head"].unitsPerEm
+    hmtx = inst["hmtx"]
 
     font_size = 32
     scale = font_size / upm
@@ -20,7 +21,7 @@ def build_og_svg(logo_path, font_path, output_svg_path):
     def get_char_path(char):
         gid = cmap.get(ord(char))
         if not gid:
-            return '', 0
+            return "", 0
         glyph = glyph_set[gid]
         pen = SVGPathPen(glyph_set)
         tpen = TransformPen(pen, (scale, 0, 0, -scale, 0, 0))
@@ -38,16 +39,18 @@ def build_og_svg(logo_path, font_path, output_svg_path):
     for c in tagline:
         d, adv = get_char_path(c)
         if d:
-            tagline_paths.append(f'<path d="{d}" transform="translate({cur_x:.2f}, {baseline_y:.2f})" />')
+            tagline_paths.append(
+                f'<path d="{d}" transform="translate({cur_x:.2f}, {baseline_y:.2f})" />'
+            )
         cur_x += adv
     tagline_svg = "".join(tagline_paths)
 
     # Read outlined logo
-    with open(logo_path, 'r', encoding='utf-8') as f:
+    with open(logo_path, "r", encoding="utf-8") as f:
         logo_content = f.read()
 
     # Extract inner content of svg
-    match = re.search(r'<svg[^>]*>([\s\S]*)</svg>', logo_content)
+    match = re.search(r"<svg[^>]*>([\s\S]*)</svg>", logo_content)
     inner_logo = match.group(1) if match else logo_content
 
     # Logo dimensions: 520x120. Scale to 1.35x -> 702x162.
@@ -80,9 +83,10 @@ def build_og_svg(logo_path, font_path, output_svg_path):
   </g>
 </svg>
 """
-    with open(output_svg_path, 'w', encoding='utf-8') as f:
+    with open(output_svg_path, "w", encoding="utf-8") as f:
         f.write(og_svg)
     print(f"Generated OG image SVG at {output_svg_path}")
 
-if __name__ == '__main__':
-    build_og_svg('frontend/public/logo.svg', 'NotoSans.ttf', 'docs/brand/og-image.svg')
+
+if __name__ == "__main__":
+    build_og_svg("frontend/public/logo.svg", "NotoSans.ttf", "docs/brand/og-image.svg")

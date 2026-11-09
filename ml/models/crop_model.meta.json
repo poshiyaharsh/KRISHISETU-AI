@@ -1,0 +1,69 @@
+{
+  "model_version": "crs-1.0.0",
+  "model_type": "RandomForestClassifier",
+  "algorithm": "RandomForestClassifier",
+  "hyperparameters": {
+    "n_estimators": 100,
+    "max_depth": 15,
+    "min_samples_split": 4
+  },
+  "features": [
+    "N",
+    "P",
+    "K",
+    "temperature",
+    "humidity",
+    "ph",
+    "rainfall"
+  ],
+  "classes": [
+    "apple",
+    "banana",
+    "blackgram",
+    "chickpea",
+    "coconut",
+    "coffee",
+    "cotton",
+    "grapes",
+    "jute",
+    "kidneybeans",
+    "lentil",
+    "maize",
+    "mango",
+    "mothbeans",
+    "mungbean",
+    "muskmelon",
+    "orange",
+    "papaya",
+    "pigeonpeas",
+    "pomegranate",
+    "rice",
+    "watermelon"
+  ],
+  "classes_count": 22,
+  "training_samples": 1760,
+  "test_samples": 440,
+  "random_state": 42,
+  "dataset_sha256": "808e1d84a544647f1ab2fdae04f434b1842692d6be09eee18a5c2d43eb78d77c",
+  "dataset_rows": 2200,
+  "metrics": {
+    "cv_macro_f1_mean": 0.9937033460856128,
+    "cv_macro_f1_std": 0.006139964809894294,
+    "cv_accuracy_mean": 0.99375,
+    "cv_accuracy_std": 0.006066521734108723,
+    "test_accuracy": 0.9954545454545455,
+    "test_macro_f1": 0.9954517027687758,
+    "test_macro_precision": 0.9956709956709957,
+    "test_macro_recall": 0.9954545454545454
+  },
+  "environment": {
+    "python_version": "3.12.10",
+    "scikit_learn_version": "1.9.1",
+    "numpy_version": "2.5.4",
+    "pandas_version": "3.1.1",
+    "joblib_version": "1.6.0",
+    "xgboost_version": "3.4.1",
+    "lightgbm_version": "4.7.0"
+  },
+  "trained_at": "2026-11-09T05:35:25Z"
+}
