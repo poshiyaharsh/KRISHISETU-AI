@@ -54,6 +54,7 @@ LOCAL_APPS = [
     "apps.weather",
     "apps.schemes",
     "apps.nutrition",
+    "apps.chat",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -153,6 +154,7 @@ REST_FRAMEWORK = {
         "recommend": "30/min",
         "schemes": "60/min",
         "nutrition": "60/min",
+        "chat": "10/min",
     },
 }
 
@@ -179,3 +181,12 @@ CROP_RECOMMENDATION_THRESHOLDS = {
     "STRONGLY_RECOMMENDED": 0.70,
     "RECOMMENDED": 0.35,
 }
+
+# Krishi Mitra Chatbot (Phase 9)
+LLM_PROVIDER = env("LLM_PROVIDER", default="gemini")
+LLM_MODEL = env("LLM_MODEL", default="gemini-2.0-flash")
+GEMINI_API_KEY = env("GEMINI_API_KEY", default="")
+EMBEDDING_PROVIDER = env("EMBEDDING_PROVIDER", default="gemini")
+EMBEDDING_MODEL = env("EMBEDDING_MODEL", default="text-embedding-004")
+CHAT_DAILY_LIMIT = env.int("CHAT_DAILY_LIMIT", default=500)
+CHAT_RATE_LIMIT = env("CHAT_RATE_LIMIT", default="10/min")
