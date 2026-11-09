@@ -44,10 +44,12 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "corsheaders",
+    "drf_spectacular",
 ]
 
 LOCAL_APPS = [
     "apps.core",
+    "apps.crops",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -126,6 +128,22 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": [
         "rest_framework.parsers.JSONParser",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "EXCEPTION_HANDLER": "config.exceptions.custom_exception_handler",
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "60/min",
+        "recommend": "30/min",
+    },
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "KrishiSetu AI API",
+    "DESCRIPTION": "Multilingual AI Agricultural Advisory Platform API for Indian Farmers",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 # CORS configuration
@@ -133,3 +151,14 @@ CORS_ALLOWED_ORIGINS = env.list(
     "CORS_ALLOWED_ORIGINS",
     default=["http://localhost:5173", "http://127.0.0.1:5173"],
 )
+
+# ML Engine & Model configuration
+MODEL_PATH = env(
+    "MODEL_PATH", default=str(ROOT_DIR / "ml" / "models" / "crop_model.joblib")
+)
+
+# Confidence label thresholds for predictions
+CROP_RECOMMENDATION_THRESHOLDS = {
+    "STRONGLY_RECOMMENDED": 0.70,
+    "RECOMMENDED": 0.35,
+}
