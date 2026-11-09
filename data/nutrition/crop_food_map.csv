@@ -1,0 +1,32 @@
+crop_key,crop_name,food_item_name,source,source_id,form,is_food,is_default,weak_match,reason
+apple,Apple,"Apples, raw, with skin",USDA FoodData Central,171688,raw,true,true,false,Standard fresh whole apple with skin commonly consumed raw
+banana,Banana,"Bananas, raw",USDA FoodData Central,173944,raw,true,true,false,Fresh edible pulp of ripe banana
+blackgram,Black Gram (Urad),"Mungo beans, mature seeds, raw",USDA FoodData Central,174256,raw,true,false,false,Dry whole black gram (urad dal / Vigna mungo) raw baseline
+blackgram,Black Gram (Urad),"Mungo beans, mature seeds, cooked, boiled, without salt",USDA FoodData Central,174257,cooked,true,true,false,Cooked/boiled whole black gram pulse portion
+chickpea,Chickpea (Chana),"Chickpeas (garbanzo beans, bengal gram), mature seeds, raw",USDA FoodData Central,173756,raw,true,false,false,Dry mature chickpea (Cicer arietinum / bengal gram) raw baseline
+chickpea,Chickpea (Chana),"Chickpeas (garbanzo beans, bengal gram), mature seeds, cooked, boiled, without salt",USDA FoodData Central,173757,cooked,true,true,false,Cooked/boiled chickpea pulse portion ready to consume
+coconut,Coconut,"Nuts, coconut meat, raw",USDA FoodData Central,170169,raw,true,true,false,Fresh raw edible solid coconut endosperm (copra meat)
+coffee,Coffee,"Coffee, brewed, prepared with tap water",USDA FoodData Central,171890,brewed,true,true,false,"Cultivated for beverage; brewed coffee reflects real dietary intake per 100g, unlike inedible green or roasted beans"
+cotton,Cotton,Not a food crop,None,NONE,non_food,false,true,false,Commercial industrial fiber crop; seeds/lint not consumed as whole food
+grapes,Grapes,"Grapes, red or green (European type, such as Thompson seedless), raw",USDA FoodData Central,174682,raw,true,true,false,Fresh whole table grapes consumed raw
+jute,Jute,Not a food crop,None,NONE,non_food,false,true,false,Commercial bast fiber crop; vegetative fibre not consumed as dietary crop
+kidneybeans,Kidney Beans (Rajma),"Beans, kidney, all types, mature seeds, raw",USDA FoodData Central,175199,raw,true,false,false,Dry mature kidney beans (Phaseolus vulgaris) raw baseline
+kidneybeans,Kidney Beans (Rajma),"Beans, kidney, all types, mature seeds, cooked, boiled, without salt",USDA FoodData Central,175200,cooked,true,true,false,Cooked/boiled kidney beans ready to consume
+lentil,Lentil (Masoor),"Lentils, mature seeds, raw",USDA FoodData Central,172420,raw,true,false,false,Dry mature brown/red lentils (Lens culinaris) raw baseline
+lentil,Lentil (Masoor),"Lentils, mature seeds, cooked, boiled, without salt",USDA FoodData Central,172421,cooked,true,true,false,Cooked/boiled whole/split lentils ready to consume
+maize,Maize (Corn),"Corn, sweet, yellow, raw",USDA FoodData Central,169998,raw,true,false,false,Fresh sweet yellow corn kernels on/off cob raw baseline
+maize,Maize (Corn),"Corn, sweet, yellow, cooked, boiled, drained, without salt",USDA FoodData Central,169999,cooked,true,true,false,Boiled sweet corn kernels commonly consumed as food
+mango,Mango,"Mangos, raw",USDA FoodData Central,169910,raw,true,true,false,Fresh ripe mango fruit pulp (Mangifera indica)
+mothbeans,Moth Beans (Matki),"Mothbeans, mature seeds, raw",USDA FoodData Central,174254,raw,true,false,false,Dry mature moth beans (Vigna aconitifolia / matki) raw baseline
+mothbeans,Moth Beans (Matki),"Mothbeans, mature seeds, cooked, boiled, without salt",USDA FoodData Central,174255,cooked,true,true,false,Cooked/boiled moth beans ready to consume
+mungbean,Mung Bean (Moong),"Mung beans, mature seeds, raw",USDA FoodData Central,174258,raw,true,false,false,Dry mature green gram / mung beans (Vigna radiata) raw baseline
+mungbean,Mung Bean (Moong),"Mung beans, mature seeds, cooked, boiled, without salt",USDA FoodData Central,174259,cooked,true,true,false,Cooked/boiled mung beans ready to consume
+muskmelon,Muskmelon,"Melons, cantaloupe, raw",USDA FoodData Central,169092,raw,true,true,false,Fresh raw sweet muskmelon / cantaloupe fruit flesh (Cucumis melo)
+orange,Orange,"Oranges, raw, all commercial varieties",USDA FoodData Central,169097,raw,true,true,false,Fresh peeled sweet citrus orange segments
+papaya,Papaya,"Papayas, raw",USDA FoodData Central,170153,raw,true,true,false,Fresh ripe papaya fruit flesh (Carica papaya)
+pigeonpeas,Pigeon Peas (Arhar/Toor),"Pigeon peas (red gram), mature seeds, raw",USDA FoodData Central,172430,raw,true,false,false,Dry mature red gram / pigeon peas (Cajanus cajan) raw baseline
+pigeonpeas,Pigeon Peas (Arhar/Toor),"Pigeon peas (red gram), mature seeds, cooked, boiled, without salt",USDA FoodData Central,172431,cooked,true,true,false,Cooked/boiled pigeon peas pulse portion ready to consume
+pomegranate,Pomegranate,"Pomegranates, raw",USDA FoodData Central,169134,raw,true,true,false,Fresh raw pomegranate edible arils (Punica granatum)
+rice,Rice,"Rice, white, long-grain, regular, raw, unenriched",USDA FoodData Central,169756,raw,true,false,false,Dry raw milled long-grain white rice grains baseline
+rice,Rice,"Rice, white, long-grain, regular, cooked, unenriched, without salt",USDA FoodData Central,168878,cooked,true,true,false,Steamed/boiled white rice ready to consume
+watermelon,Watermelon,"Watermelon, raw",USDA FoodData Central,167765,raw,true,true,false,Fresh raw red watermelon edible flesh (Citrullus lanatus)
