@@ -91,9 +91,11 @@ coverage.xml
 .pytest_cache/
 htmlcov/
 
-# ML large models & raw datasets
-ml/data/raw/
+# ML large models & raw datasets (allow canonical v1.0 crop model and Apache 2.0 raw dataset)
+ml/data/raw/*
+!ml/data/raw/Crop_recommendation.csv
 *.joblib
+!ml/models/crop_model.joblib
 *.pkl
 *.pt
 *.pth
