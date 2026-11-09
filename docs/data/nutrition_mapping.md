@@ -24,34 +24,34 @@ This document describes the mapping between the 22 supported crops from the Kris
 |---|---|---|---|---|---|---|---|
 | `apple` | Apple | Apples, raw, with skin | 171688 | raw | Yes | Yes | Whole fresh apple consumed raw |
 | `banana` | Banana | Bananas, raw | 173944 | raw | Yes | Yes | Fresh peeled ripe banana pulp |
-| `blackgram` | Black Gram (Urad) | Mungo beans, mature seeds, raw | 174256 | raw | Yes | No | Dry raw whole urad pulse baseline |
-| `blackgram` | Black Gram (Urad) | Mungo beans, mature seeds, cooked, boiled, without salt | 174257 | cooked | Yes | Yes | Boiled urad pulse portion ready for consumption |
+| `blackgram` | Black Gram (Urad) | Mungo beans, mature seeds, raw | 174259 | raw | Yes | No | Dry raw whole urad pulse baseline |
+| `blackgram` | Black Gram (Urad) | Mungo beans, mature seeds, cooked, boiled, without salt | 172427 | cooked | Yes | Yes | Boiled urad pulse portion ready for consumption |
 | `chickpea` | Chickpea (Chana) | Chickpeas (garbanzo beans, bengal gram), mature seeds, raw | 173756 | raw | Yes | No | Dry raw chickpea baseline |
 | `chickpea` | Chickpea (Chana) | Chickpeas (garbanzo beans, bengal gram), mature seeds, cooked, boiled, without salt | 173757 | cooked | Yes | Yes | Boiled chickpea portion ready for consumption |
 | `coconut` | Coconut | Nuts, coconut meat, raw | 170169 | raw | Yes | Yes | Fresh edible solid coconut endosperm |
 | `coffee` | Coffee | Coffee, brewed, prepared with tap water | 171890 | brewed | Yes | Yes | Brewed beverage per 100 g reflects dietary consumption |
 | `cotton` | Cotton | Not a food crop | NONE | non_food | No | Yes | Commercial industrial fiber crop |
-| `grapes` | Grapes | Grapes, red or green (European type, such as Thompson seedless), raw | 174682 | raw | Yes | Yes | Fresh table grapes consumed raw |
+| `grapes` | Grapes | Grapes, red or green (European type, such as Thompson seedless), raw | 174683 | raw | Yes | Yes | Fresh table grapes consumed raw |
 | `jute` | Jute | Not a food crop | NONE | non_food | No | Yes | Bast fiber crop; inedible |
-| `kidneybeans` | Kidney Beans (Rajma) | Beans, kidney, all types, mature seeds, raw | 175199 | raw | Yes | No | Dry raw kidney beans baseline |
-| `kidneybeans` | Kidney Beans (Rajma) | Beans, kidney, all types, mature seeds, cooked, boiled, without salt | 175200 | cooked | Yes | Yes | Boiled rajma beans portion ready for consumption |
-| `lentil` | Lentil (Masoor) | Lentils, mature seeds, raw | 172420 | raw | Yes | No | Dry raw lentils baseline |
+| `kidneybeans` | Kidney Beans (Rajma) | Beans, kidney, all types, mature seeds, raw | 175193 | raw | Yes | No | Dry raw kidney beans baseline |
+| `kidneybeans` | Kidney Beans (Rajma) | Beans, kidney, all types, mature seeds, cooked, boiled, without salt | 173740 | cooked | Yes | Yes | Boiled rajma beans portion ready for consumption |
+| `lentil` | Lentil (Masoor) | Lentils, raw | 172420 | raw | Yes | No | Dry raw lentils baseline |
 | `lentil` | Lentil (Masoor) | Lentils, mature seeds, cooked, boiled, without salt | 172421 | cooked | Yes | Yes | Boiled masoor lentils portion ready for consumption |
 | `maize` | Maize (Corn) | Corn, sweet, yellow, raw | 169998 | raw | Yes | No | Fresh sweet corn kernels raw baseline |
 | `maize` | Maize (Corn) | Corn, sweet, yellow, cooked, boiled, drained, without salt | 169999 | cooked | Yes | Yes | Boiled sweet corn kernels ready for consumption |
 | `mango` | Mango | Mangos, raw | 169910 | raw | Yes | Yes | Fresh ripe mango fruit pulp |
-| `mothbeans` | Moth Beans (Matki) | Mothbeans, mature seeds, raw | 174254 | raw | Yes | No | Dry raw moth beans baseline |
-| `mothbeans` | Moth Beans (Matki) | Mothbeans, mature seeds, cooked, boiled, without salt | 174255 | cooked | Yes | Yes | Boiled moth beans portion ready for consumption |
-| `mungbean` | Mung Bean (Moong) | Mung beans, mature seeds, raw | 174258 | raw | Yes | No | Dry raw green gram baseline |
-| `mungbean` | Mung Bean (Moong) | Mung beans, mature seeds, cooked, boiled, without salt | 174259 | cooked | Yes | Yes | Boiled moong pulse portion ready for consumption |
+| `mothbeans` | Moth Beans (Matki) | Mothbeans, mature seeds, raw | 172425 | raw | Yes | No | Dry raw moth beans baseline |
+| `mothbeans` | Moth Beans (Matki) | Mothbeans, mature seeds, cooked, boiled, without salt | 172426 | cooked | Yes | Yes | Boiled moth beans portion ready for consumption |
+| `mungbean` | Mung Bean (Moong) | Mung beans, mature seeds, raw | 174256 | raw | Yes | No | Dry raw green gram baseline |
+| `mungbean` | Mung Bean (Moong) | Mung beans, mature seeds, cooked, boiled, without salt | 174257 | cooked | Yes | Yes | Boiled moong pulse portion ready for consumption |
 | `muskmelon` | Muskmelon | Melons, cantaloupe, raw | 169092 | raw | Yes | Yes | Fresh cantaloupe melon flesh consumed raw |
 | `orange` | Orange | Oranges, raw, all commercial varieties | 169097 | raw | Yes | Yes | Fresh peeled orange fruit segments |
-| `papaya` | Papaya | Papayas, raw | 170153 | raw | Yes | Yes | Fresh ripe papaya fruit flesh |
-| `pigeonpeas` | Pigeon Peas (Arhar/Toor) | Pigeon peas (red gram), mature seeds, raw | 172430 | raw | Yes | No | Dry raw red gram baseline |
-| `pigeonpeas` | Pigeon Peas (Arhar/Toor) | Pigeon peas (red gram), mature seeds, cooked, boiled, without salt | 172431 | cooked | Yes | Yes | Boiled arhar/toor pulse portion ready for consumption |
+| `papaya` | Papaya | Papayas, raw | 169926 | raw | Yes | Yes | Fresh ripe papaya fruit flesh |
+| `pigeonpeas` | Pigeon Peas (Arhar/Toor) | Pigeon peas (red gram), mature seeds, raw | 172436 | raw | Yes | No | Dry raw red gram baseline |
+| `pigeonpeas` | Pigeon Peas (Arhar/Toor) | Pigeon peas (red gram), mature seeds, cooked, boiled, without salt | 172437 | cooked | Yes | Yes | Boiled arhar/toor pulse portion ready for consumption |
 | `pomegranate` | Pomegranate | Pomegranates, raw | 169134 | raw | Yes | Yes | Fresh raw pomegranate arils |
 | `rice` | Rice | Rice, white, long-grain, regular, raw, unenriched | 169756 | raw | Yes | No | Dry raw white rice grains baseline |
-| `rice` | Rice | Rice, white, long-grain, regular, cooked, unenriched, without salt | 168878 | cooked | Yes | Yes | Steamed/boiled white rice portion ready for consumption |
+| `rice` | Rice | Rice, white, long-grain, regular, enriched, cooked | 168878 | cooked | Yes | Yes | Steamed/boiled white rice portion ready for consumption |
 | `watermelon` | Watermelon | Watermelon, raw | 167765 | raw | Yes | Yes | Fresh watermelon edible flesh consumed raw |
 
 ---

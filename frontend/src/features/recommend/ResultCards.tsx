@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Award, AlertTriangle, RotateCcw, Edit3, ShieldAlert } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Award, AlertTriangle, RotateCcw, Edit3, ShieldAlert, Apple } from "lucide-react";
 import type { RecommendationResponse, RecommendationSuitability } from "./types";
 
 interface ResultCardsProps {
@@ -176,6 +177,16 @@ export const ResultCards: React.FC<ResultCardsProps> = ({
                       }}
                     />
                   </div>
+                </div>
+                {/* Link to Nutrition Module */}
+                <div className="pt-2">
+                  <Link
+                    to={`/nutrition?crop=${item.crop.key}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#126A08] hover:text-[#02280C] underline hover:no-underline"
+                  >
+                    <Apple className="w-3.5 h-3.5" />
+                    <span>{t("recommend.nutritionInfo", "Nutrition info")} &rarr;</span>
+                  </Link>
                 </div>
               </div>
 

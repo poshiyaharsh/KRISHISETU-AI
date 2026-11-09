@@ -11,6 +11,7 @@ import {
   Landmark,
   MessageSquare,
   CheckCircle2,
+  Apple,
 } from "lucide-react";
 
 export const Home: React.FC = () => {
@@ -197,6 +198,37 @@ export const Home: React.FC = () => {
             </div>
             <div className="pt-6 flex items-center gap-2 text-sm font-bold text-[#126A08]">
               <span>Discover Subsidies & Schemes</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+
+          {/* Active Module: Nutrition */}
+          <Link
+            to="/nutrition"
+            className="group p-6 sm:p-8 rounded-2xl bg-white border-2 border-[#126A08] shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-[#126A08]/10 text-[#126A08] flex items-center justify-center">
+                  <Apple className="w-6 h-6" />
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#236E3B]/10 text-[#236E3B] text-xs font-bold">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Active Live</span>
+                </span>
+              </div>
+              <h3 className="text-xl font-bold text-[#02280C] group-hover:text-[#126A08] transition-colors">
+                {t("home.nutritionModuleTitle", "Crop Nutrition & Dietary Composition")}
+              </h3>
+              <p className="text-sm text-[#1D2B22]/70 leading-relaxed">
+                {t(
+                  "home.nutritionModuleDesc",
+                  "USDA-verified nutritional profiles per 100g with raw vs cooked breakdowns and side-by-side multi-crop comparison."
+                )}
+              </p>
+            </div>
+            <div className="pt-6 flex items-center gap-2 text-sm font-bold text-[#126A08]">
+              <span>View Nutrition Profiles</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>

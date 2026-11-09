@@ -121,9 +121,9 @@ def clean_nutrition_row(
     # Carbohydrate by difference
     carbs = extract_nutrient_value(nutrients, ["carbohydrate, by difference"], "g")
     # Fiber, total dietary
-    fiber = extract_nutrient_value(nutrients, ["fiber, total dietary", "fiber"], "g")
+    fiber = extract_nutrient_value(nutrients, ["fiber, total dietary"], "g")
     # Total lipid (fat)
-    fat = extract_nutrient_value(nutrients, ["total lipid (fat)", "fat"], "g")
+    fat = extract_nutrient_value(nutrients, ["total lipid (fat)", "total lipid"], "g")
     # Sugars
     sugars = extract_nutrient_value(
         nutrients,
@@ -131,15 +131,15 @@ def clean_nutrition_row(
         "g",
     )
     # Iron
-    iron = extract_nutrient_value(nutrients, ["iron, fe", "iron"], "mg")
+    iron = extract_nutrient_value(nutrients, ["iron, fe"], "mg")
     # Calcium
-    calcium = extract_nutrient_value(nutrients, ["calcium, ca", "calcium"], "mg")
+    calcium = extract_nutrient_value(nutrients, ["calcium, ca"], "mg")
     # Vitamin C
     vit_c = extract_nutrient_value(
-        nutrients, ["vitamin c, total ascorbic acid", "vitamin c"], "mg"
+        nutrients, ["vitamin c, total ascorbic acid"], "mg"
     )
     # Potassium
-    potassium = extract_nutrient_value(nutrients, ["potassium, k", "potassium"], "mg")
+    potassium = extract_nutrient_value(nutrients, ["potassium, k"], "mg")
 
     today_str = datetime.now(UTC).strftime("%Y-%m-%d")
     source_url = (

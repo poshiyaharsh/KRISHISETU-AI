@@ -152,6 +152,7 @@ REST_FRAMEWORK = {
         "anon": "60/min",
         "recommend": "30/min",
         "schemes": "60/min",
+        "nutrition": "60/min",
     },
 }
 

@@ -40,7 +40,9 @@
     "schemesModuleTitle": "Government Schemes & Subsidies",
     "schemesModuleDesc": "Direct eligibility discovery and links to central and state farmer benefit programs.",
     "chatModuleTitle": "Krishi Mitra Assistant",
-    "chatModuleDesc": "24/7 multilingual conversational advisor for crop management, pest safety, and farming queries."
+    "chatModuleDesc": "24/7 multilingual conversational advisor for crop management, pest safety, and farming queries.",
+    "nutritionModuleTitle": "Crop Nutrition & Dietary Composition",
+    "nutritionModuleDesc": "USDA-verified nutritional profiles per 100g with raw vs cooked breakdowns and side-by-side multi-crop comparison."
   },
   "recommend": {
     "title": "Crop Recommendation Advisory",
@@ -98,7 +100,8 @@
         "unit": "mm",
         "tooltip": "Total expected precipitation or irrigation water availability during the crop cycle."
       }
-    }
+    },
+    "nutritionInfo": "Nutrition info"
   },
   "weather": {
     "title": "Hyperlocal Weather Intelligence",
@@ -220,5 +223,45 @@
     "pomegranate": "Pomegranate",
     "rice": "Rice (Paddy)",
     "watermelon": "Watermelon"
+  },
+  "nutrition": {
+    "title": "Crop Nutrition & Dietary Composition",
+    "subtitle": "Sourced factual nutritional profiles per 100g edible portion for all supported agricultural crops.",
+    "single_crop_view": "Single Crop View",
+    "compare_view": "Compare Crops (up to 3)",
+    "select_crop_label": "Select Crop",
+    "form_label": "Consumption State",
+    "default_badge": "Default",
+    "not_a_food_crop": "Not a food crop",
+    "non_food_explanation": "This crop is cultivated primarily as a commercial industrial fiber or non-edible crop. It has no standard dietary food portion.",
+    "energy": "Energy",
+    "protein": "Protein",
+    "carbohydrate": "Carbohydrate",
+    "fiber": "Dietary Fiber",
+    "fat": "Total Fat",
+    "sugars": "Sugars",
+    "iron": "Iron",
+    "calcium": "Calcium",
+    "vitamin_c": "Vitamin C",
+    "potassium": "Potassium",
+    "table_aria_label": "Nutritional composition table per 100 grams edible portion",
+    "table_caption": "Nutritional profile values per 100 grams edible portion",
+    "nutrient_header": "Nutrient (per 100g)",
+    "amount_header": "Amount",
+    "basis_note": "Basis: per 100 g edible portion. Missing values (—) indicate nutrient not analyzed or not reported in source.",
+    "chart_aria_label": "Macronutrient breakdown chart",
+    "macro_breakdown": "Macronutrient Breakdown (grams per 100g)",
+    "macro_subtitle": "Compares major nutrients on equal scale. Energy (kcal) is displayed separately.",
+    "chart_text_summary": "Macronutrient summary: Protein, Carbohydrate, Dietary Fiber, and Total Fat shown in grams per 100 grams edible portion.",
+    "provenance_line": "Source: {{name}} (ID: {{id}}), retrieved {{date}}. Values are per 100 g and vary by variety and growing conditions.",
+    "safety_disclaimer": "Notice: For general agricultural and dietary awareness only. Does not constitute medical or therapeutic nutrition advice.",
+    "view_official_source": "View official USDA FoodData Central catalog profile",
+    "compare_selector_heading": "Selected Crops to Compare (Select 1 to 3)",
+    "add_crop_prompt": "Add to comparison:",
+    "compare_disclaimer": "Source: USDA FoodData Central. Values are per 100 g edible portion in standard consumption form and vary by cultivar and growing conditions. No medical advice implied.",
+    "form_raw": "Raw (Dry/Fresh)",
+    "form_cooked": "Cooked / Boiled",
+    "form_brewed": "Brewed",
+    "form_non_food": "Not a Food Crop"
   }
 }
