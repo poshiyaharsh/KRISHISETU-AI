@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Menu, X, Sprout } from "lucide-react";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 export const MainLayout: React.FC = () => {
   const { t } = useTranslation();
@@ -86,9 +87,9 @@ export const MainLayout: React.FC = () => {
               )}
             </nav>
 
-            {/* Language Selector Slot (Reserved for Phase 5) */}
+            {/* Language Selector */}
             <div className="hidden md:flex items-center gap-3">
-              <div id="language-selector-slot" aria-hidden="true" />
+              <LanguageSelector />
               <Link
                 to="/recommend"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#126A08] text-white text-sm font-bold shadow-sm hover:bg-[#02280C] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#126A08]"
@@ -98,8 +99,9 @@ export const MainLayout: React.FC = () => {
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Actions: Language + Menu */}
             <div className="flex md:hidden items-center gap-2">
+              <LanguageSelector />
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

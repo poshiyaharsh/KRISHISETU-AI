@@ -141,8 +141,8 @@ export const ResultCards: React.FC<ResultCardsProps> = ({
 
                 {/* Crop Identity */}
                 <div>
-                  <h3 className="text-2xl sm:text-3xl font-extrabold text-[#02280C] capitalize tracking-tight">
-                    {item.crop.name}
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-[#02280C] tracking-tight">
+                    {t(`crops.${item.crop.key}`, item.crop.name)}
                   </h3>
                   <p className="text-xs text-[#1D2B22]/60 mt-0.5">
                     Scientific Class: <span className="font-mono">{item.crop.key}</span>

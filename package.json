@@ -13,6 +13,7 @@
     "lint:frontend": "npm --prefix frontend run lint",
     "lint:backend": "cd backend && ruff check .",
     "lint": "npm run lint:frontend && npm run lint:backend",
-    "typecheck": "npm --prefix frontend run typecheck"
+    "typecheck": "npm --prefix frontend run typecheck",
+    "i18n:check": "node scripts/i18n-check.mjs"
   }
 }

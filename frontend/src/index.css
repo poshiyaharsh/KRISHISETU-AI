@@ -13,3 +13,27 @@ body {
   line-height: var(--ks-leading-body);
   -webkit-font-smoothing: antialiased;
 }
+
+/* RTL and Indic typography ergonomics */
+[dir="rtl"] {
+  text-align: start;
+}
+
+[dir="rtl"] .lucide-arrow-right {
+  transform: scaleX(-1);
+}
+
+/* Indic scripts line height ergonomics to prevent Matra clipping */
+:lang(hi),
+:lang(mr),
+:lang(gu),
+:lang(bn),
+:lang(ta),
+:lang(te),
+:lang(kn),
+:lang(ml),
+:lang(pa),
+:lang(or),
+:lang(ur) {
+  line-height: 1.75;
+}

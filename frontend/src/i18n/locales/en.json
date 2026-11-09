@@ -113,5 +113,29 @@
     "notFoundTitle": "Page Not Found",
     "notFoundDesc": "The page you are looking for does not exist or has been moved.",
     "goHome": "Return to Home"
+  },
+  "crops": {
+    "apple": "Apple",
+    "banana": "Banana",
+    "blackgram": "Black Gram (Urad)",
+    "chickpea": "Chickpea (Chana)",
+    "coconut": "Coconut",
+    "coffee": "Coffee",
+    "cotton": "Cotton",
+    "grapes": "Grapes",
+    "jute": "Jute",
+    "kidneybeans": "Kidney Beans (Rajma)",
+    "lentil": "Lentil (Masoor)",
+    "maize": "Maize",
+    "mango": "Mango",
+    "mothbeans": "Moth Beans",
+    "mungbean": "Mung Bean (Moong)",
+    "muskmelon": "Muskmelon",
+    "orange": "Orange",
+    "papaya": "Papaya",
+    "pigeonpeas": "Pigeon Peas (Tur / Arhar)",
+    "pomegranate": "Pomegranate",
+    "rice": "Rice (Paddy)",
+    "watermelon": "Watermelon"
   }
 }

@@ -36,6 +36,9 @@ jobs:
       - name: Unit tests (Vitest)
         run: npm test
 
+      - name: Validate i18n key parity across 23 languages
+        run: node ../scripts/i18n-check.mjs
+
       - name: Production build
         run: npm run build
 

@@ -19,9 +19,9 @@ describe("ResultCards Component", () => {
   it("renders all top 3 crops with rankings and percentage texts", () => {
     render(<ResultCards response={MOCK_RESPONSE} onReset={vi.fn()} onEdit={vi.fn()} />);
 
-    expect(screen.getByText("Rice")).toBeInTheDocument();
-    expect(screen.getByText("Jute")).toBeInTheDocument();
-    expect(screen.getByText("Pomegranate")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Rice/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Jute/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Pomegranate/i })).toBeInTheDocument();
 
     expect(screen.getByText("#1")).toBeInTheDocument();
     expect(screen.getByText("#2")).toBeInTheDocument();

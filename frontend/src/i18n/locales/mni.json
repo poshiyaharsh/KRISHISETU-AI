@@ -1,0 +1,141 @@
+{
+  "common": {
+    "appName": "KrishiSetu AI (মৈতৈલોন্)",
+    "tagline": "Smarter Farming. Better Decisions. Brighter Tomorrow.",
+    "loading": "Loading...",
+    "retry": "Try again",
+    "skipToContent": "Skip to main content",
+    "comingSoon": "Coming soon",
+    "comingSoonAria": "This module is coming soon and currently unavailable",
+    "safetyDisclaimer": "Advisory Notice: These recommendations are AI-assisted predictions based on your input data. Please consult your local Agriculture Extension Officer or Krishi Vigyan Kendra (KVK) before making major planting decisions."
+  },
+  "nav": {
+    "home": "Home",
+    "recommend": "Crop Advisory",
+    "schemes": "Govt Schemes",
+    "weather": "Weather",
+    "nutrition": "Crop Nutrition",
+    "chatbot": "Krishi Mitra",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu"
+  },
+  "home": {
+    "heroTitle": "AI-Powered Crop Advisory for Indian Farmers",
+    "heroSubtitle": "Get scientifically validated crop recommendations suited specifically to your soil nutrient profile and local climate conditions.",
+    "ctaButton": "Get Crop Advice",
+    "howItWorksTitle": "How It Works",
+    "howItWorksSubtitle": "Three simple steps to maximize yield and soil health",
+    "step1Title": "1. Enter Field Data",
+    "step1Desc": "Provide soil NPK nutrients, soil pH, temperature, humidity, and expected rainfall.",
+    "step2Title": "2. AI Model Evaluation",
+    "step2Desc": "Our agricultural machine learning model analyzes your inputs against 22 validated Indian crop profiles.",
+    "step3Title": "3. Get Ranked Recommendations",
+    "step3Desc": "Receive top-3 optimal crops with confidence scores, growth insights, and agronomic guidelines.",
+    "modulesTitle": "Platform Modules",
+    "modulesSubtitle": "Integrated tools built specifically for modern Indian agriculture",
+    "crsModuleTitle": "Crop Recommendation System (CRS)",
+    "crsModuleDesc": "Scientifically calibrated multi-class model predicting top crops with verified high accuracy.",
+    "weatherModuleTitle": "Hyperlocal Weather Intelligence",
+    "weatherModuleDesc": "Live 7-day agricultural forecasts with rainfall tracking and irrigation alerts.",
+    "schemesModuleTitle": "Government Schemes & Subsidies",
+    "schemesModuleDesc": "Direct eligibility discovery and links to central and state farmer benefit programs.",
+    "chatModuleTitle": "Krishi Mitra Assistant",
+    "chatModuleDesc": "24/7 multilingual conversational advisor for crop management, pest safety, and farming queries."
+  },
+  "recommend": {
+    "title": "Crop Recommendation Advisory",
+    "subtitle": "Enter your soil test values and climate parameters to discover the most suitable crops for your land.",
+    "sampleButton": "Fill Sample Values",
+    "formLegend": "Soil and Weather Parameters",
+    "submitButton": "Analyze & Recommend Crops",
+    "submittingButton": "Analyzing Soil & Weather Data...",
+    "resetButton": "Start Again",
+    "editButton": "Edit Values",
+    "resultsTitle": "Top Recommended Crops",
+    "resultsSubtitle": "Ranked by ML model confidence based on your field's physiological suitability.",
+    "confidenceNote": "Score reflects machine learning model confidence based on training data, not a yield guarantee.",
+    "labels": {
+      "strongly_recommended": "Strongly Recommended",
+      "recommended": "Recommended",
+      "conditional": "Conditional Suitability"
+    },
+    "rank": "Rank",
+    "score": "Confidence",
+    "warningsTitle": "Agronomic Alerts",
+    "fields": {
+      "nitrogen": {
+        "label": "Nitrogen (N)",
+        "unit": "kg/ha",
+        "tooltip": "Available nitrogen in soil. Essential for leaf growth and lush green vegetation."
+      },
+      "phosphorus": {
+        "label": "Phosphorus (P)",
+        "unit": "kg/ha",
+        "tooltip": "Available phosphorus in soil. Crucial for root development, flowering, and seed formation."
+      },
+      "potassium": {
+        "label": "Potassium (K)",
+        "unit": "kg/ha",
+        "tooltip": "Available potassium in soil. Enhances disease resistance, drought tolerance, and fruit quality."
+      },
+      "temperature": {
+        "label": "Temperature",
+        "unit": "°C",
+        "tooltip": "Average temperature during the crop growing season."
+      },
+      "humidity": {
+        "label": "Relative Humidity",
+        "unit": "%",
+        "tooltip": "Atmospheric moisture content affecting crop transpiration and disease risk."
+      },
+      "ph": {
+        "label": "Soil pH",
+        "unit": "pH",
+        "tooltip": "Acidity or alkalinity level of the soil. Optimal range for most crops is 6.0 to 7.5."
+      },
+      "rainfall": {
+        "label": "Rainfall",
+        "unit": "mm",
+        "tooltip": "Total expected precipitation or irrigation water availability during the crop cycle."
+      }
+    }
+  },
+  "errors": {
+    "generic": "An unexpected error occurred. Please try again.",
+    "network": "Unable to connect to the server. Please check your internet connection.",
+    "validation": {
+      "required": "This field is required.",
+      "invalid": "Please enter a valid number.",
+      "out_of_range": "Value must be between {{min}} and {{max}} {{unit}}."
+    },
+    "throttled": "You have submitted too many requests. Please wait a moment before trying again.",
+    "service_unavailable": "The recommendation model is temporarily unavailable. Please try again later.",
+    "notFoundTitle": "Page Not Found",
+    "notFoundDesc": "The page you are looking for does not exist or has been moved.",
+    "goHome": "Return to Home"
+  },
+  "crops": {
+    "apple": "Apple",
+    "banana": "Banana",
+    "blackgram": "Black Gram (Urad)",
+    "chickpea": "Chickpea (Chana)",
+    "coconut": "Coconut",
+    "coffee": "Coffee",
+    "cotton": "Cotton",
+    "grapes": "Grapes",
+    "jute": "Jute",
+    "kidneybeans": "Kidney Beans (Rajma)",
+    "lentil": "Lentil (Masoor)",
+    "maize": "Maize",
+    "mango": "Mango",
+    "mothbeans": "Moth Beans",
+    "mungbean": "Mung Bean (Moong)",
+    "muskmelon": "Muskmelon",
+    "orange": "Orange",
+    "papaya": "Papaya",
+    "pigeonpeas": "Pigeon Peas (Tur / Arhar)",
+    "pomegranate": "Pomegranate",
+    "rice": "Rice (Paddy)",
+    "watermelon": "Watermelon"
+  }
+}
