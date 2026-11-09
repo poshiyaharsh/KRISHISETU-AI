@@ -1,53 +1,53 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import App from './App';
 
-describe('App Foundation Test', () => {
+describe('App Core Layout and Routing', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      status: 200,
-      json: async () => ({
-        status: 'ok',
-        service: 'krishisetu-api',
-        version: '0.1.0',
-        time: '2026-11-09T05:00:00Z',
-      }),
-    } as Response);
   });
 
-  it('renders the KrishiSetu logo and foundation status', async () => {
+  it('renders the KrishiSetu navbar, brand title and skip link', async () => {
     render(<App />);
-    const logo = screen.getByAltText('KrishiSetu AI');
-    expect(logo).toBeInTheDocument();
-    expect(screen.getByText(/Phase 1 Foundation Live/i)).toBeInTheDocument();
-    await waitFor(() => {
-      expect(screen.getByText(/Service Healthy/i)).toBeInTheDocument();
-    });
+
+    // Brand link in navbar
+    const brandLink = screen.getByRole('link', { name: /KrishiSetu AI/i });
+    expect(brandLink).toBeInTheDocument();
+
+    // Skip link
+    const skipLink = screen.getByText(/Skip to main content/i);
+    expect(skipLink).toBeInTheDocument();
+
+    // Navigation items
+    expect(screen.getByRole('navigation', { name: /Main Navigation/i })).toBeInTheDocument();
   });
 
-  it('renders the KrishiLoader message and tips', async () => {
+  it('renders the landing page hero section and CTA button', async () => {
     render(<App />);
-    expect(screen.getByText(/Analyzing agricultural parameters.../i)).toBeInTheDocument();
-    await waitFor(() => {
-      expect(screen.getByText(/Service Healthy/i)).toBeInTheDocument();
+
+    const heroHeading = await screen.findByRole('heading', {
+      name: /AI-Powered Crop Advisory for Indian Farmers/i,
     });
+    expect(heroHeading).toBeInTheDocument();
+
+    const ctaButtons = screen.getAllByRole('link', { name: /Get Crop Advice/i });
+    expect(ctaButtons.length).toBeGreaterThan(0);
   });
 
-  it('renders the skeleton verification card', async () => {
+  it("renders the 3-step 'How It Works' workflow", async () => {
     render(<App />);
-    expect(screen.getByText(/Shimmer Skeleton State Verification/i)).toBeInTheDocument();
-    await waitFor(() => {
-      expect(screen.getByText(/Service Healthy/i)).toBeInTheDocument();
-    });
+
+    const howItWorks = await screen.findByText(/How It Works/i);
+    expect(howItWorks).toBeInTheDocument();
+    expect(screen.getByText(/1\. Enter Field Data/i)).toBeInTheDocument();
+    expect(screen.getByText(/2\. AI Model Evaluation/i)).toBeInTheDocument();
+    expect(screen.getByText(/3\. Get Ranked Recommendations/i)).toBeInTheDocument();
   });
 
-  it('renders the backend API health status section and data', async () => {
+  it('renders the safety advisory disclaimer in the footer', () => {
     render(<App />);
-    expect(screen.getByText(/3. Backend API Connection/i)).toBeInTheDocument();
-    await waitFor(() => {
-      expect(screen.getByText(/Service Healthy/i)).toBeInTheDocument();
-    });
+
+    expect(screen.getByText(/Advisory Notice:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Krishi Vigyan Kendra/i)).toBeInTheDocument();
   });
 });

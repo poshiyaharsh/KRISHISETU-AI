@@ -1,0 +1,54 @@
+import React, { Suspense, lazy } from "react";
+import { createBrowserRouter } from "react-router-dom";
+import { MainLayout } from "@/layouts/MainLayout";
+import { KrishiLoader } from "@/components/Loader/KrishiLoader";
+
+// Route-level code splitting
+const Home = lazy(() => import("@/pages/Home"));
+const Recommend = lazy(() => import("@/pages/Recommend"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
+
+const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
+  <Suspense
+    fallback={
+      <div className="min-h-[50vh] flex items-center justify-center py-16">
+        <KrishiLoader />
+      </div>
+    }
+  >
+    {children}
+  </Suspense>
+);
+
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <SuspenseWrapper>
+            <Home />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "recommend",
+        element: (
+          <SuspenseWrapper>
+            <Recommend />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "*",
+        element: (
+          <SuspenseWrapper>
+            <NotFound />
+          </SuspenseWrapper>
+        ),
+      },
+    ],
+  },
+]);
