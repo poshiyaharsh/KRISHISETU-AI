@@ -5,43 +5,78 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='State',
+            name="State",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True)),
-                ('code', models.CharField(help_text='ISO/LGD state code (e.g. IN-GJ)', max_length=10, unique=True)),
-                ('lat', models.FloatField(help_text='Centroid latitude')),
-                ('lon', models.FloatField(help_text='Centroid longitude')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, unique=True)),
+                (
+                    "code",
+                    models.CharField(
+                        help_text="ISO/LGD state code (e.g. IN-GJ)",
+                        max_length=10,
+                        unique=True,
+                    ),
+                ),
+                ("lat", models.FloatField(help_text="Centroid latitude")),
+                ("lon", models.FloatField(help_text="Centroid longitude")),
             ],
             options={
-                'verbose_name': 'State',
-                'verbose_name_plural': 'States',
-                'ordering': ['name'],
+                "verbose_name": "State",
+                "verbose_name_plural": "States",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='District',
+            name="District",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('lat', models.FloatField(help_text='District centroid latitude')),
-                ('lon', models.FloatField(help_text='District centroid longitude')),
-                ('coord_source', models.CharField(default='local_government_directory', help_text='Verifiable provenance of coordinates', max_length=100)),
-                ('state', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='districts', to='locations.state')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("lat", models.FloatField(help_text="District centroid latitude")),
+                ("lon", models.FloatField(help_text="District centroid longitude")),
+                (
+                    "coord_source",
+                    models.CharField(
+                        default="local_government_directory",
+                        help_text="Verifiable provenance of coordinates",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "state",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="districts",
+                        to="locations.state",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'District',
-                'verbose_name_plural': 'Districts',
-                'ordering': ['name'],
-                'unique_together': {('state', 'name')},
+                "verbose_name": "District",
+                "verbose_name_plural": "Districts",
+                "ordering": ["name"],
+                "unique_together": {("state", "name")},
             },
         ),
     ]

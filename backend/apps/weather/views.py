@@ -31,13 +31,27 @@ class WeatherForecastView(APIView):
         summary="Get 7-day weather forecast",
         description="Returns current conditions and 7-day daily agricultural forecast from Open-Meteo with 30-min cache.",
         parameters=[
-            OpenApiParameter(name="lat", description="Latitude coordinate", required=False, type=float),
-            OpenApiParameter(name="lon", description="Longitude coordinate", required=False, type=float),
-            OpenApiParameter(name="district", description="District ID", required=False, type=int),
+            OpenApiParameter(
+                name="lat",
+                description="Latitude coordinate",
+                required=False,
+                type=float,
+            ),
+            OpenApiParameter(
+                name="lon",
+                description="Longitude coordinate",
+                required=False,
+                type=float,
+            ),
+            OpenApiParameter(
+                name="district", description="District ID", required=False, type=int
+            ),
         ],
         responses={
             200: WeatherForecastResponseSerializer,
-            400: OpenApiResponse(description="Invalid coordinates or missing location parameter"),
+            400: OpenApiResponse(
+                description="Invalid coordinates or missing location parameter"
+            ),
             404: OpenApiResponse(description="District not found"),
             503: OpenApiResponse(description="Weather provider unavailable"),
         },
@@ -111,7 +125,9 @@ class WeatherForecastView(APIView):
 
             # Store in fresh cache and stale backup
             cache.set(cache_key, data, timeout=ttl)
-            cache.set(stale_cache_key, data, timeout=ttl * 12)  # Backup persists 6 hours
+            cache.set(
+                stale_cache_key, data, timeout=ttl * 12
+            )  # Backup persists 6 hours
 
             return Response(data, status=status.HTTP_200_OK)
         except WeatherServiceError as err:

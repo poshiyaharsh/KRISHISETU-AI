@@ -17,7 +17,9 @@ class FarmerTypeSerializer(serializers.ModelSerializer):
 class SchemeListSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source="category.name")
     category_slug = serializers.CharField(source="category.slug")
-    state_name = serializers.CharField(source="state.name", default=None, allow_null=True)
+    state_name = serializers.CharField(
+        source="state.name", default=None, allow_null=True
+    )
     farmer_types = serializers.SlugRelatedField(
         many=True,
         read_only=True,
@@ -45,7 +47,9 @@ class SchemeListSerializer(serializers.ModelSerializer):
 
 class SchemeDetailSerializer(serializers.ModelSerializer):
     category = SchemeCategorySerializer()
-    state_name = serializers.CharField(source="state.name", default=None, allow_null=True)
+    state_name = serializers.CharField(
+        source="state.name", default=None, allow_null=True
+    )
     farmer_types = FarmerTypeSerializer(many=True, read_only=True)
 
     class Meta:

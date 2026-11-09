@@ -22,7 +22,9 @@ class Command(BaseCommand):
         clean_path = base_dir / "data" / "schemes" / "schemes_clean.json"
 
         if not clean_path.exists():
-            self.stderr.write(self.style.ERROR(f"Clean schemes data not found at: {clean_path}"))
+            self.stderr.write(
+                self.style.ERROR(f"Clean schemes data not found at: {clean_path}")
+            )
             return
 
         with open(clean_path, "r", encoding="utf-8") as f:

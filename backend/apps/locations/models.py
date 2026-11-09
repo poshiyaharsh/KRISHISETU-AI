@@ -9,7 +9,9 @@ class State(models.Model):
     """Indian state or union territory."""
 
     name = models.CharField(max_length=100, unique=True)
-    code = models.CharField(max_length=10, unique=True, help_text="ISO/LGD state code (e.g. IN-GJ)")
+    code = models.CharField(
+        max_length=10, unique=True, help_text="ISO/LGD state code (e.g. IN-GJ)"
+    )
     lat = models.FloatField(help_text="Centroid latitude")
     lon = models.FloatField(help_text="Centroid longitude")
 

@@ -71,10 +71,14 @@ def fetch_forecast_from_provider(lat: float, lon: float) -> WeatherForecast:
                 err,
             )
 
-    raise WeatherServiceError(f"Failed to fetch forecast from Open-Meteo after 2 attempts: {last_error}")
+    raise WeatherServiceError(
+        f"Failed to fetch forecast from Open-Meteo after 2 attempts: {last_error}"
+    )
 
 
-def parse_open_meteo_response(data: dict[str, Any], requested_lat: float, requested_lon: float) -> WeatherForecast:
+def parse_open_meteo_response(
+    data: dict[str, Any], requested_lat: float, requested_lon: float
+) -> WeatherForecast:
     """Normalize raw Open-Meteo response into typed WeatherForecast."""
     current_raw = data.get("current", {})
     daily_raw = data.get("daily", {})
@@ -100,18 +104,28 @@ def parse_open_meteo_response(data: dict[str, Any], requested_lat: float, reques
 
     daily_items: list[DailyForecastItem] = []
     for i in range(len(dates)):
-        wmo = int(weather_codes[i]) if i < len(weather_codes) and weather_codes[i] is not None else -1
+        wmo = (
+            int(weather_codes[i])
+            if i < len(weather_codes) and weather_codes[i] is not None
+            else -1
+        )
         daily_items.append(
             DailyForecastItem(
                 date=dates[i],
                 temp_max=float(temp_maxes[i]) if i < len(temp_maxes) else 0.0,
                 temp_min=float(temp_mins[i]) if i < len(temp_mins) else 0.0,
-                precipitation_sum=float(precip_sums[i]) if i < len(precip_sums) else 0.0,
-                precipitation_probability_max=float(precip_probs[i]) if i < len(precip_probs) and precip_probs[i] is not None else 0.0,
+                precipitation_sum=float(precip_sums[i])
+                if i < len(precip_sums)
+                else 0.0,
+                precipitation_probability_max=float(precip_probs[i])
+                if i < len(precip_probs) and precip_probs[i] is not None
+                else 0.0,
                 wind_speed_max=float(wind_maxes[i]) if i < len(wind_maxes) else 0.0,
                 weather_code=wmo,
                 condition=map_wmo_code_to_condition(wmo),
-                et0_evapotranspiration=float(et0_values[i]) if i < len(et0_values) and et0_values[i] is not None else 0.0,
+                et0_evapotranspiration=float(et0_values[i])
+                if i < len(et0_values) and et0_values[i] is not None
+                else 0.0,
             )
         )
 

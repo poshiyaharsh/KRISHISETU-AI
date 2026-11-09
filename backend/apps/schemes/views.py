@@ -31,17 +31,39 @@ class SchemeListView(generics.ListAPIView):
         summary="List and filter government schemes",
         description="Returns a paginated list of active agricultural government schemes with multi-criteria filtering and text search.",
         parameters=[
-            OpenApiParameter(name="q", description="Search query in name, description, department", type=str),
-            OpenApiParameter(name="level", description="Filter by level: 'central' or 'state'", type=str),
-            OpenApiParameter(name="category", description="Filter by SchemeCategory slug or ID", type=str),
-            OpenApiParameter(name="farmer_type", description="Filter by FarmerType slug", type=str),
-            OpenApiParameter(name="state", description="Filter by state code or ID", type=str),
-            OpenApiParameter(name="status", description="Filter by status (default: 'active')", type=str),
+            OpenApiParameter(
+                name="q",
+                description="Search query in name, description, department",
+                type=str,
+            ),
+            OpenApiParameter(
+                name="level",
+                description="Filter by level: 'central' or 'state'",
+                type=str,
+            ),
+            OpenApiParameter(
+                name="category",
+                description="Filter by SchemeCategory slug or ID",
+                type=str,
+            ),
+            OpenApiParameter(
+                name="farmer_type", description="Filter by FarmerType slug", type=str
+            ),
+            OpenApiParameter(
+                name="state", description="Filter by state code or ID", type=str
+            ),
+            OpenApiParameter(
+                name="status",
+                description="Filter by status (default: 'active')",
+                type=str,
+            ),
         ],
         responses={200: SchemeListSerializer(many=True)},
     )
     def get_queryset(self):
-        qs = Scheme.objects.select_related("category", "state").prefetch_related("farmer_types")
+        qs = Scheme.objects.select_related("category", "state").prefetch_related(
+            "farmer_types"
+        )
 
         # Status filter (default active)
         status_param = self.request.query_params.get("status", "active")
@@ -93,7 +115,9 @@ class SchemeListView(generics.ListAPIView):
 
 
 class SchemeDetailView(generics.RetrieveAPIView):
-    queryset = Scheme.objects.select_related("category", "state").prefetch_related("farmer_types")
+    queryset = Scheme.objects.select_related("category", "state").prefetch_related(
+        "farmer_types"
+    )
     serializer_class = SchemeDetailSerializer
     lookup_field = "slug"
     throttle_classes = [ScopedRateThrottle]
@@ -127,7 +151,9 @@ class SchemeFacetsView(APIView):
             .filter(scheme_count__gt=0)
             .order_by("name")
         )
-        cat_data = [{"id": c.slug, "name": c.name, "count": c.scheme_count} for c in cats]
+        cat_data = [
+            {"id": c.slug, "name": c.name, "count": c.scheme_count} for c in cats
+        ]
 
         # Levels with count
         central_count = base_qs.filter(level="central").count()
@@ -153,7 +179,9 @@ class SchemeFacetsView(APIView):
             .filter(scheme_count__gt=0)
             .order_by("name")
         )
-        state_data = [{"id": s.code, "name": s.name, "count": s.scheme_count} for s in states]
+        state_data = [
+            {"id": s.code, "name": s.name, "count": s.scheme_count} for s in states
+        ]
 
         return Response(
             {

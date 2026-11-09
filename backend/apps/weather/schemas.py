@@ -82,7 +82,9 @@ class WeatherForecast:
     current: CurrentWeather
     daily: list[DailyForecastItem]
     provider: str = "Open-Meteo"
-    attribution: str = "Weather data provided by Open-Meteo (Non-Commercial Agricultural Advisory)"
+    attribution: str = (
+        "Weather data provided by Open-Meteo (Non-Commercial Agricultural Advisory)"
+    )
 
     def to_dict(self) -> dict[str, Any]:
         return {

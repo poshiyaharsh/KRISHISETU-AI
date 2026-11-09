@@ -67,15 +67,25 @@ class Scheme(models.Model):
     )
 
     eligibility = models.TextField(help_text="Farmer eligibility criteria")
-    benefits = models.TextField(help_text="Financial, physical or technical benefits provided")
+    benefits = models.TextField(
+        help_text="Financial, physical or technical benefits provided"
+    )
     documents_required = models.TextField(help_text="Required verification documents")
     how_to_apply = models.TextField(help_text="Application procedure and guidelines")
 
-    official_url = models.URLField(max_length=500, help_text="Official application or portal URL")
+    official_url = models.URLField(
+        max_length=500, help_text="Official application or portal URL"
+    )
     source_name = models.CharField(max_length=120, default="myScheme / GoI")
-    source_url = models.URLField(max_length=500, help_text="Official source verification URL")
-    source_id = models.CharField(max_length=100, unique=True, help_text="Unique ID from source")
-    last_verified_on = models.DateField(help_text="Date when official information was verified")
+    source_url = models.URLField(
+        max_length=500, help_text="Official source verification URL"
+    )
+    source_id = models.CharField(
+        max_length=100, unique=True, help_text="Unique ID from source"
+    )
+    last_verified_on = models.DateField(
+        help_text="Date when official information was verified"
+    )
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="active")
 

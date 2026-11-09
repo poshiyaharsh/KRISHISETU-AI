@@ -25,7 +25,15 @@ SAMPLE_OPEN_METEO_JSON = {
         "weather_code": 1,
     },
     "daily": {
-        "time": ["2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-14", "2026-11-15"],
+        "time": [
+            "2026-11-09",
+            "2026-11-10",
+            "2026-11-11",
+            "2026-11-12",
+            "2026-11-13",
+            "2026-11-14",
+            "2026-11-15",
+        ],
         "temperature_2m_max": [32.0, 31.5, 30.0, 32.5, 33.0, 32.8, 31.0],
         "temperature_2m_min": [18.0, 18.5, 17.5, 19.0, 19.5, 18.0, 17.0],
         "precipitation_sum": [0.0, 0.0, 12.5, 2.0, 0.0, 0.0, 0.0],
@@ -116,11 +124,16 @@ def test_weather_stale_fallback_on_provider_error(api_client):
     # Prime the stale cache
     cache_key = f"weather:{round(district.lat, 2)}:{round(district.lon, 2)}"
     stale_key = f"{cache_key}:stale_backup"
-    mock_data = parse_open_meteo_response(SAMPLE_OPEN_METEO_JSON, district.lat, district.lon).to_dict()
+    mock_data = parse_open_meteo_response(
+        SAMPLE_OPEN_METEO_JSON, district.lat, district.lon
+    ).to_dict()
     cache.set(stale_key, mock_data, timeout=3600)
 
     # Provider now fails
-    with patch("apps.weather.views.fetch_forecast_from_provider", side_effect=WeatherServiceError("Network timeout")):
+    with patch(
+        "apps.weather.views.fetch_forecast_from_provider",
+        side_effect=WeatherServiceError("Network timeout"),
+    ):
         response = api_client.get(f"/api/weather/?district={district.id}")
         assert response.status_code == status.HTTP_200_OK
 
@@ -131,7 +144,10 @@ def test_weather_stale_fallback_on_provider_error(api_client):
 
 @pytest.mark.django_db
 def test_weather_provider_unavailable_when_no_cache(api_client):
-    with patch("apps.weather.views.fetch_forecast_from_provider", side_effect=WeatherServiceError("API down")):
+    with patch(
+        "apps.weather.views.fetch_forecast_from_provider",
+        side_effect=WeatherServiceError("API down"),
+    ):
         response = api_client.get("/api/weather/?lat=22.56&lon=72.93")
         assert response.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
 

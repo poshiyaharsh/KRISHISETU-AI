@@ -54,30 +54,31 @@ DISTRICTS_DATA: list[dict[str, Any]] = [
     {"state_code": "IN-GJ", "name": "Rajkot", "lat": 22.3039, "lon": 70.8022},
     {"state_code": "IN-GJ", "name": "Surat", "lat": 21.1702, "lon": 72.8311},
     {"state_code": "IN-GJ", "name": "Vadodara", "lat": 22.3072, "lon": 73.1812},
-
     # Maharashtra
     {"state_code": "IN-MH", "name": "Ahmednagar", "lat": 19.0948, "lon": 74.7480},
     {"state_code": "IN-MH", "name": "Amravati", "lat": 20.9374, "lon": 77.7796},
-    {"state_code": "IN-MH", "name": "Aurangabad (Chhatrapati Sambhajinagar)", "lat": 19.8762, "lon": 75.3433},
+    {
+        "state_code": "IN-MH",
+        "name": "Aurangabad (Chhatrapati Sambhajinagar)",
+        "lat": 19.8762,
+        "lon": 75.3433,
+    },
     {"state_code": "IN-MH", "name": "Kolhapur", "lat": 16.7050, "lon": 74.2433},
     {"state_code": "IN-MH", "name": "Nagpur", "lat": 21.1458, "lon": 79.0882},
     {"state_code": "IN-MH", "name": "Nashik", "lat": 19.9975, "lon": 73.7898},
     {"state_code": "IN-MH", "name": "Pune", "lat": 18.5204, "lon": 73.8567},
     {"state_code": "IN-MH", "name": "Solapur", "lat": 17.6599, "lon": 75.9064},
-
     # Punjab
     {"state_code": "IN-PB", "name": "Amritsar", "lat": 31.6340, "lon": 74.8723},
     {"state_code": "IN-PB", "name": "Bathinda", "lat": 30.2110, "lon": 74.9455},
     {"state_code": "IN-PB", "name": "Jalandhar", "lat": 31.3260, "lon": 75.5762},
     {"state_code": "IN-PB", "name": "Ludhiana", "lat": 30.9010, "lon": 75.8573},
     {"state_code": "IN-PB", "name": "Patiala", "lat": 30.3398, "lon": 76.3869},
-
     # Haryana
     {"state_code": "IN-HR", "name": "Ambala", "lat": 30.3782, "lon": 76.7767},
     {"state_code": "IN-HR", "name": "Hisar", "lat": 29.1492, "lon": 75.7217},
     {"state_code": "IN-HR", "name": "Karnal", "lat": 29.6857, "lon": 76.9905},
     {"state_code": "IN-HR", "name": "Sirsa", "lat": 29.5349, "lon": 75.0298},
-
     # Uttar Pradesh
     {"state_code": "IN-UP", "name": "Agra", "lat": 27.1767, "lon": 78.0081},
     {"state_code": "IN-UP", "name": "Aligarh", "lat": 27.8974, "lon": 78.0880},
@@ -87,42 +88,41 @@ DISTRICTS_DATA: list[dict[str, Any]] = [
     {"state_code": "IN-UP", "name": "Lucknow", "lat": 26.8467, "lon": 80.9462},
     {"state_code": "IN-UP", "name": "Meerut", "lat": 28.9845, "lon": 77.7064},
     {"state_code": "IN-UP", "name": "Varanasi", "lat": 25.3176, "lon": 82.9739},
-
     # Madhya Pradesh
     {"state_code": "IN-MP", "name": "Bhopal", "lat": 23.2599, "lon": 77.4126},
     {"state_code": "IN-MP", "name": "Gwalior", "lat": 26.2183, "lon": 78.1828},
     {"state_code": "IN-MP", "name": "Indore", "lat": 22.7196, "lon": 75.8577},
     {"state_code": "IN-MP", "name": "Jabalpur", "lat": 23.1815, "lon": 79.9864},
     {"state_code": "IN-MP", "name": "Ujjain", "lat": 23.1765, "lon": 75.7885},
-
     # Rajasthan
     {"state_code": "IN-RJ", "name": "Bikaner", "lat": 28.0229, "lon": 73.3119},
     {"state_code": "IN-RJ", "name": "Jaipur", "lat": 26.9124, "lon": 75.7873},
     {"state_code": "IN-RJ", "name": "Jodhpur", "lat": 26.2389, "lon": 73.0243},
     {"state_code": "IN-RJ", "name": "Kota", "lat": 25.2138, "lon": 75.8648},
     {"state_code": "IN-RJ", "name": "Sri Ganganagar", "lat": 29.9094, "lon": 73.8799},
-
     # Karnataka
     {"state_code": "IN-KA", "name": "Belagavi", "lat": 15.8497, "lon": 74.4977},
     {"state_code": "IN-KA", "name": "Bengaluru", "lat": 12.9716, "lon": 77.5946},
     {"state_code": "IN-KA", "name": "Dharwad", "lat": 15.4589, "lon": 75.0078},
     {"state_code": "IN-KA", "name": "Mysuru", "lat": 12.2958, "lon": 76.6394},
     {"state_code": "IN-KA", "name": "Shivamogga", "lat": 13.9299, "lon": 75.5681},
-
     # Tamil Nadu
     {"state_code": "IN-TN", "name": "Coimbatore", "lat": 11.0168, "lon": 76.9558},
     {"state_code": "IN-TN", "name": "Madurai", "lat": 9.9252, "lon": 78.1198},
     {"state_code": "IN-TN", "name": "Salem", "lat": 11.6643, "lon": 78.1460},
     {"state_code": "IN-TN", "name": "Thanjavur", "lat": 10.7870, "lon": 79.1378},
-
     # Andhra Pradesh & Telangana
     {"state_code": "IN-AP", "name": "Guntur", "lat": 16.3067, "lon": 80.4365},
     {"state_code": "IN-AP", "name": "Krishna", "lat": 16.1809, "lon": 81.1303},
     {"state_code": "IN-TG", "name": "Hyderabad", "lat": 17.3850, "lon": 78.4867},
     {"state_code": "IN-TG", "name": "Warangal", "lat": 17.9689, "lon": 79.5941},
-
     # West Bengal & Bihar
-    {"state_code": "IN-WB", "name": "Burdwan (Purba Bardhaman)", "lat": 23.2324, "lon": 87.8615},
+    {
+        "state_code": "IN-WB",
+        "name": "Burdwan (Purba Bardhaman)",
+        "lat": 23.2324,
+        "lon": 87.8615,
+    },
     {"state_code": "IN-WB", "name": "Hooghly", "lat": 22.9034, "lon": 88.3965},
     {"state_code": "IN-BR", "name": "Muzaffarpur", "lat": 26.1209, "lon": 85.3647},
     {"state_code": "IN-BR", "name": "Patna", "lat": 25.5941, "lon": 85.1376},
