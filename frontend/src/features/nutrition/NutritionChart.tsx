@@ -107,7 +107,7 @@ export const NutritionChart: React.FC<NutritionChartProps> = ({
               unit="g"
             />
             <Tooltip
-              formatter={(value?: number | string) => [`${value ?? 0} g`, '']}
+              formatter={(value) => [`${value ?? 0} g`, '']}
               contentStyle={{
                 backgroundColor: '#02280C',
                 color: '#F5F0DC',

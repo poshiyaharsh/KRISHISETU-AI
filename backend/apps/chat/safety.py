@@ -51,13 +51,13 @@ MEDICAL_PATTERNS = [
     # Hindi medical
     r"(?:सिर\s*दर्द|पेट\s*दर्द|तेज\s*बुखार|बुखार\s*है|दवा\s*खाऊं|खांसी|उल्टी)",
     # Gujarati medical (use whitespace/boundaries to avoid matching બતાવો)
-    r"(?:માથાનો\s*દુખાવો|પેટમાં\s*દુખાવો|પેટનો\s*દુખાવો|ઝાડા|ઉધરસ|તાવ\s+છે|તાવ\s+અને|ગોળી\s*લેવી)",
+    r"(?:માથા(?:માં|નો)\s*(?:[^\s]+\s+)?દુખાવો|પેટમાં\s*દુખાવો|પેટનો\s*દુખાવો|ઝાડા|ઉધરસ|તાવ\s+છે|તાવ\s+અને|ગોળી\s*લેવી|દવા\s*લેવી)",
 ]
 
 # Speculative investment & general coding / non-agri out-of-scope
 OUT_OF_SCOPE_PATTERNS = [
     r"\b(?:bitcoin|ethereum|crypto|cryptocurrency|stock\s*market|stocks?|nifty|sensex|forex\s*trading)\b",
-    r"\b(?:write\s+a\s+(?:python|javascript|react|c\+\+|java)\s+code\s+for)\b",
+    r"\b(?:write\s+a\s+(?:python|javascript|react|c\+\+|java)\s+(?:code|script)\s+(?:for|to))\b",
     r"\b(?:who\s+(?:won|will\s+win)|election|presidential|prime\s*minister|political\s*party|vote\s+for)\b",
     r"\b(?:movie\s*review|lyrics\s*of|tell\s+me\s+a\s+joke\s+about\s+celebrity)\b",
     # Hindi out-of-scope
@@ -68,11 +68,11 @@ OUT_OF_SCOPE_PATTERNS = [
 
 # Chemical dosage request indicators
 DOSAGE_PATTERNS = [
-    r"\b(?:how\s+much\s+(?:dose|ml|gram|kg)\s+(?:of\s+)?(?:pesticide|insecticide|fungicide))\b",
+    r"\b(?:how\s+(?:much|many)\s+(?:dose|ml|grams?|kg)\b|mix\s+how\s+much\b|\bhow\s+(?:much|many)\s+(?:ml|liters?|grams?)\b.*(?:mix|spray|water))",
     r"\b(?:dosage\s+per\s+(?:acre|hectare|liter|litre|pump))\b",
-    r"\b(?:spray\s+dose|mix\s+how\s+much\s+medicine)\b",
-    r"(?:कितनी\s*मात्रा\s*में\s*दवा|कितने\s*एमएल|दवा\s*का\s*डोज|कीटनाशक\s*कितना\s*डालें)",
-    r"(?:કેટલી\s*માત્રામાં\s*દવા|કેટલા\s*એમએલ\s*દવા|પમ્પમાં\s*કેટલી\s*દવા|જંતુનાશક\s*માપ)",
+    r"\b(?:spray\s+dose|mix\s+how\s+much\s+medicine|mix\s+.*(?:weedicide|fungicide|pesticide))\b",
+    r"(?:कितनी\s*मात्रा\s*में\s*दवा|कितने\s*एमएल|दवा\s*का\s*डोज|कीटनाशक\s*कितना\s*डालें|दवा\s*कितने\s*(?:लीटर|एमएल)|खरपतवार\s*नाशक)",
+    r"(?:કેટલી\s*માત્રામાં\s*દવા|કેટલા\s*(?:એમએલ|મિલી)|પમ્પ?માં\s*કેટલી\s*દવા|પમ્પ?માં\s*કેટલા\s*મિલી|જંતુનાશક\s*માપ|કેટલું\s*પ્રમાણ|નીંદણનાશક)",
 ]
 
 

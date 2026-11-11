@@ -263,5 +263,18 @@
     "form_cooked": "Cooked / Boiled",
     "form_brewed": "Brewed",
     "form_non_food": "Not a Food Crop"
+  },
+  "chat": {
+    "title": "Krishi Mitra",
+    "subtitle": "Multilingual 24/7 Agricultural Advisory & Scheme Guide",
+    "newChat": "New Chat",
+    "confirmClear": "Start a new conversation and clear your chat history?",
+    "disclaimerNotice": "Krishi Mitra can make mistakes. Always confirm important farming decisions with your local agriculture officer (Gram Sevak) or Krishi Vigyan Kendra (KVK).",
+    "askPlaceholder": "Ask Krishi Mitra about crops, schemes, soil, or weather...",
+    "suggestedQuestions": "Suggested Farming Questions",
+    "helpfulPrompt": "Was this advice helpful?",
+    "verifiedSources": "Verified Data Sources:",
+    "emptyHeading": "Namaste! How can Krishi Mitra help you today?",
+    "emptyDesc": "Ask any question about crops, weather forecasts, government subsidies, soil testing, or crop nutrition."
   }
 }

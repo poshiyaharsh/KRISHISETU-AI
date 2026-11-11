@@ -14,7 +14,7 @@ export const MainLayout: React.FC = () => {
     { to: "/weather", label: t("nav.weather"), available: true },
     { to: "/schemes", label: t("nav.schemes"), available: true },
     { to: "/nutrition", label: t("nav.nutrition"), available: true },
-    { to: "#", label: t("nav.chatbot"), available: false },
+    { to: "/chat", label: t("nav.chatbot"), available: true },
   ];
 
   return (

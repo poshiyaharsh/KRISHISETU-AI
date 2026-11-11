@@ -10,6 +10,7 @@ const Weather = lazy(() => import("@/pages/Weather"));
 const Schemes = lazy(() => import("@/pages/Schemes"));
 const SchemeDetail = lazy(() => import("@/pages/SchemeDetail"));
 const Nutrition = lazy(() => import("@/pages/Nutrition"));
+const Chat = lazy(() => import("@/pages/Chat"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -74,6 +75,14 @@ export const router = createBrowserRouter([
         element: (
           <SuspenseWrapper>
             <Nutrition />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "chat",
+        element: (
+          <SuspenseWrapper>
+            <Chat />
           </SuspenseWrapper>
         ),
       },
