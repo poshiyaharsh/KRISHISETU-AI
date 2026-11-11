@@ -105,3 +105,4 @@ describe('Chat Page Component', () => {
     );
   });
 });
+
