@@ -24,9 +24,13 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Close on route change
+  const prevPathnameRef = useRef(location.pathname);
   useEffect(() => {
-    if (isOpen) {
-      onClose();
+    if (prevPathnameRef.current !== location.pathname) {
+      prevPathnameRef.current = location.pathname;
+      if (isOpen) {
+        onClose();
+      }
     }
   }, [location.pathname, isOpen, onClose]);
 
@@ -127,7 +131,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
       ref={panelRef}
       role="region"
       aria-label={t('nav.openMenu')}
-      className="lg:hidden absolute top-full inset-x-0 bg-cream border-b border-mist shadow-md transition-all duration-200 motion-reduce:transition-none z-50 overflow-y-auto max-h-[calc(100vh-64px)] px-4 py-4"
+      className="header:hidden absolute top-full inset-x-0 bg-cream border-b border-mist shadow-md transition-all duration-200 motion-reduce:transition-none z-50 overflow-y-auto max-h-[calc(100vh-64px)] px-4 py-4"
     >
       <nav aria-label={t('nav.openMenu')} className="space-y-1">
         <ul className="m-0 p-0 list-none space-y-1">

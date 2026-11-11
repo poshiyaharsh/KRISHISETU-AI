@@ -52,7 +52,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isLoading, disable
 
   return (
     <form onSubmit={handleSubmit} className="relative w-full">
-      <div className="flex items-end gap-2 bg-white rounded-2xl border border-forest-200 shadow-sm p-2 focus-within:ring-2 focus-within:ring-forest-500 focus-within:border-forest-500 transition-all">
+      <div className="flex items-end gap-2 bg-white rounded-2xl border border-mist shadow-sm p-2 focus-within:ring-2 focus-within:ring-paddy focus-within:border-paddy transition-all">
         <textarea
           ref={textareaRef}
           value={text}
@@ -62,7 +62,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isLoading, disable
           placeholder="Ask Krishi Mitra about crops, schemes, soil, or weather..."
           rows={1}
           aria-label="Ask Krishi Mitra"
-          className="w-full resize-none max-h-36 px-2.5 py-1.5 text-sm sm:text-base text-forest-900 placeholder:text-forest-400 focus:outline-none bg-transparent disabled:opacity-50"
+          className="w-full resize-none max-h-36 px-2.5 py-1.5 text-sm sm:text-base text-soil placeholder:text-soil/40 focus:outline-none bg-transparent disabled:opacity-50"
         />
 
         {/* 48px minimum accessible tap target send button */}
@@ -70,7 +70,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isLoading, disable
           type="submit"
           disabled={!text.trim() || isLoading || disabled || isOverLimit}
           aria-label="Send message"
-          className="w-12 h-12 shrink-0 rounded-xl bg-forest-800 hover:bg-forest-900 active:bg-forest-950 text-white flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-forest-500"
+          className="w-12 h-12 shrink-0 rounded-xl bg-paddy hover:bg-paddy/90 text-cream flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-paddy"
         >
           {isLoading ? (
             <Loader2 className="w-5 h-5 animate-spin text-cream" aria-hidden="true" />
@@ -83,7 +83,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isLoading, disable
       {text.length > 800 && (
         <div
           className={`text-[11px] mt-1 text-right font-medium px-2 ${
-            isOverLimit ? 'text-danger' : 'text-forest-400'
+            isOverLimit ? 'text-danger' : 'text-soil/60'
           }`}
         >
           {charsLeft} characters remaining

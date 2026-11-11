@@ -39,8 +39,8 @@ export const StarterQuestions: React.FC<StarterQuestionsProps> = ({ onSelect, di
 
   return (
     <div className="py-4">
-      <div className="flex items-center gap-2 mb-3 text-xs font-semibold tracking-wider text-forest-700/80 uppercase">
-        <Sparkles className="w-3.5 h-3.5 text-leaf-600" aria-hidden="true" />
+      <div className="flex items-center gap-2 mb-3 text-xs font-semibold tracking-wider text-paddy uppercase">
+        <Sparkles className="w-3.5 h-3.5 text-leaf" aria-hidden="true" />
         <span>Suggested Farming Questions</span>
       </div>
       <div className="flex flex-wrap gap-2">
@@ -50,7 +50,7 @@ export const StarterQuestions: React.FC<StarterQuestionsProps> = ({ onSelect, di
             type="button"
             disabled={disabled}
             onClick={() => onSelect(q)}
-            className="text-left text-xs sm:text-sm px-3.5 py-2 rounded-full border border-forest-200 bg-white/90 hover:bg-forest-50 hover:border-forest-400 text-forest-900 transition-colors shadow-xs focus:outline-none focus:ring-2 focus:ring-forest-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-left text-xs sm:text-sm px-3.5 py-2 rounded-full border border-mist bg-white hover:bg-mist/60 text-soil transition-colors shadow-xs focus:outline-none focus:ring-2 focus:ring-paddy disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {q}
           </button>

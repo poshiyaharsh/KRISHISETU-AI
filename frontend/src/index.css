@@ -4,6 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-padding-top: 72px;
+}
+
+@media (max-width: 1099px) {
+  html {
+    scroll-padding-top: 64px;
+  }
+}
+
 body {
   margin: 0;
   min-height: 100vh;

@@ -24,10 +24,10 @@ describe('Header Component', () => {
     expect(brandLink).toBeInTheDocument();
     expect(brandLink).toHaveAttribute('href', '/');
 
-    // 2. Icon present
+    // 2. Icon present and ends with /logo-icon.svg
     const icon = brandLink.querySelector('img');
     expect(icon).toBeInTheDocument();
-    expect(icon).toHaveAttribute('src', '/logo-icon.svg');
+    expect(icon?.getAttribute('src')).toMatch(/\/logo-icon\.svg$/);
 
     // 3. Brand name present
     expect(screen.getByText(/KrishiSetu/i)).toBeInTheDocument();
@@ -41,6 +41,30 @@ describe('Header Component', () => {
     expect(screen.queryByText(/स्मार्ट खेती/i)).not.toBeInTheDocument();
   });
 
+  it('renders exact shortened nav labels with no line wrapping', () => {
+    render(
+      <MemoryRouter>
+        <Header />
+      </MemoryRouter>
+    );
+
+    // Expected exact nav labels in English
+    const expectedLabels = ['Home', 'Crop Advice', 'Weather', 'Schemes', 'Nutrition', 'Krishi Mitra'];
+    for (const label of expectedLabels) {
+      const navItem = screen.getByRole('link', { name: new RegExp(`^${label}$`, 'i') });
+      expect(navItem).toBeInTheDocument();
+      // Ensure nowrap and shrink-0 are applied
+      expect(navItem.className).toContain('whitespace-nowrap');
+      expect(navItem.className).toContain('shrink-0');
+      expect(navItem.className).toContain('h-[44px]');
+    }
+
+    // Previous verbose labels should not exist
+    expect(screen.queryByRole('link', { name: /^Crop Advisory$/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /^Govt Schemes$/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /^Crop Nutrition$/i })).not.toBeInTheDocument();
+  });
+
   it('marks active nav link with aria-current="page"', () => {
     render(
       <MemoryRouter initialEntries={['/weather']}>
@@ -48,10 +72,25 @@ describe('Header Component', () => {
       </MemoryRouter>
     );
 
-    const weatherLinks = screen.getAllByRole('link', { name: /Weather/i });
+    const weatherLinks = screen.getAllByRole('link', { name: /^Weather$/i });
     const activeDesktopLink = weatherLinks.find((link) => link.getAttribute('aria-current') === 'page');
     expect(activeDesktopLink).toBeDefined();
     expect(activeDesktopLink).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('language button never shows the same word twice', async () => {
+    render(
+      <MemoryRouter>
+        <Header />
+      </MemoryRouter>
+    );
+
+    const langButton = screen.getAllByRole('button', { name: /Language selector/i })[0];
+    expect(langButton).toBeInTheDocument();
+    // In English, trigger button should show "English", never "English (English)"
+    expect(langButton.textContent?.trim()).toBe('English');
+    expect(langButton.textContent).not.toContain('English (English)');
+    expect(langButton.textContent).not.toContain('(English)');
   });
 
   it('renders disabled items with aria-disabled="true" and not as links', () => {
@@ -120,7 +159,7 @@ describe('Header Component', () => {
     expect(menuButton).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('adds shadow and backdrop blur class when page is scrolled > 8px', () => {
+  it('maintains solid cream background and applies shadow-sm after 8px scroll', () => {
     const { container } = render(
       <MemoryRouter>
         <Header />
@@ -128,6 +167,8 @@ describe('Header Component', () => {
     );
 
     const header = container.querySelector('header');
+    expect(header).toBeInTheDocument();
+    expect(header).toHaveClass('bg-cream');
     expect(header).not.toHaveClass('shadow-sm');
 
     // Simulate scroll > 8px
@@ -135,6 +176,8 @@ describe('Header Component', () => {
     fireEvent.scroll(window);
 
     expect(header).toHaveClass('shadow-sm');
-    expect(header).toHaveClass('backdrop-blur-md');
+    // Ensure no semi-transparency or backdrop blur
+    expect(header).not.toHaveClass('bg-cream/90');
+    expect(header).not.toHaveClass('backdrop-blur-md');
   });
 });

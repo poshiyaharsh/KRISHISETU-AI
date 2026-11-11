@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Menu, X, Sprout } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { NavLinks, type NavItem } from './NavLinks';
 import { MobileMenu } from './MobileMenu';
@@ -12,7 +12,7 @@ export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  // Monitor scroll for shadow and blur (> 8px)
+  // Monitor scroll for shadow (> 8px)
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 8);
@@ -37,10 +37,8 @@ export const Header: React.FC = () => {
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full h-16 lg:h-[72px] border-b border-mist transition-[box-shadow,background-color,backdrop-filter] duration-200 motion-reduce:transition-none ${
-        isScrolled
-          ? 'bg-cream/90 backdrop-blur-md shadow-sm'
-          : 'bg-cream'
+      className={`sticky top-0 z-40 w-full h-16 header:h-[72px] bg-cream border-b border-mist transition-shadow duration-200 motion-reduce:transition-none ${
+        isScrolled ? 'shadow-sm' : ''
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
@@ -48,39 +46,32 @@ export const Header: React.FC = () => {
         <Link
           to="/"
           aria-label="KrishiSetu AI, home"
-          className="flex items-center gap-[10px] shrink-0 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy rounded-md py-1"
+          className="flex items-center gap-[10px] shrink-0 whitespace-nowrap me-8 focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy rounded-md py-1"
         >
           <img
             src="/logo-icon.svg"
             alt=""
             width="40"
             height="40"
-            className="w-9 h-9 lg:w-10 lg:h-10 shrink-0 select-none pointer-events-none"
+            className="w-10 h-10 shrink-0 select-none pointer-events-none"
           />
-          <span className="font-extrabold text-paddy text-xl sm:text-2xl leading-none tracking-tight select-none">
+          <span className="font-extrabold text-paddy text-2xl leading-none tracking-tight select-none">
             KrishiSetu <span className="text-leaf">AI</span>
           </span>
         </Link>
 
         {/* Step 4: Desktop Nav Links (Center / Right) */}
-        <div className="hidden lg:flex items-center gap-4 xl:gap-6">
+        <div className="hidden header:flex items-center justify-between flex-1">
           <NavLinks items={navItems} />
 
-          {/* Step 6: Language Selector + Primary CTA Button */}
-          <div className="flex items-center gap-3 ps-2 border-s border-mist/80">
+          {/* Right Side: Language Selector Only */}
+          <div className="flex items-center ms-4">
             <LanguageSelector />
-            <Link
-              to="/recommend"
-              className="inline-flex items-center gap-2 min-h-[44px] px-4 py-2 rounded-xl bg-paddy text-cream text-base font-bold shadow-sm hover:bg-paddy/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy focus-visible:ring-offset-2"
-            >
-              <Sprout className="w-4 h-4 text-wheat" />
-              <span>{t('home.ctaButton')}</span>
-            </Link>
           </div>
         </div>
 
-        {/* Tablet & Mobile Right Actions (< 1024px) */}
-        <div className="flex lg:hidden items-center gap-2">
+        {/* Tablet & Mobile Right Actions (< 1100px) */}
+        <div className="flex header:hidden items-center gap-2">
           <LanguageSelector />
           <button
             ref={menuButtonRef}

@@ -29,20 +29,20 @@ export function renderConditionIcon(condition: string, className = 'w-10 h-10') 
       return <CloudSun className={`${className} text-wheat`} aria-hidden="true" />;
     case 'partly_cloudy':
     case 'overcast':
-      return <Cloud className={`${className} text-slate-400`} aria-hidden="true" />;
+      return <Cloud className={`${className} text-mist`} aria-hidden="true" />;
     case 'fog':
-      return <CloudFog className={`${className} text-slate-400`} aria-hidden="true" />;
+      return <CloudFog className={`${className} text-mist`} aria-hidden="true" />;
     case 'drizzle':
-      return <CloudDrizzle className={`${className} text-sky-600`} aria-hidden="true" />;
+      return <CloudDrizzle className={`${className} text-sprout`} aria-hidden="true" />;
     case 'rain':
     case 'heavy_rain':
-      return <RainIcon className={`${className} text-sky-600`} aria-hidden="true" />;
+      return <RainIcon className={`${className} text-sprout`} aria-hidden="true" />;
     case 'snow':
-      return <Snowflake className={`${className} text-blue-300`} aria-hidden="true" />;
+      return <Snowflake className={`${className} text-blue-200`} aria-hidden="true" />;
     case 'thunderstorm':
-      return <CloudLightning className={`${className} text-amber-500`} aria-hidden="true" />;
+      return <CloudLightning className={`${className} text-wheat`} aria-hidden="true" />;
     default:
-      return <HelpCircle className={`${className} text-slate-400`} aria-hidden="true" />;
+      return <HelpCircle className={`${className} text-mist`} aria-hidden="true" />;
   }
 }
 
@@ -59,7 +59,14 @@ export const WeatherCard: React.FC<WeatherCardProps> = ({
     : null;
 
   return (
-    <div className="bg-gradient-to-br from-paddy/95 to-soil text-white rounded-xl shadow-md p-6 relative overflow-hidden">
+    <div
+      className="bg-paddy text-cream rounded-2xl shadow-md p-6 relative overflow-hidden"
+      style={{
+        backgroundColor: 'var(--ks-color-paddy)',
+        backgroundImage:
+          'linear-gradient(135deg, var(--ks-color-paddy) 0%, var(--ks-color-paddy-light) 100%)',
+      }}
+    >
       {stale && (
         <div
           role="status"
@@ -70,19 +77,19 @@ export const WeatherCard: React.FC<WeatherCardProps> = ({
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <span className="text-xs uppercase tracking-wider text-mist/80 font-semibold">
+          <span className="text-xs uppercase tracking-wider text-cream/90 font-semibold">
             {t('weather.current.title')}
           </span>
           <h2 className="text-2xl sm:text-3xl font-bold mt-1 text-cream">{locationName}</h2>
-          <div className="flex items-center gap-2 mt-2 text-mist/90 text-sm">
+          <div className="flex items-center gap-2 mt-2 text-cream/90 text-sm">
             <span>{t(`weather.conditions.${current.condition}`, { defaultValue: current.condition })}</span>
             {formattedTime && (
               <>
                 <span>•</span>
                 <span className="inline-flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5" aria-hidden="true" />
+                  <Clock className="w-3.5 h-3.5 text-wheat" aria-hidden="true" />
                   {formattedTime}
                 </span>
               </>
@@ -91,38 +98,65 @@ export const WeatherCard: React.FC<WeatherCardProps> = ({
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-sm">
+          <div
+            className="p-3 rounded-2xl border"
+            style={{
+              backgroundColor: 'rgba(245, 240, 220, 0.12)',
+              borderColor: 'rgba(245, 240, 220, 0.20)',
+            }}
+          >
             {renderConditionIcon(current.condition, 'w-12 h-12')}
           </div>
-          <div className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
+          <div className="text-[56px] leading-none font-bold tracking-tight text-cream">
             {Math.round(current.temperature)}°C
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-white/10">
-        <div className="flex flex-col items-center sm:items-start p-2.5 rounded-lg bg-white/5">
-          <div className="flex items-center gap-1.5 text-xs text-mist/80 mb-1">
-            <Droplets className="w-3.5 h-3.5 text-leaf" aria-hidden="true" />
+      <div
+        className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6 pt-6 border-t"
+        style={{ borderColor: 'rgba(245, 240, 220, 0.20)' }}
+      >
+        <div
+          className="flex flex-col items-center sm:items-start p-3 rounded-xl border"
+          style={{
+            backgroundColor: 'rgba(245, 240, 220, 0.12)',
+            borderColor: 'rgba(245, 240, 220, 0.20)',
+          }}
+        >
+          <div className="flex items-center gap-1.5 text-sm text-cream/90 mb-1">
+            <Droplets className="w-3.5 h-3.5 text-wheat" aria-hidden="true" />
             <span>{t('weather.current.humidity')}</span>
           </div>
-          <span className="text-lg font-bold text-white">{Math.round(current.relative_humidity)}%</span>
+          <span className="text-2xl font-bold text-cream">{Math.round(current.relative_humidity)}%</span>
         </div>
 
-        <div className="flex flex-col items-center sm:items-start p-2.5 rounded-lg bg-white/5">
-          <div className="flex items-center gap-1.5 text-xs text-mist/80 mb-1">
-            <Wind className="w-3.5 h-3.5 text-sprout" aria-hidden="true" />
+        <div
+          className="flex flex-col items-center sm:items-start p-3 rounded-xl border"
+          style={{
+            backgroundColor: 'rgba(245, 240, 220, 0.12)',
+            borderColor: 'rgba(245, 240, 220, 0.20)',
+          }}
+        >
+          <div className="flex items-center gap-1.5 text-sm text-cream/90 mb-1">
+            <Wind className="w-3.5 h-3.5 text-wheat" aria-hidden="true" />
             <span>{t('weather.current.wind')}</span>
           </div>
-          <span className="text-lg font-bold text-white">{Math.round(current.wind_speed)} km/h</span>
+          <span className="text-2xl font-bold text-cream">{Math.round(current.wind_speed)} km/h</span>
         </div>
 
-        <div className="flex flex-col items-center sm:items-start p-2.5 rounded-lg bg-white/5">
-          <div className="flex items-center gap-1.5 text-xs text-mist/80 mb-1">
-            <CloudRain className="w-3.5 h-3.5 text-sky-300" aria-hidden="true" />
+        <div
+          className="flex flex-col items-center sm:items-start p-3 rounded-xl border"
+          style={{
+            backgroundColor: 'rgba(245, 240, 220, 0.12)',
+            borderColor: 'rgba(245, 240, 220, 0.20)',
+          }}
+        >
+          <div className="flex items-center gap-1.5 text-sm text-cream/90 mb-1">
+            <CloudRain className="w-3.5 h-3.5 text-wheat" aria-hidden="true" />
             <span>{t('weather.current.rain')}</span>
           </div>
-          <span className="text-lg font-bold text-white">{current.precipitation} mm</span>
+          <span className="text-2xl font-bold text-cream">{current.precipitation} mm</span>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 /** KrishiSetu AI design tokens. Keep in sync with tokens.css. */
 export const colors = {
   paddy: '#0F4A32',
+  paddyLight: '#185a3e',
   leaf: '#3B8E4F',
   sprout: '#4FA35B',
   wheat: '#D9A93F',
@@ -31,7 +32,7 @@ export const shadows = {
   md: '0 8px 22px rgba(15, 74, 50, 0.14)',
 } as const;
 
-export const breakpoints = { sm: 480, md: 768, lg: 1024, xl: 1280 } as const;
+export const breakpoints = { sm: 480, md: 768, lg: 1024, header: 1100, xl: 1280 } as const;
 
 export const tokens = { colors, fontSizes, radius, shadows, breakpoints } as const;
 

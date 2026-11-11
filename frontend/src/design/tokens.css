@@ -3,6 +3,7 @@
 :root {
   /* Color */
   --ks-color-paddy: #0f4a32;       /* deep green: text, primary buttons, headers */
+  --ks-color-paddy-light: #185a3e; /* slightly lighter green for gradient stops */
   --ks-color-leaf: #3b8e4f;        /* graphics, icons, large accents */
   --ks-color-sprout: #4fa35b;      /* illustrations only */
   --ks-color-wheat: #d9a93f;       /* soft gold: highlights, secondary buttons */
@@ -67,6 +68,9 @@
 
   /* Touch target minimum */
   --ks-tap-min: 48px;
+
+  /* Responsive header collapse measured breakpoint */
+  --ks-breakpoint-header: 1100px;
 }
 
 :focus-visible {

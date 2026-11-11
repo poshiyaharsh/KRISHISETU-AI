@@ -157,22 +157,22 @@ export const Chat: React.FC = () => {
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)] max-w-4xl mx-auto px-3 sm:px-6 py-4">
       {/* Header with Title and Clear Chat */}
-      <header className="flex items-center justify-between pb-3.5 mb-2 border-b border-forest-100 shrink-0">
+      <header className="flex items-center justify-between pb-3.5 mb-2 border-b border-mist shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-forest-900 text-leaf-400 flex items-center justify-center shadow-xs">
+          <div className="w-10 h-10 rounded-xl bg-paddy text-cream flex items-center justify-center shadow-xs">
             <Bot className="w-6 h-6" aria-hidden="true" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-lg sm:text-xl font-bold text-forest-950 font-display">
+              <h1 className="text-lg sm:text-xl font-bold text-paddy font-display">
                 {t('chat.title', 'Krishi Mitra')}
               </h1>
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold bg-leaf-100 text-leaf-800 px-2 py-0.5 rounded-full">
-                <Sparkles className="w-3 h-3 text-leaf-600" aria-hidden="true" />
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold bg-mist text-paddy px-2 py-0.5 rounded-full">
+                <Sparkles className="w-3 h-3 text-leaf" aria-hidden="true" />
                 <span>AI 24/7</span>
               </span>
             </div>
-            <p className="text-xs text-forest-600">
+            <p className="text-xs text-soil/70">
               {t('chat.subtitle', 'Multilingual 24/7 Agricultural Advisory & Scheme Guide')}
             </p>
           </div>
@@ -182,7 +182,7 @@ export const Chat: React.FC = () => {
           <button
             type="button"
             onClick={handleClearHistory}
-            className="inline-flex items-center gap-1.5 text-xs text-forest-600 hover:text-forest-900 px-3 py-1.5 rounded-lg border border-forest-200 bg-white hover:bg-forest-50 transition-colors shadow-2xs"
+            className="inline-flex items-center gap-1.5 text-xs text-soil/70 hover:text-paddy px-3 py-1.5 rounded-lg border border-mist bg-white hover:bg-mist/40 transition-colors shadow-2xs"
           >
             <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
             <span className="hidden sm:inline">{t('chat.newChat', 'New Chat')}</span>
@@ -231,13 +231,13 @@ export const Chat: React.FC = () => {
       >
         {messages.length === 0 ? (
           <div className="h-full flex flex-col justify-center items-center text-center px-4 py-8">
-            <div className="w-16 h-16 rounded-2xl bg-forest-50 border border-forest-100 flex items-center justify-center text-forest-700 mb-3 shadow-xs">
-              <Bot className="w-8 h-8 text-forest-800" />
+            <div className="w-16 h-16 rounded-2xl bg-mist/60 border border-mist flex items-center justify-center text-paddy mb-3 shadow-xs">
+              <Bot className="w-8 h-8 text-paddy" />
             </div>
-            <h2 className="text-base sm:text-lg font-bold text-forest-950 mb-1">
+            <h2 className="text-base sm:text-lg font-bold text-paddy mb-1">
               Namaste! How can Krishi Mitra help you today?
             </h2>
-            <p className="text-xs sm:text-sm text-forest-600 max-w-md mb-4">
+            <p className="text-xs sm:text-sm text-soil/70 max-w-md mb-4">
               Ask any question about crops, weather forecasts, government subsidies, soil testing, or crop nutrition.
             </p>
             <StarterQuestions onSelect={handleSendMessage} disabled={isLoading} />
@@ -253,7 +253,7 @@ export const Chat: React.FC = () => {
       </div>
 
       {/* Input Tray */}
-      <div className="pt-2 border-t border-forest-100 shrink-0 bg-cream/30">
+      <div className="pt-2 border-t border-mist shrink-0 bg-cream/30">
         <ChatInput onSend={handleSendMessage} isLoading={isLoading} />
       </div>
     </div>

@@ -6,6 +6,7 @@ export default {
     extend: {
       colors: {
         paddy: 'var(--ks-color-paddy)',
+        paddyLight: 'var(--ks-color-paddy-light)',
         leaf: 'var(--ks-color-leaf)',
         sprout: 'var(--ks-color-sprout)',
         wheat: 'var(--ks-color-wheat)',
@@ -29,6 +30,13 @@ export default {
       },
       fontFamily: {
         sans: 'var(--ks-font-sans)',
+      },
+      screens: {
+        sm: '480px',
+        md: '768px',
+        lg: '1024px',
+        header: '1100px',
+        xl: '1280px',
       },
     },
   },

@@ -12,9 +12,9 @@
   "nav": {
     "home": "होम",
     "recommend": "फसल सलाह",
-    "schemes": "सरकारी योजनाएं",
+    "schemes": "योजनाएं",
     "weather": "मौसम",
-    "nutrition": "फसल पोषण",
+    "nutrition": "पोषण",
     "chatbot": "कृषि मित्र",
     "openMenu": "मेन्यू खोलें",
     "closeMenu": "मेन्यू बंद करें"

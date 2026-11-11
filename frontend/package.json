@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
+    "check:css-vars": "node ../scripts/check-css-vars.mjs",
     "test": "vitest run"
   },
   "dependencies": {

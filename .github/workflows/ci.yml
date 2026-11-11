@@ -33,6 +33,9 @@ jobs:
       - name: Type check (TypeScript)
         run: npm run typecheck
 
+      - name: Check CSS variables
+        run: npm run check:css-vars
+
       - name: Unit tests (Vitest)
         run: npm test
 

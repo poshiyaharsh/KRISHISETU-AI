@@ -11,10 +11,10 @@
   },
   "nav": {
     "home": "Home",
-    "recommend": "Crop Advisory",
-    "schemes": "Govt Schemes",
+    "recommend": "Crop Advice",
+    "schemes": "Schemes",
     "weather": "Weather",
-    "nutrition": "Crop Nutrition",
+    "nutrition": "Nutrition",
     "chatbot": "Krishi Mitra",
     "openMenu": "Open navigation menu",
     "closeMenu": "Close navigation menu"
