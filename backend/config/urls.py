@@ -10,6 +10,7 @@ urlpatterns = [
     path("api/weather/", include("apps.weather.urls")),
     path("api/schemes/", include("apps.schemes.urls")),
     path("api/nutrition/", include("apps.nutrition.urls")),
+    path("api/chat/", include("apps.chat.urls")),
     # OpenAPI Schema and Swagger UI
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
