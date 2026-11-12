@@ -13,6 +13,12 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")  # noqa: F405
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])  # noqa: F405
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])  # noqa: F405
 
+# PostgreSQL connection tuning & SSL enforcement in production
+DATABASES["default"]["CONN_MAX_AGE"] = env.int("DB_CONN_MAX_AGE", default=600)  # noqa: F405
+DB_SSL_REQUIRE = env.bool("DB_SSL_REQUIRE", default=True)  # noqa: F405
+if DB_SSL_REQUIRE and "postgresql" in DATABASES["default"].get("ENGINE", ""):  # noqa: F405
+    DATABASES["default"].setdefault("OPTIONS", {})["sslmode"] = "require"  # noqa: F405
+
 # Production Security
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)  # noqa: F405

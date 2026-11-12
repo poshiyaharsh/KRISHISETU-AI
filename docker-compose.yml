@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: krishisetu
+      POSTGRES_USER: krishisetu
+      POSTGRES_PASSWORD: krishisetu-local-dev-password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U krishisetu -d krishisetu"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.prod
+      SECRET_KEY: local-docker-compose-secret-key-with-at-least-fifty-characters-0123456789
+      ALLOWED_HOSTS: localhost,127.0.0.1,backend
+      DATABASE_URL: postgres://krishisetu:krishisetu-local-dev-password@db:5432/krishisetu
+      DB_SSL_REQUIRE: "False"
+      SECURE_SSL_REDIRECT: "False"
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:80
+      LLM_PROVIDER: mock
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_BASE_URL: /api
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  pgdata:
