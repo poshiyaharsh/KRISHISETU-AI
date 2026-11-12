@@ -2,113 +2,163 @@
 
 > **Smarter Farming. Better Decisions. Brighter Tomorrow.**
 
-KrishiSetu AI is an open, multilingual AI agricultural advisory platform built for Indian farmers. It bridges data-driven agricultural science and localized field advisories through crop recommendation machine learning models, live weather analysis, government scheme discovery, and a conversational advisory assistant (*Krishi Mitra*).
+KrishiSetu AI is a multilingual AI agricultural advisory platform for Indian farmers, combining an ML crop recommendation engine, hyperlocal weather intelligence, verified government schemes, crop nutrition profiles, and the **Krishi Mitra** safety-guarded advisory chatbot.
+
+![KrishiSetu AI Banner](./docs/brand/og-image.png)
+
+## Live Links
+- **Web App (Vercel):** https://krishisetu-ai-sooty.vercel.app
+- **API & Swagger Docs (Render):** https://krishisetu-api-cu1y.onrender.com/api/docs/
+- **API Health Check:** https://krishisetu-api-cu1y.onrender.com/api/health/
+
+*(Note: The backend runs on Render's free tier and may take ~30–60 seconds to wake up on the first request after inactivity.)*
 
 ---
 
-## 🌾 Core Capabilities
+## Live Modules (v1.0)
 
-- **Crop Recommendation System (CRS):** Data-driven crop recommendation engine analyzing soil nutrients (N, P, K), pH, temperature, humidity, and rainfall to provide top crop matches with confidence and environmental suitability metrics.
-- **Krishi Mitra:** Conversational AI advisor answering regional farming, seasonal crop, and scheme queries with safety guidelines and domain accuracy.
-- **Weather & Climate Intelligence:** Localized multi-day meteorological forecasts with actionable farming advice.
-- **Government Schemes Directory:** Comprehensive, searchable directory linking farmers directly to verified central and state agricultural support schemes.
-- **Multilingual Support:** Designed for seamless accessibility across Indian regional languages.
+1. **Crop Recommendation System (CRS)**
+   - Analyzes 7 soil & climate parameters (N, P, K, temperature, humidity, pH, rainfall) to recommend top 3 suitable crops with confidence scores.
+   - Trained on 2,200 balanced rows across **22 supported crops** (`99.49% ± 0.52%` 5-fold CV Macro-F1; `99.55%` holdout accuracy).
+2. **Krishi Mitra Chatbot**
+   - Grounded RAG assistant built over **70 verified knowledge chunks** (12 schemes, 22 crops, 31 nutrition profiles, 5 curated guides).
+   - Supports SSE streaming and synchronous JSON, non-prescriptive pesticide safety advisories (referring farmers to local KVKs and Kisan Call Centre `1800-180-1551`), and graceful fallback if the upstream LLM is unavailable.
+3. **Hyperlocal Weather & Climate Intelligence**
+   - Browse **31 Indian States/UTs and 61 districts** (LGD 2026) or use browser geolocation to view 7-day Open-Meteo forecasts and agronomic alerts.
+4. **Government Schemes Directory**
+   - Search and filter **12 curated Central & State schemes** with verified official portal links (`HTTP 200` checked).
+5. **Crop Nutrition Explorer**
+   - Compare per-100g nutritional profiles across **31 USDA FoodData Central SR Legacy entries** covering all 22 supported crops (with non-food crops cotton and jute accurately flagged).
+6. **Multilingual & Offline-Capable UI**
+   - **23 Indian language locales** with 100% key parity (`en`, `hi`, `gu` native-reviewed **Ready**; 20 **Beta**), self-hosted `@fontsource` Indic fonts, RTL support (`ur`, `ks`, `sd`), and PWA offline shell.
+
+### Multilingual Preview (English, Hindi, Gujarati)
+
+| English | Hindi (`हिन्दी`) | Gujarati (`ગુજરાતી`) |
+|---|---|---|
+| ![English Weather UI](./docs/ui/weather/weather-1280px-en.png) | ![Hindi Weather UI](./docs/ui/weather/weather-1280px-hi.png) | ![Gujarati Weather UI](./docs/ui/weather/weather-1280px-gu.png) |
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
-- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Radix UI, Recharts, i18next
-- **Backend:** Python 3.11+, Django 5, Django REST Framework (DRF)
-- **Database:** PostgreSQL (production), SQLite (local development)
-- **Machine Learning:** scikit-learn, XGBoost, LightGBM, Joblib
+| Layer | Technologies |
+|---|---|
+| **Frontend** | React 18, TypeScript (strict), Vite, Tailwind CSS, Radix UI, Recharts, i18next, `@fontsource` |
+| **Backend** | Python 3.12, Django 5.2, Django REST Framework, `drf-spectacular`, Gunicorn, WhiteNoise |
+| **Machine Learning** | scikit-learn, XGBoost, LightGBM, Joblib (`ml/krishisetu_ml`) |
+| **Database** | PostgreSQL (Neon in production), SQLite (local development) |
+| **Testing & QA** | Pytest (`92%` backend statement coverage), Vitest, Playwright E2E + `@axe-core/playwright`, Ruff, Gitleaks |
 
 ---
 
-## 📁 Repository Structure
+## System Architecture
 
-```text
-krishisetu-ai/
-├── docs/                     # Documentation & brand assets
-│   └── brand/                # Brand guidelines, palettes, design assets
-├── frontend/                 # React + TypeScript client application
-│   ├── public/               # SVGs, icons, favicons, webmanifest
-│   └── src/
-│       ├── components/       # UI components (Loader, Skeleton, etc.)
-│       └── design/           # Design tokens, color palettes, CSS variables
-├── backend/                  # Django REST API (planned / in progress)
-├── ml/                       # ML models, training pipelines & evaluation (planned)
-├── .gitignore                # Git ignore rules
-└── README.md                 # Project documentation
+```mermaid
+flowchart LR
+    User["Farmer Browser / PWA"] -->|HTTPS| Vercel["Vercel (React 18 + Vite)"]
+    Vercel -->|REST & SSE| Render["Render (Django 5 + DRF + ML)"]
+    Render -->|SSL| Neon[("Neon PostgreSQL")]
+    Render -->|HTTPS| OpenMeteo["Open-Meteo Weather API"]
+    Render -->|REST SSE| Gemini["Google Gemini API + Fallback"]
 ```
 
----
-
-## 🌿 Design Tokens & Palette
-
-The KrishiSetu design system reflects natural agricultural harmony:
-
-| Token | Hex | Role |
-|---|---|---|
-| **Paddy Green** | `#0F4A32` | Primary brand accent & headers |
-| **Leaf Green** | `#3B8E4F` | Accent elements & indicators |
-| **Sprout Green** | `#4FA35B` | Active highlights & growth indicators |
-| **Wheat Gold** | `#D9A93F` | Secondary accent & badges |
-| **Cream** | `#F5F0DC` | Primary background |
-| **Mist** | `#E4ECDD` | Card & surface background |
-| **Soil Dark** | `#1D2B22` | High-contrast typography |
+Detailed diagrams (system, data flow, ER diagram, deployment): [`docs/architecture/`](./docs/architecture/).
 
 ---
 
-## 🚀 Development Quickstart
+## Development Quickstart
 
 ### Prerequisites
-- Node.js 18+ (tested on v24)
-- Python 3.11+ (tested on v3.12)
+- Python 3.11+ (tested on Python 3.12)
+- Node.js 18+ (tested on Node 22/24)
 
-### 1. Backend Setup (Django 5 + DRF)
+### 1. Clone & Environment
+```bash
+git clone https://github.com/poshiyaharsh/KRISHISETU-AI.git
+cd KRISHISETU-AI
+cp .env.example .env
+```
+
+### 2. Backend Setup (Django 5 + ML + Seed Data)
 ```bash
 cd backend
 python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# Linux/macOS:
-source .venv/bin/activate
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
 
 pip install -r requirements/dev.txt
 python manage.py migrate
+python manage.py seed_crops
+python manage.py seed_locations
+python manage.py load_schemes
+python manage.py load_nutrition
+python manage.py build_knowledge
 python manage.py runserver
 ```
-Backend API will be live at `http://localhost:8000/api/health/`.
+Backend API runs at `http://127.0.0.1:8000/api/health/` and Swagger UI at `http://127.0.0.1:8000/api/docs/`.
 
-### 2. Frontend Setup (React 18 + Vite + TS)
+### 3. Frontend Setup (React 18 + Vite)
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Frontend development server will be live at `http://localhost:5173/`.
+Frontend runs at `http://127.0.0.1:5173/`.
 
-### 3. Running Checks & Tests
-- **Frontend test:** `cd frontend && npm test`
-- **Frontend lint & typecheck:** `cd frontend && npm run lint && npm run typecheck`
-- **Backend check & test:** `cd backend && python manage.py check && pytest`
+### 4. Run Tests & Checks
+```bash
+# Backend & ML tests + lint
+backend/.venv/bin/python -m pytest backend/ ml/tests
+backend/.venv/bin/python -m ruff check backend ml
+backend/.venv/bin/python -m ruff format --check backend ml
 
----
-
-## 📜 Commit Conventions
-
-This project strictly follows [Conventional Commits](https://www.conventionalcommits.org/):
-
-- `feat:` New features or functional additions
-- `fix:` Bug fixes
-- `docs:` Documentation updates
-- `style:` Formatting, styling, and aesthetic adjustments
-- `refactor:` Code restructuring without functional alterations
-- `chore:` Maintenance, repository setup, configuration, dependencies
+# Frontend tests, lint, typecheck, i18n parity
+npm --prefix frontend run lint
+npm --prefix frontend run typecheck
+npm --prefix frontend test
+node scripts/i18n-check.mjs
+```
 
 ---
 
-## 📄 License
+## Configuration
+All 22 environment variables (`DJANGO_SETTINGS_MODULE`, `DATABASE_URL`, `GEMINI_API_KEY`, `VITE_API_BASE_URL`, etc.) are documented in [`docs/deploy/env.md`](./docs/deploy/env.md) and templated in [`.env.example`](./.env.example).
 
-Personal Product Project - All rights reserved.
+---
+
+## Data Sources & Attributions
+See [`docs/DATA_SOURCES.md`](./docs/DATA_SOURCES.md) and [`NOTICE`](./NOTICE) for full dataset licenses and attributions:
+- **Crop Dataset:** Atharva Ingle Crop Recommendation Dataset (Apache-2.0, 2,200 rows, 22 crops)
+- **Weather:** Open-Meteo (CC BY 4.0, non-commercial free tier)
+- **Nutrition:** USDA FoodData Central SR Legacy (Public Domain / CC0)
+- **Locations & Schemes:** LGD 2026 & official Indian Central/State portals
+
+---
+
+## Honest Limitations
+- **Crop Scope:** The ML model predicts among **22 supported crops** only; it does not cover every regional crop variety in India.
+- **Language Review Status:** English, Hindi, and Gujarati are native-reviewed (**Ready**); the remaining 20 Indian language packs have 100% key parity but are marked **Beta** pending native-speaker review.
+- **Advisory Disclaimer:** Crop recommendations and Krishi Mitra responses are decision-support tools, not a substitute for local soil testing or advice from a certified agronomist / Krishi Vigyan Kendra (KVK).
+- **Free-Tier Hosting:** Render free-tier web services sleep after inactivity, causing cold-start latency on the first request.
+
+---
+
+## Planned Roadmap (Post-v1.0)
+- **Phase 13:** Farmer profiles and personalized dashboard
+- **Phase 14:** Crop disease detection from leaf photos
+- **Phase 15:** Soil health card / report analyzer
+- **Phase 16:** Voice-enabled Krishi Mitra
+- **Phase 17:** Mandi price intelligence
+- **Phase 18:** Smart irrigation scheduling
+- **Phase 19:** Notifications & profitability comparison
+- **Phase 20:** Satellite NDVI field monitoring
+
+---
+
+## Documentation & Policies
+- **API Docs & OpenAPI Spec:** [`docs/api/README.md`](./docs/api/README.md) | [`docs/api/openapi.yaml`](./docs/api/openapi.yaml)
+- **Deployment & Runbook:** [`docs/deploy/runbook.md`](./docs/deploy/runbook.md)
+- **Contributing:** [`CONTRIBUTING.md`](./CONTRIBUTING.md)
+- **Security Policy:** [`SECURITY.md`](./SECURITY.md)
+- **Changelog:** [`CHANGELOG.md`](./CHANGELOG.md)

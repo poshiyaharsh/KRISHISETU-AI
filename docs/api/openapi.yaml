@@ -1,0 +1,1463 @@
+openapi: 3.0.3
+info:
+  title: KrishiSetu AI API
+  version: 1.0.0
+  description: Multilingual AI Agricultural Advisory Platform API for Indian Farmers
+paths:
+  /api/chat/:
+    post:
+      operationId: chat_create
+      description: Conversational agricultural advisory grounded in verified platform
+        data. Supports Server-Sent Events (SSE) progressive streaming and standard
+        JSON responses. Enforces agricultural safety, out-of-scope redirection, and
+        daily quota limits.
+      summary: Krishi Mitra Multilingual Chatbot
+      tags:
+      - chat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+          description: Chat response with source citations
+        '429':
+          description: Chat busy or rate limit exceeded
+  /api/chat/feedback/:
+    post:
+      operationId: chat_feedback_create
+      description: Store thumbs up/down user rating and optional comments for a chat
+        response.
+      summary: Record Farmer Feedback
+      tags:
+      - chat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatFeedback'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatFeedback'
+          description: ''
+  /api/crops/:
+    get:
+      operationId: crops_list
+      description: Returns lightweight identifiers and categories for all crops in
+        the knowledge catalog.
+      summary: List active crops
+      tags:
+      - crops
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CropList'
+          description: ''
+  /api/crops/{key}/:
+    get:
+      operationId: crops_retrieve
+      description: Returns factual agronomic profile, category, and ideal growth parameter
+        ranges for a single crop.
+      summary: Get crop details
+      parameters:
+      - in: path
+        name: key
+        schema:
+          type: string
+        required: true
+      tags:
+      - crops
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CropDetail'
+          description: ''
+        '404':
+          description: Crop not found
+  /api/crops/{key}/nutrition/:
+    get:
+      operationId: crops_nutrition_retrieve
+      description: 'Returns factual per-100g nutritional composition (calories, macros,
+        micronutrients, available forms such as raw and cooked, and source provenance)
+        for a supported crop. Returns food_crop: false for non-edible crops like cotton
+        and jute.'
+      summary: Get crop nutrition profile
+      parameters:
+      - in: path
+        name: key
+        schema:
+          type: string
+        required: true
+      tags:
+      - crops
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CropNutritionResponse'
+          description: ''
+        '404':
+          description: Crop not found in knowledge catalog
+  /api/crops/input-ranges/:
+    get:
+      operationId: crops_input_ranges_retrieve
+      description: Returns training boundaries, physical limits, units, and slider
+        step increments for the 7 inputs.
+      summary: Get input parameter ranges
+      tags:
+      - crops
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InputRangeDetail'
+          description: ''
+  /api/crops/recommend/:
+    post:
+      operationId: crops_recommend_create
+      description: Analyzes soil and weather parameters and returns top-3 recommended
+        crops with confidence scores.
+      summary: Predict optimal crops
+      tags:
+      - crops
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CropRecommendationRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CropRecommendationResponse'
+          description: ''
+        '400':
+          description: Validation error (out-of-range or missing values)
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: ML model unavailable
+  /api/health/:
+    get:
+      operationId: health_retrieve
+      description: Returns backend service status and version.
+      summary: Health check
+      tags:
+      - health
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+          description: ''
+  /api/locations/districts/:
+    get:
+      operationId: locations_districts_list
+      description: Returns all agricultural districts belonging to the specified state
+        ID.
+      summary: List districts by state
+      parameters:
+      - in: query
+        name: state
+        schema:
+          type: integer
+        description: ID of the State
+      tags:
+      - locations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/District'
+          description: ''
+  /api/locations/search/:
+    get:
+      operationId: locations_search_list
+      description: Searches Indian towns, mandis, and villages via Open-Meteo Geocoding
+        API (min 3 characters).
+      summary: Search Indian locations
+      parameters:
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: Place name search query (min 3 chars)
+        required: true
+      tags:
+      - locations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LocationSearchResult'
+          description: ''
+        '400':
+          description: Query string too short
+        '503':
+          description: Geocoding service unavailable
+  /api/locations/states/:
+    get:
+      operationId: locations_states_list
+      description: Returns all Indian states and union territories with centroid coordinates.
+      summary: List all states
+      tags:
+      - locations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/State'
+          description: ''
+  /api/nutrition/compare/:
+    get:
+      operationId: nutrition_compare_retrieve
+      description: Returns comparative side-by-side macronutrient and micronutrient
+        profiles for 1 to 3 crops.
+      summary: Compare crop nutritional profiles
+      parameters:
+      - in: query
+        name: crops
+        schema:
+          type: string
+        description: Comma-separated crop keys to compare (e.g. 'rice,maize' or 'chickpea,lentil,kidneybeans').
+          Maximum 3.
+        required: true
+      tags:
+      - nutrition
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NutritionCompareResponse'
+          description: ''
+        '400':
+          description: Missing parameter or more than 3 crops requested
+        '404':
+          description: One or more requested crops not found
+  /api/nutrition/crops/{key}/:
+    get:
+      operationId: nutrition_crops_retrieve
+      description: 'Returns factual per-100g nutritional composition (calories, macros,
+        micronutrients, available forms such as raw and cooked, and source provenance)
+        for a supported crop. Returns food_crop: false for non-edible crops like cotton
+        and jute.'
+      summary: Get crop nutrition profile
+      parameters:
+      - in: path
+        name: key
+        schema:
+          type: string
+        required: true
+      tags:
+      - nutrition
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CropNutritionResponse'
+          description: ''
+        '404':
+          description: Crop not found in knowledge catalog
+  /api/schemes/:
+    get:
+      operationId: schemes_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - schemes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSchemeListList'
+          description: ''
+  /api/schemes/{slug}/:
+    get:
+      operationId: schemes_retrieve
+      description: Returns full scheme details including benefits, eligibility, required
+        documents, and official application URL.
+      summary: Retrieve detailed profile of a government scheme
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - schemes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchemeDetail'
+          description: ''
+  /api/schemes/facets/:
+    get:
+      operationId: schemes_facets_retrieve
+      description: Returns active scheme counts grouped by category, level, farmer
+        types, and states for UI filters.
+      summary: Retrieve scheme filter facets and counts
+      tags:
+      - schemes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchemeFacetsResponse'
+          description: ''
+  /api/weather/:
+    get:
+      operationId: weather_retrieve
+      description: Returns current conditions and 7-day daily agricultural forecast
+        from Open-Meteo with 30-min cache.
+      summary: Get 7-day weather forecast
+      parameters:
+      - in: query
+        name: district
+        schema:
+          type: integer
+        description: District ID
+      - in: query
+        name: lat
+        schema:
+          type: number
+          format: double
+        description: Latitude coordinate
+      - in: query
+        name: lon
+        schema:
+          type: number
+          format: double
+        description: Longitude coordinate
+      tags:
+      - weather
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherForecastResponse'
+          description: ''
+        '400':
+          description: Invalid coordinates or missing location parameter
+        '404':
+          description: District not found
+        '503':
+          description: Weather provider unavailable
+components:
+  schemas:
+    CategoryEnum:
+      enum:
+      - cereal
+      - pulse
+      - fruit
+      - fibre
+      - beverage
+      - other
+      type: string
+      description: |-
+        * `cereal` - Cereal
+        * `pulse` - Pulse
+        * `fruit` - Fruit
+        * `fibre` - Fibre
+        * `beverage` - Beverage
+        * `other` - Other
+    ChatFeedback:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        session_id:
+          type: string
+          maxLength: 64
+        message_id:
+          type: string
+          maxLength: 64
+        rating:
+          $ref: '#/components/schemas/RatingEnum'
+        feedback_text:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - rating
+    ChatHistoryItem:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        content:
+          type: string
+          maxLength: 2000
+      required:
+      - content
+      - role
+    ChatRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Farmer message or question (max 1000 characters).
+          maxLength: 1000
+          minLength: 1
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatHistoryItem'
+          description: Conversation history up to last 6 messages.
+          maxItems: 6
+        language:
+          type: string
+          default: ''
+          description: Optional UI language code (e.g. 'en', 'hi', 'gu').
+          maxLength: 10
+        session_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Existing session UUID, or null to initiate new session.
+        stream:
+          type: boolean
+          default: true
+          description: Whether to stream response via Server-Sent Events (SSE).
+      required:
+      - message
+    ChatResponse:
+      type: object
+      properties:
+        session_id:
+          type: string
+          format: uuid
+        message:
+          type: string
+        language:
+          type: string
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatSource'
+      required:
+      - language
+      - message
+      - session_id
+      - sources
+    ChatSource:
+      type: object
+      properties:
+        title:
+          type: string
+        url:
+          type: string
+        source_type:
+          type: string
+        score:
+          type: number
+          format: double
+      required:
+      - score
+      - source_type
+      - title
+      - url
+    CropComparisonItem:
+      type: object
+      description: Individual crop profile inside a comparison response.
+      properties:
+        crop_key:
+          type: string
+        crop_name:
+          type: string
+        food_crop:
+          type: boolean
+        form:
+          type: string
+        form_label:
+          type: string
+        food_item_name:
+          type: string
+        basis:
+          type: string
+        nutrients:
+          $ref: '#/components/schemas/NutrientValues'
+        source:
+          $ref: '#/components/schemas/SourceMetadata'
+        notes:
+          type: string
+      required:
+      - basis
+      - crop_key
+      - crop_name
+      - food_crop
+      - food_item_name
+      - form
+      - form_label
+      - notes
+      - nutrients
+      - source
+    CropDetail:
+      type: object
+      description: Detailed crop profile serializer with ideal agronomic ranges.
+      properties:
+        key:
+          type: string
+          description: Canonical lower-case slug identifier matching ML class label
+            (e.g. rice)
+          maxLength: 64
+          pattern: ^[-a-zA-Z0-9_]+$
+        name:
+          type: string
+          readOnly: true
+        category:
+          allOf:
+          - $ref: '#/components/schemas/CategoryEnum'
+          description: |-
+            Broad agronomic crop category
+
+            * `cereal` - Cereal
+            * `pulse` - Pulse
+            * `fruit` - Fruit
+            * `fibre` - Fibre
+            * `beverage` - Beverage
+            * `other` - Other
+        description:
+          type: string
+          readOnly: true
+        ideal_ranges:
+          description: Per-crop ideal min and max parameter ranges derived from training
+            distribution
+        is_active:
+          type: boolean
+          description: Whether this crop is active in the advisory catalog
+      required:
+      - description
+      - key
+      - name
+    CropItemBrief:
+      type: object
+      description: Lightweight crop identity representation in prediction results.
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+      required:
+      - key
+      - name
+    CropList:
+      type: object
+      description: Catalog listing serializer for crops.
+      properties:
+        key:
+          type: string
+          description: Canonical lower-case slug identifier matching ML class label
+            (e.g. rice)
+          maxLength: 64
+          pattern: ^[-a-zA-Z0-9_]+$
+        name:
+          type: string
+          readOnly: true
+        category:
+          allOf:
+          - $ref: '#/components/schemas/CategoryEnum'
+          description: |-
+            Broad agronomic crop category
+
+            * `cereal` - Cereal
+            * `pulse` - Pulse
+            * `fruit` - Fruit
+            * `fibre` - Fibre
+            * `beverage` - Beverage
+            * `other` - Other
+      required:
+      - key
+      - name
+    CropModelMeta:
+      type: object
+      description: Metadata regarding model executing recommendation.
+      properties:
+        version:
+          type: string
+      required:
+      - version
+    CropNutritionResponse:
+      type: object
+      description: Complete nutritional response for a single crop.
+      properties:
+        crop_key:
+          type: string
+        crop_name:
+          type: string
+        food_crop:
+          type: boolean
+        message:
+          type: string
+        default_form:
+          type: string
+          nullable: true
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/NutritionEntryDetail'
+      required:
+      - crop_key
+      - crop_name
+      - entries
+      - food_crop
+    CropRecommendationRequest:
+      type: object
+      description: Input serializer for agricultural sensor/field readings.
+      properties:
+        nitrogen:
+          type: number
+          format: double
+          description: Nitrogen content in soil (kg/ha)
+        phosphorus:
+          type: number
+          format: double
+          description: Phosphorus content in soil (kg/ha)
+        potassium:
+          type: number
+          format: double
+          description: Potassium content in soil (kg/ha)
+        temperature:
+          type: number
+          format: double
+          description: Temperature in degrees Celsius
+        humidity:
+          type: number
+          format: double
+          description: Relative humidity in percentage
+        ph:
+          type: number
+          format: double
+          description: Soil pH value
+        rainfall:
+          type: number
+          format: double
+          description: Rainfall in millimeters
+      required:
+      - humidity
+      - nitrogen
+      - ph
+      - phosphorus
+      - potassium
+      - rainfall
+      - temperature
+    CropRecommendationResponse:
+      type: object
+      description: Full recommendation API response schema.
+      properties:
+        request_id:
+          type: string
+          format: uuid
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecommendationResultItem'
+        warnings:
+          type: array
+          items:
+            type: string
+        model:
+          $ref: '#/components/schemas/CropModelMeta'
+      required:
+      - model
+      - request_id
+      - results
+      - warnings
+    CurrentWeather:
+      type: object
+      properties:
+        temperature:
+          type: number
+          format: double
+        relative_humidity:
+          type: number
+          format: double
+        wind_speed:
+          type: number
+          format: double
+        precipitation:
+          type: number
+          format: double
+        weather_code:
+          type: integer
+        condition:
+          type: string
+      required:
+      - condition
+      - precipitation
+      - relative_humidity
+      - temperature
+      - weather_code
+      - wind_speed
+    DailyForecastItem:
+      type: object
+      properties:
+        date:
+          type: string
+        temp_max:
+          type: number
+          format: double
+        temp_min:
+          type: number
+          format: double
+        precipitation_sum:
+          type: number
+          format: double
+        precipitation_probability_max:
+          type: number
+          format: double
+        wind_speed_max:
+          type: number
+          format: double
+        weather_code:
+          type: integer
+        condition:
+          type: string
+        et0_evapotranspiration:
+          type: number
+          format: double
+      required:
+      - condition
+      - date
+      - et0_evapotranspiration
+      - precipitation_probability_max
+      - precipitation_sum
+      - temp_max
+      - temp_min
+      - weather_code
+      - wind_speed_max
+    District:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        state:
+          type: integer
+        state_name:
+          type: string
+          readOnly: true
+        lat:
+          type: number
+          format: double
+          description: District centroid latitude
+        lon:
+          type: number
+          format: double
+          description: District centroid longitude
+      required:
+      - id
+      - lat
+      - lon
+      - name
+      - state
+      - state_name
+    FarmerType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          maxLength: 120
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - id
+      - name
+      - slug
+    FormEnum:
+      enum:
+      - raw
+      - cooked
+      - brewed
+      - non_food
+      type: string
+      description: |-
+        * `raw` - Raw (Dry/Fresh)
+        * `cooked` - Cooked / Boiled
+        * `brewed` - Brewed
+        * `non_food` - Not a Food Crop
+    HealthCheckResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        service:
+          type: string
+        version:
+          type: string
+        time:
+          type: string
+      required:
+      - service
+      - status
+      - time
+      - version
+    InputRangeDetail:
+      type: object
+      description: Parameter boundaries, physical limits, unit and step for form sliders.
+      properties:
+        min:
+          type: number
+          format: double
+        max:
+          type: number
+          format: double
+        absolute_min:
+          type: number
+          format: double
+        absolute_max:
+          type: number
+          format: double
+        unit:
+          type: string
+        step:
+          type: number
+          format: double
+      required:
+      - absolute_max
+      - absolute_min
+      - max
+      - min
+      - step
+      - unit
+    LevelEnum:
+      enum:
+      - central
+      - state
+      type: string
+      description: |-
+        * `central` - Central
+        * `state` - State
+    LocationSearchResult:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        state:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        country:
+          type: string
+          default: India
+      required:
+      - latitude
+      - longitude
+      - name
+    NutrientValues:
+      type: object
+      description: Core macronutrients and micronutrients per 100g edible portion.
+      properties:
+        energy_kcal:
+          type: number
+          format: double
+          nullable: true
+        protein_g:
+          type: number
+          format: double
+          nullable: true
+        carbohydrate_g:
+          type: number
+          format: double
+          nullable: true
+        fiber_g:
+          type: number
+          format: double
+          nullable: true
+        fat_g:
+          type: number
+          format: double
+          nullable: true
+        sugars_g:
+          type: number
+          format: double
+          nullable: true
+        iron_mg:
+          type: number
+          format: double
+          nullable: true
+        calcium_mg:
+          type: number
+          format: double
+          nullable: true
+        vitamin_c_mg:
+          type: number
+          format: double
+          nullable: true
+        potassium_mg:
+          type: number
+          format: double
+          nullable: true
+      required:
+      - calcium_mg
+      - carbohydrate_g
+      - energy_kcal
+      - fat_g
+      - fiber_g
+      - iron_mg
+      - potassium_mg
+      - protein_g
+      - sugars_g
+      - vitamin_c_mg
+    NutritionCompareResponse:
+      type: object
+      description: Comparative nutritional profile response across up to 3 crops.
+      properties:
+        crops:
+          type: array
+          items:
+            $ref: '#/components/schemas/CropComparisonItem'
+      required:
+      - crops
+    NutritionEntryDetail:
+      type: object
+      description: Detailed nutrition profile for a single consumption form.
+      properties:
+        form:
+          allOf:
+          - $ref: '#/components/schemas/FormEnum'
+          description: |-
+            Physical consumption state (raw, cooked, brewed, or non_food)
+
+            * `raw` - Raw (Dry/Fresh)
+            * `cooked` - Cooked / Boiled
+            * `brewed` - Brewed
+            * `non_food` - Not a Food Crop
+        form_label:
+          type: string
+        food_item_name:
+          type: string
+          description: Standardized item name from source database (e.g., Apples,
+            raw, with skin)
+          maxLength: 255
+        basis:
+          type: string
+          description: Standard dietary measurement basis (always per 100 g edible
+            portion)
+          maxLength: 32
+        is_default:
+          type: boolean
+          description: Default form to display in user interface (e.g. cooked for
+            pulses/rice)
+        is_food:
+          type: boolean
+          description: Whether this crop is an edible food crop (false for cotton,
+            jute)
+        nutrients:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        source:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        notes:
+          type: string
+          description: Agronomic or dietary justification notes
+      required:
+      - food_item_name
+      - form_label
+      - nutrients
+      - source
+    PaginatedSchemeListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemeList'
+    RatingEnum:
+      enum:
+      - up
+      - down
+      type: string
+      description: |-
+        * `up` - Thumbs Up
+        * `down` - Thumbs Down
+    RecommendationResultItem:
+      type: object
+      description: Ranked crop recommendation item.
+      properties:
+        rank:
+          type: integer
+        crop:
+          $ref: '#/components/schemas/CropItemBrief'
+        score:
+          type: number
+          format: double
+        label:
+          type: string
+      required:
+      - crop
+      - label
+      - rank
+      - score
+    RoleEnum:
+      enum:
+      - user
+      - assistant
+      type: string
+      description: |-
+        * `user` - user
+        * `assistant` - assistant
+    SchemeCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          maxLength: 120
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+      required:
+      - id
+      - name
+      - slug
+    SchemeDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 120
+          pattern: ^[-a-zA-Z0-9_]+$
+        name:
+          type: string
+          maxLength: 255
+        short_description:
+          type: string
+          maxLength: 500
+        description:
+          type: string
+        level:
+          $ref: '#/components/schemas/LevelEnum'
+        state_name:
+          type: string
+          nullable: true
+        department:
+          type: string
+          maxLength: 255
+        category:
+          $ref: '#/components/schemas/SchemeCategory'
+        farmer_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/FarmerType'
+          readOnly: true
+        eligibility:
+          type: string
+          description: Farmer eligibility criteria
+        benefits:
+          type: string
+          description: Financial, physical or technical benefits provided
+        documents_required:
+          type: string
+          description: Required verification documents
+        how_to_apply:
+          type: string
+          description: Application procedure and guidelines
+        official_url:
+          type: string
+          format: uri
+          description: Official application or portal URL
+          maxLength: 500
+        source_name:
+          type: string
+          maxLength: 120
+        source_url:
+          type: string
+          format: uri
+          description: Official source verification URL
+          maxLength: 500
+        source_id:
+          type: string
+          description: Unique ID from source
+          maxLength: 100
+        last_verified_on:
+          type: string
+          format: date
+          description: Date when official information was verified
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - benefits
+      - category
+      - created_at
+      - department
+      - description
+      - documents_required
+      - eligibility
+      - farmer_types
+      - how_to_apply
+      - id
+      - last_verified_on
+      - name
+      - official_url
+      - short_description
+      - slug
+      - source_id
+      - source_url
+      - updated_at
+    SchemeFacetItem:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        count:
+          type: integer
+      required:
+      - count
+      - id
+      - name
+    SchemeFacetsResponse:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemeFacetItem'
+        levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemeFacetItem'
+        farmer_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemeFacetItem'
+        states:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemeFacetItem'
+        total_active_schemes:
+          type: integer
+      required:
+      - categories
+      - farmer_types
+      - levels
+      - states
+      - total_active_schemes
+    SchemeList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 120
+          pattern: ^[-a-zA-Z0-9_]+$
+        name:
+          type: string
+          maxLength: 255
+        short_description:
+          type: string
+          maxLength: 500
+        level:
+          $ref: '#/components/schemas/LevelEnum'
+        state_name:
+          type: string
+          nullable: true
+        department:
+          type: string
+          maxLength: 255
+        category:
+          type: string
+        category_slug:
+          type: string
+        farmer_types:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        official_url:
+          type: string
+          format: uri
+          description: Official application or portal URL
+          maxLength: 500
+        last_verified_on:
+          type: string
+          format: date
+          description: Date when official information was verified
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+      required:
+      - category
+      - category_slug
+      - department
+      - farmer_types
+      - id
+      - last_verified_on
+      - name
+      - official_url
+      - short_description
+      - slug
+    SourceMetadata:
+      type: object
+      description: Provenance and licensing metadata for dietary source.
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+        url:
+          type: string
+        retrieved_on:
+          type: string
+          format: date
+          nullable: true
+        license:
+          type: string
+      required:
+      - id
+      - license
+      - name
+      - retrieved_on
+      - url
+    State:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        code:
+          type: string
+          description: ISO/LGD state code (e.g. IN-GJ)
+          maxLength: 10
+        lat:
+          type: number
+          format: double
+          description: Centroid latitude
+        lon:
+          type: number
+          format: double
+          description: Centroid longitude
+      required:
+      - code
+      - id
+      - lat
+      - lon
+      - name
+    StatusEnum:
+      enum:
+      - active
+      - expired
+      - unknown
+      type: string
+      description: |-
+        * `active` - Active
+        * `expired` - Expired
+        * `unknown` - Unknown
+    WeatherForecastResponse:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        timezone:
+          type: string
+        fetched_at:
+          type: string
+        stale:
+          type: boolean
+        current:
+          $ref: '#/components/schemas/CurrentWeather'
+        daily:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyForecastItem'
+        provider:
+          type: string
+        attribution:
+          type: string
+      required:
+      - attribution
+      - current
+      - daily
+      - fetched_at
+      - latitude
+      - longitude
+      - provider
+      - stale
+      - timezone
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

@@ -1,0 +1,32 @@
+KrishiSetu AI — Third-Party Data & Service Attributions
+=========================================================
+
+This project incorporates and attributes the following third-party data
+sources and APIs, matching the attributions displayed in the application UI:
+
+1. Weather Forecasts — Open-Meteo
+   Source: https://open-meteo.com/
+   License: CC BY 4.0 (Non-commercial free tier)
+   Attribution: "Weather data by Open-Meteo.com"
+
+2. Crop Nutrition Data — USDA FoodData Central (SR Legacy)
+   Source: https://fdc.nal.usda.gov/
+   License: Public Domain (CC0 1.0)
+   Attribution: "U.S. Department of Agriculture, Agricultural Research Service.
+   FoodData Central, SR Legacy."
+
+3. Crop Recommendation Dataset — Atharva Ingle
+   License: Apache License 2.0
+   Dataset: 2,200 soil & climate samples across 22 crops.
+
+4. Indian Administrative Locations — Local Government Directory (LGD)
+   31 States/UTs and 61 Districts (coordinates & names).
+
+5. Indian Government Agricultural Schemes
+   Curated from official Central & State Ministry portals (including
+   pmkisan.gov.in, agriwelfare.gov.in, mnre.gov.in) with direct links to
+   official sources.
+
+6. Farmer Advisory Safety Referral
+   Kisan Call Centre (Ministry of Agriculture & Farmers Welfare, Govt. of India)
+   Toll-Free: 1800-180-1551
