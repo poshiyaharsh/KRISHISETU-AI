@@ -16,9 +16,14 @@ COPY backend/requirements /build/backend/requirements
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Install ML package & production backend requirements
+WORKDIR /build/backend
+
+# Install ML package (non-editable into /opt/venv) & production backend requirements
 RUN pip install --upgrade pip \
-    && pip install -r /build/backend/requirements/prod.txt
+    && grep -v "^-e \.\./ml" requirements/base.txt > /tmp/base.txt \
+    && sed 's|-r base.txt|-r /tmp/base.txt|' requirements/prod.txt > /tmp/prod.txt \
+    && pip install -r /tmp/prod.txt \
+    && pip install /build/ml
 
 
 FROM python:3.12-slim AS runtime
