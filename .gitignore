@@ -118,3 +118,4 @@ ehthumbs.db
 *.sublime-workspace
 *.swp
 *.swo
+.neon
