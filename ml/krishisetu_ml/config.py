@@ -2,6 +2,7 @@
 Configuration and constants for krishisetu_ml.
 """
 
+import os
 from pathlib import Path
 
 # Base package directory: ml/
@@ -12,8 +13,12 @@ DATA_DIR = PACKAGE_DIR / "data"
 RAW_DATA_PATH = DATA_DIR / "raw" / "Crop_recommendation.csv"
 
 MODELS_DIR = PACKAGE_DIR / "models"
-MODEL_PATH = MODELS_DIR / "crop_model.joblib"
-METADATA_PATH = MODELS_DIR / "crop_model.meta.json"
+MODEL_PATH = (
+    Path(os.environ["MODEL_PATH"])
+    if os.environ.get("MODEL_PATH")
+    else (MODELS_DIR / "crop_model.joblib")
+)
+METADATA_PATH = MODEL_PATH.with_suffix(".meta.json")
 
 REPORTS_DIR = PACKAGE_DIR / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
