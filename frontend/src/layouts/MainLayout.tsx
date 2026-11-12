@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Header } from '@/components/Header/Header';
 
@@ -33,7 +33,15 @@ export const MainLayout: React.FC = () => {
               <span className="font-bold text-paddy">KrishiSetu AI</span>
               <span>— {t('common.tagline')}</span>
             </div>
-            <p>© 2026 KrishiSetu AI. Built for Indian Farmers.</p>
+            <div className="flex items-center gap-4">
+              <Link to="/about" className="hover:text-paddy underline-offset-4 hover:underline">
+                {t('nav.about')}
+              </Link>
+              <Link to="/privacy" className="hover:text-paddy underline-offset-4 hover:underline">
+                {t('nav.privacy')}
+              </Link>
+              <p>© 2026 KrishiSetu AI. Built for Indian Farmers.</p>
+            </div>
           </div>
           <p className="text-[11px] text-soil/60 text-center max-w-3xl mx-auto leading-relaxed">
             {t('common.safetyDisclaimer')}

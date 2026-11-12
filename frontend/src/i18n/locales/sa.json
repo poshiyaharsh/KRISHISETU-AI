@@ -17,7 +17,9 @@
     "nutrition": "Crop Nutrition",
     "chatbot": "Krishi Mitra",
     "openMenu": "Open navigation menu",
-    "closeMenu": "Close navigation menu"
+    "closeMenu": "Close navigation menu",
+    "about": "About",
+    "privacy": "Privacy"
   },
   "home": {
     "heroTitle": "AI-Powered Crop Advisory for Indian Farmers",
@@ -276,5 +278,36 @@
     "verifiedSources": "Verified Data Sources:",
     "emptyHeading": "Namaste! How can Krishi Mitra help you today?",
     "emptyDesc": "Ask any question about crops, weather forecasts, government subsidies, soil testing, or crop nutrition."
+  },
+  "about": {
+    "title": "About KrishiSetu AI",
+    "subtitle": "An open, multilingual agricultural decision-support platform built for Indian farmers.",
+    "whatTitle": "What KrishiSetu AI Does",
+    "whatBody": "KrishiSetu AI brings together machine-learning crop recommendations, hyperlocal 7-day weather forecasts, verified government scheme links, USDA-sourced crop nutrition profiles, and the Krishi Mitra conversational advisor in 23 Indian languages.",
+    "howTitle": "How Each Module Works",
+    "howCrs": "Crop Recommendation System (CRS): Uses a Random Forest model trained on 2,200 soil and climate records across 22 supported crops to rank your top 3 crop matches.",
+    "howWeather": "Weather Intelligence: Fetches 7-day forecasts from Open-Meteo for 31 States/UTs and 61 districts (or your device location) with agronomic alerts.",
+    "howSchemes": "Government Schemes: Lists 12 verified Central and State agricultural schemes with direct links to official government portals.",
+    "howNutrition": "Crop Nutrition: Displays per-100g nutritional data from USDA FoodData Central SR Legacy across 31 entries covering the 22 supported crops.",
+    "howChat": "Krishi Mitra: Retrieves verified facts from 70 indexed knowledge chunks and enforces strict safety guardrails for pesticide and medical queries.",
+    "limitsTitle": "Honest Limitations",
+    "limitCrops": "Supported crops are limited to 22 crops from the public training dataset and do not cover every regional variety.",
+    "limitLanguages": "English, Hindi, and Gujarati are native-reviewed; 20 additional Indian languages are available in Beta.",
+    "limitAdvisory": "Recommendations are decision-support estimates only. Always consult your local Krishi Vigyan Kendra (KVK) or Kisan Call Centre (1800-180-1551) before applying chemicals or changing crops."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "subtitle": "How KrishiSetu AI handles your requests, minimizes stored data, and protects your privacy.",
+    "storedTitle": "What We Store (and What We Do Not)",
+    "storedIp": "No raw IP addresses: Crop recommendation logs store only a salted SHA-256 hash of your client identifier for rate limiting and aggregate analytics.",
+    "storedChat": "No chat content stored by default: Krishi Mitra chat message text is not persisted in production unless debug logging is explicitly enabled.",
+    "storedFeedback": "Optional feedback: Thumbs-up/down ratings and optional comments you submit on chat replies are stored without personal identity.",
+    "storedLocal": "Browser preferences: Your selected language and weather location are saved locally in your browser's localStorage.",
+    "thirdPartyTitle": "Third-Party Services",
+    "thirdPartyWeather": "Open-Meteo: Receives latitude and longitude coordinates when you request a weather forecast.",
+    "thirdPartyLlm": "Google Gemini API: Processes chat prompts to generate advisory replies (or falls back to local grounded retrieval if unavailable).",
+    "thirdPartyHosting": "Hosting infrastructure: Frontend is hosted on Vercel, backend API on Render, and PostgreSQL database on Neon.",
+    "deletionTitle": "Questions or Data Deletion",
+    "deletionBody": "Because KrishiSetu AI does not require accounts and stores only anonymized hashes and optional anonymous feedback, no personal profile is maintained. For any privacy inquiry, open an issue or security report on our GitHub repository."
   }
 }
