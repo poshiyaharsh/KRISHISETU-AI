@@ -90,6 +90,9 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 htmlcov/
+frontend/coverage/
+test-results/
+playwright-report/
 
 # ML large models & raw datasets (allow canonical v1.0 crop model and Apache 2.0 raw dataset)
 ml/data/raw/*

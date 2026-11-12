@@ -49,7 +49,7 @@ export const ForecastStrip: React.FC<ForecastStripProps> = ({ daily }) => {
               <span className="block font-semibold text-soil text-sm">
                 {formatDayName(item.date)}
               </span>
-              <span className="block text-xs text-gray-500 mb-2">
+              <span className="block text-xs text-soil/80 mb-2">
                 {formatDateDisplay(item.date)}
               </span>
             </div>

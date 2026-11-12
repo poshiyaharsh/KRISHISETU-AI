@@ -250,7 +250,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
               >
                 <div>
                   <span className="font-medium">{item.name}</span>
-                  {item.admin1 && <span className="text-gray-500 text-xs ml-2">({item.admin1})</span>}
+                  {item.admin1 && <span className="text-soil/80 text-xs ml-2">({item.admin1})</span>}
                 </div>
                 <span className="text-xs text-gray-400">
                   {item.latitude.toFixed(2)}°, {item.longitude.toFixed(2)}°

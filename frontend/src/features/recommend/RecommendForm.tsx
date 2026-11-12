@@ -122,7 +122,7 @@ export const RecommendForm: React.FC<RecommendFormProps> = ({
                     className="text-sm font-bold text-[#02280C] flex items-center gap-1.5 cursor-pointer"
                   >
                     <span>{t(`recommend.fields.${key}.label`)}</span>
-                    <span className="text-xs font-normal text-[#1D2B22]/60">
+                    <span className="text-xs font-normal text-soil/80">
                       ({meta.unit})
                     </span>
                   </label>
@@ -171,7 +171,7 @@ export const RecommendForm: React.FC<RecommendFormProps> = ({
                   />
                 </div>
 
-                <div className="flex items-center justify-between text-[11px] text-[#1D2B22]/60 pt-0.5">
+                <div className="flex items-center justify-between text-[11px] text-soil/80 pt-0.5">
                   <span>Typical: {meta.min} – {meta.max} {meta.unit}</span>
                 </div>
 
@@ -186,7 +186,7 @@ export const RecommendForm: React.FC<RecommendFormProps> = ({
         </div>
 
         <div className="pt-4 border-t border-[#02280C]/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-[#1D2B22]/60 text-center sm:text-left">
+          <p className="text-xs text-soil/80 text-center sm:text-left">
             All 7 parameters are validated before running ML inference.
           </p>
 

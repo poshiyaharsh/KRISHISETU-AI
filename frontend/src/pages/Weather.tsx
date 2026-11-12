@@ -142,14 +142,14 @@ export const Weather: React.FC = () => {
           <ForecastChart daily={weatherData.daily} />
 
           {/* Attribution Footer */}
-          <footer className="pt-6 border-t border-mist text-center text-xs text-gray-500">
+          <footer className="pt-6 border-t border-mist text-center text-xs text-soil/80">
             <p>
               {t('weather.attribution')}{' '}
               <a
                 href="https://open-meteo.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-leaf font-medium hover:underline focus:outline-none focus:ring-1 focus:ring-leaf rounded"
+                className="text-paddy font-medium underline hover:opacity-80 focus:outline-none focus:ring-1 focus:ring-paddy rounded"
               >
                 Open-Meteo.com
               </a>
