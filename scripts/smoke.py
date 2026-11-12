@@ -76,7 +76,8 @@ def check_chat(base: str) -> None:
     )
     resp.raise_for_status()
     data = resp.json()
-    assert data.get("reply"), f"Empty chat reply: {data}"
+    reply_text = data.get("message") or data.get("reply")
+    assert reply_text, f"Empty chat reply: {data}"
     print("[PASS] POST /api/chat/ -> non-empty reply received")
 
 
