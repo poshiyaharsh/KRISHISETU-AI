@@ -53,7 +53,7 @@ class GeminiLLMClient(BaseLLMClient):
 
     BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models"
 
-    def __init__(self, api_key: str, model: str = "gemini-2.0-flash"):
+    def __init__(self, api_key: str, model: str = "gemini-2.5-flash"):
         self.api_key = api_key
         self.model = model
 
@@ -107,23 +107,38 @@ class GeminiLLMClient(BaseLLMClient):
         url = f"{self.BASE_URL}/{self.model}:streamGenerateContent?alt=sse&key={self.api_key}"
         payload = self._build_payload(system_prompt, messages, context_chunks)
 
-        with requests.post(url, json=payload, stream=True, timeout=20) as resp:
-            resp.raise_for_status()
-            for line in resp.iter_lines(decode_unicode=True):
-                if not line or not line.startswith("data: "):
-                    continue
-                data_str = line[6:].strip()
-                try:
-                    data_json = json.loads(data_str)
-                    candidates = data_json.get("candidates", [])
-                    if candidates:
-                        parts = candidates[0].get("content", {}).get("parts", [])
-                        for part in parts:
-                            text_piece = part.get("text", "")
-                            if text_piece:
-                                yield text_piece
-                except Exception as e:
-                    logger.debug("Error parsing Gemini streaming chunk: %s", e)
+        try:
+            with requests.post(url, json=payload, stream=True, timeout=20) as resp:
+                resp.raise_for_status()
+                for line in resp.iter_lines(decode_unicode=True):
+                    if not line or not line.startswith("data: "):
+                        continue
+                    data_str = line[6:].strip()
+                    try:
+                        data_json = json.loads(data_str)
+                        candidates = data_json.get("candidates", [])
+                        if candidates:
+                            parts = candidates[0].get("content", {}).get("parts", [])
+                            for part in parts:
+                                text_piece = part.get("text", "")
+                                if text_piece:
+                                    yield text_piece
+                    except Exception as e:
+                        logger.debug("Error parsing Gemini streaming chunk: %s", e)
+        except requests.RequestException as exc:
+            status_code = getattr(getattr(exc, "response", None), "status_code", None)
+            logger.warning(
+                "Gemini stream_chat failed (model=%s status=%s err=%s); falling back to grounded mock",
+                self.model,
+                status_code,
+                type(exc).__name__,
+            )
+            yield from MockLLMClient().stream_chat(
+                system_prompt=system_prompt,
+                messages=messages,
+                context_chunks=context_chunks,
+                lang=lang,
+            )
 
     def generate_chat(
         self,
@@ -134,9 +149,25 @@ class GeminiLLMClient(BaseLLMClient):
     ) -> str:
         url = f"{self.BASE_URL}/{self.model}:generateContent?key={self.api_key}"
         payload = self._build_payload(system_prompt, messages, context_chunks)
-        resp = requests.post(url, json=payload, timeout=20)
-        resp.raise_for_status()
-        data = resp.json()
+        try:
+            resp = requests.post(url, json=payload, timeout=20)
+            resp.raise_for_status()
+            data = resp.json()
+        except (requests.RequestException, ValueError) as exc:
+            status_code = getattr(getattr(exc, "response", None), "status_code", None)
+            logger.warning(
+                "Gemini generate_chat failed (model=%s status=%s err=%s); falling back to grounded mock",
+                self.model,
+                status_code,
+                type(exc).__name__,
+            )
+            return MockLLMClient().generate_chat(
+                system_prompt=system_prompt,
+                messages=messages,
+                context_chunks=context_chunks,
+                lang=lang,
+            )
+
         candidates = data.get("candidates", [])
         if not candidates:
             return ""
@@ -238,7 +269,7 @@ def get_llm_client() -> BaseLLMClient:
 
     if provider == "gemini" and api_key and not api_key.startswith("your-"):
         try:
-            model = getattr(settings, "LLM_MODEL", "gemini-2.0-flash")
+            model = getattr(settings, "LLM_MODEL", "gemini-2.5-flash")
             return GeminiLLMClient(api_key=api_key, model=model)
         except Exception as e:
             logger.warning(

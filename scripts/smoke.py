@@ -35,9 +35,10 @@ def check_recommend(base: str) -> None:
     )
     resp.raise_for_status()
     data = resp.json()
-    recs = data.get("recommendations", [])
+    recs = data.get("results", [])
     assert len(recs) == 3, f"Expected 3 recommendations, got {len(recs)}"
-    print(f"[PASS] POST /api/crops/recommend/ -> top={recs[0].get('crop')}")
+    top_crop = recs[0].get("crop", {}).get("name", recs[0].get("crop"))
+    print(f"[PASS] POST /api/crops/recommend/ -> top={top_crop}")
 
 
 def check_weather(base: str) -> None:

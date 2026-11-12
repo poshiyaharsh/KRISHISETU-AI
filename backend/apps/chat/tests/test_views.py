@@ -172,3 +172,43 @@ def test_chat_feedback_endpoint():
     assert ChatFeedback.objects.filter(
         session_id="test-session-123", rating="up"
     ).exists()
+
+
+@pytest.mark.django_db
+def test_gemini_upstream_error_falls_back_gracefully():
+    """When Gemini API fails (HTTP error/timeout), chat falls back to grounded MockLLMClient instead of 500."""
+    import requests
+    from apps.chat.llm import GeminiLLMClient
+
+    client = APIClient()
+    failing_gemini = GeminiLLMClient(api_key="fake-key")
+
+    with (
+        patch("apps.chat.views.get_llm_client", return_value=failing_gemini),
+        patch(
+            "apps.chat.llm.requests.post",
+            side_effect=requests.ConnectionError("upstream unreachable"),
+        ),
+    ):
+        resp = client.post(
+            "/api/chat/",
+            {"message": "What is PM-KISAN?", "language": "en", "stream": False},
+            format="json",
+        )
+        assert resp.status_code == status.HTTP_200_OK
+        data = resp.json()
+        assert data["message"]
+        assert len(data["sources"]) > 0
+
+        stream_resp = client.post(
+            "/api/chat/",
+            {"message": "What is PM-KISAN?", "language": "en", "stream": True},
+            format="json",
+        )
+        assert stream_resp.status_code == status.HTTP_200_OK
+        combined = "".join(
+            c.decode("utf-8") if isinstance(c, bytes) else c
+            for c in stream_resp.streaming_content
+        )
+        assert 'data: {"type": "token"' in combined
+        assert 'data: {"type": "done"' in combined
