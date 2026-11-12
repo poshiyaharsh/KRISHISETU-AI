@@ -42,6 +42,9 @@ jobs:
       - name: Validate i18n key parity across 23 languages
         run: node ../scripts/i18n-check.mjs
 
+      - name: Production dependency audit (npm audit)
+        run: npm audit --omit=dev --audit-level=high
+
       - name: Production build
         run: npm run build
 
@@ -74,6 +77,9 @@ jobs:
         run: |
           python -m ruff check .
           python -m ruff format --check .
+
+      - name: Dependency vulnerability scan (pip-audit)
+        run: python -m pip_audit --skip-editable
 
       - name: Django system check
         run: python manage.py check
@@ -108,6 +114,20 @@ jobs:
         run: |
           python -m ruff check .
           python -m ruff format --check .
+
+  secrets:
+    name: Secret Scan (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks secret scanner
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run ML test suite (pytest)
         run: python -m pytest tests/

@@ -1,9 +1,13 @@
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
+handler404 = "config.exceptions.custom_404_view"
+handler500 = "config.exceptions.custom_500_view"
+
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path(getattr(settings, "ADMIN_URL", "krishi-portal-ops/"), admin.site.urls),
     path("api/", include("apps.core.urls")),
     path("api/crops/", include("apps.crops.urls")),
     path("api/locations/", include("apps.locations.urls")),

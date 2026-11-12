@@ -15,7 +15,7 @@ Format:
 import logging
 from typing import Any
 
-from django.http import Http404
+from django.http import Http404, HttpRequest, JsonResponse
 from rest_framework import status
 from rest_framework.exceptions import (
     APIException,
@@ -151,3 +151,33 @@ def custom_exception_handler(exc: Exception, context: dict[str, Any]) -> Respons
     }
 
     return response
+
+
+def custom_404_view(
+    request: HttpRequest, exception: Exception | None = None
+) -> JsonResponse:
+    """Return a clean JSON 404 response for unmatched routes."""
+    return JsonResponse(
+        {
+            "error": {
+                "code": "not_found",
+                "message": "The requested resource was not found.",
+                "fields": {},
+            }
+        },
+        status=404,
+    )
+
+
+def custom_500_view(request: HttpRequest) -> JsonResponse:
+    """Return a clean JSON 500 response without leaking internals."""
+    return JsonResponse(
+        {
+            "error": {
+                "code": "server_error",
+                "message": "An unexpected internal server error occurred.",
+                "fields": {},
+            }
+        },
+        status=500,
+    )

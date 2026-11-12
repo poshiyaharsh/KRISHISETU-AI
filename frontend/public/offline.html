@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offline — KrishiSetu AI</title>
+    <meta name="theme-color" content="#0F4A32" />
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background-color: #f5f0dc;
+        color: #1d2b22;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        line-height: 1.6;
+      }
+      .card {
+        max-width: 440px;
+        width: 100%;
+        background: #ffffff;
+        border: 1px solid #e4ecdd;
+        border-radius: 18px;
+        padding: 32px 24px;
+        text-align: center;
+        box-shadow: 0 8px 22px rgba(15, 74, 50, 0.12);
+      }
+      h1 {
+        color: #0f4a32;
+        font-size: 1.5rem;
+        margin: 16px 0 8px;
+      }
+      p {
+        margin: 0 0 20px;
+        font-size: 1rem;
+      }
+      .btn {
+        display: inline-block;
+        background-color: #0f4a32;
+        color: #f5f0dc;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        min-height: 48px;
+      }
+      .helpline {
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid #e4ecdd;
+        font-size: 0.875rem;
+        color: #1d2b22;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <img src="/logo-icon.svg" alt="KrishiSetu AI" width="56" height="56" />
+      <h1>You are currently offline</h1>
+      <p>
+        Please check your mobile data or Wi-Fi connection to fetch live crop advisories, weather
+        forecasts, and government schemes.
+      </p>
+      <button type="button" class="btn" onclick="window.location.reload()">Try Again</button>
+      <div class="helpline">
+        Need urgent farming advice? Call Kisan Call Centre (toll-free): <strong>1800-180-1551</strong>
+      </div>
+    </main>
+  </body>
+</html>

@@ -62,6 +62,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "config.middleware.SecurityHeadersMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -114,7 +115,10 @@ AUTH_PASSWORD_VALIDATORS = [
             "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
         )
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 12},
+    },
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
@@ -190,3 +194,36 @@ EMBEDDING_PROVIDER = env("EMBEDDING_PROVIDER", default="gemini")
 EMBEDDING_MODEL = env("EMBEDDING_MODEL", default="text-embedding-004")
 CHAT_DAILY_LIMIT = env.int("CHAT_DAILY_LIMIT", default=500)
 CHAT_RATE_LIMIT = env("CHAT_RATE_LIMIT", default="10/min")
+
+# Admin & Upload Limits
+ADMIN_URL = env("ADMIN_URL", default="krishi-portal-ops/")
+DATA_UPLOAD_MAX_MEMORY_SIZE = 1048576  # 1 MB request size limit
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576
+
+# Structured Logging with Request IDs (no PII or chat message content)
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "request_id": {
+            "()": "config.middleware.RequestIDFilter",
+        },
+    },
+    "formatters": {
+        "structured": {
+            "format": "[{asctime}] {levelname} [req={request_id}] {name}: {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "filters": ["request_id"],
+            "formatter": "structured",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": env("LOG_LEVEL", default="INFO"),
+    },
+}
