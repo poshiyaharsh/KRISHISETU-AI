@@ -11,6 +11,12 @@
   --ks-color-mist: #e4ecdd;        /* cards, skeletons, dividers */
   --ks-color-soil: #1d2b22;        /* body text on light backgrounds */
 
+  /* Semantic Text Tokens */
+  --ks-text-primary: #1d2b22;       /* soil */
+  --ks-text-heading: #0f4a32;       /* paddy */
+  --ks-text-muted: #4d6854;         /* darker grey-green: 6.18:1 on white (#ffffff), 5.38:1 on cream (#f5f0dc) (both >= 4.5:1) */
+  --ks-text-on-dark: #f5f0dc;       /* cream on dark backgrounds */
+
   --ks-color-success: #236e3b;
   --ks-color-warning: #8c5e06;
   --ks-color-danger: #b3402f;

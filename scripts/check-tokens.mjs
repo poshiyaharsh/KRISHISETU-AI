@@ -13,18 +13,33 @@ const reportPath = path.resolve(rootDir, 'docs', 'brand', 'contrast-report.md');
 // 1. Parse tokens.css
 const cssContent = fs.readFileSync(cssPath, 'utf-8');
 const cssColors = {};
-const cssRegex = /--ks-color-([a-z]+):\s*(#[0-9a-fA-F]{6});/g;
+const cssRegex = /--ks-color-([a-z0-9-]+):\s*(#[0-9a-fA-F]{6});/g;
 let match;
 while ((match = cssRegex.exec(cssContent)) !== null) {
-  cssColors[match[1]] = match[2].toUpperCase();
+  // Convert kebab-case to camelCase
+  const key = match[1].replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+  cssColors[key] = match[2].toUpperCase();
 }
 
-// 2. Parse tokens.ts
+// 2. Parse tokens.ts colors block
 const tsContent = fs.readFileSync(tsPath, 'utf-8');
 const tsColors = {};
-const tsRegex = /([a-z]+):\s*'(#[0-9a-fA-F]{6})'/g;
-while ((match = tsRegex.exec(tsContent)) !== null) {
-  tsColors[match[1]] = match[2].toUpperCase();
+const colorsBlockMatch = /export const colors = \{([\s\S]*?)\} as const;/.exec(tsContent);
+if (colorsBlockMatch) {
+  const tsRegex = /([a-zA-Z0-9]+):\s*'(#[0-9a-fA-F]{6})'/g;
+  while ((match = tsRegex.exec(colorsBlockMatch[1])) !== null) {
+    tsColors[match[1]] = match[2].toUpperCase();
+  }
+}
+
+// Parse semantic text tokens
+const textColorsMatch = /export const textColors = \{([\s\S]*?)\} as const;/.exec(tsContent);
+const semanticTextTokens = {};
+if (textColorsMatch) {
+  const textRegex = /([a-zA-Z]+):\s*'(#[0-9a-fA-F]{6})'/g;
+  while ((match = textRegex.exec(textColorsMatch[1])) !== null) {
+    semanticTextTokens[match[1]] = match[2].toUpperCase();
+  }
 }
 
 console.log('--- KrishiSetu AI: Checking Token Parity ---');

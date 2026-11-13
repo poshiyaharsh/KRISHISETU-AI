@@ -163,7 +163,7 @@ describe('Nutrition Page', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Crop Nutrition & Dietary Composition')).toBeInTheDocument();
+    expect(screen.getByText('Crop nutrition')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getAllByText('130 kcal').length).toBeGreaterThanOrEqual(1);

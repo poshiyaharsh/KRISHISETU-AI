@@ -17,6 +17,17 @@ export default {
         warning: 'var(--ks-color-warning)',
         danger: 'var(--ks-color-danger)',
         info: 'var(--ks-color-info)',
+        'text-primary': 'var(--ks-text-primary)',
+        'text-heading': 'var(--ks-text-heading)',
+        'text-muted': 'var(--ks-text-muted)',
+        'text-on-dark': 'var(--ks-text-on-dark)',
+      },
+      textColor: {
+        primary: 'var(--ks-text-primary)',
+        heading: 'var(--ks-text-heading)',
+        muted: 'var(--ks-text-muted)',
+        'on-dark': 'var(--ks-text-on-dark)',
+        onDark: 'var(--ks-text-on-dark)',
       },
       borderRadius: {
         sm: 'var(--ks-radius-sm)',

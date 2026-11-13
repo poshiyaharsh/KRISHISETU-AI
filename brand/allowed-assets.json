@@ -1,0 +1,15 @@
+{
+  "frontend/public/logo-icon.svg": "a7983e138194148501d9c68077ef972c7220b2423b2540dc641799bb34809e31",
+  "frontend/public/logo.svg": "8fc172bd94def139715668c2cff3c495507d523fe8b64bdf53bd412253398665",
+  "frontend/public/logo-reversed.svg": "9fa54360eb6e4a08ff22f8b2e1cedd2e35ba3ef6800454f8ef6759ff9b334337",
+  "frontend/public/logo-mono.svg": "24f551757b6ebae77b29078d5f6a9867369d34f26859fef871511c69b4d80ea2",
+  "frontend/public/favicon.ico": "764696c2120c3bd5d6bbe4d60b10376caf57d43f0d2e0d30b02576cafb9a1034",
+  "frontend/public/favicon-32.png": "fe479ce572b72286dc2a479eee68f0bec248dcc68d4ea6f02c9ddd248638351c",
+  "frontend/public/icon-192.png": "4fccec9385284e27c30cd77741d24c028c292e56435375397d9c5bb6c77cb791",
+  "frontend/public/favicon-192.png": "4fccec9385284e27c30cd77741d24c028c292e56435375397d9c5bb6c77cb791",
+  "frontend/public/icon-512.png": "1e6db32f6aa5bb259ee3a5358482aaef796e2ef9059936d54d656071b9e3cad3",
+  "frontend/public/favicon-512.png": "1e6db32f6aa5bb259ee3a5358482aaef796e2ef9059936d54d656071b9e3cad3",
+  "frontend/public/icon-maskable-512.png": "8befeee9130d6e647742cfb3e137e2c3e2f2b3d7648c06143d7ba2a515891882",
+  "frontend/public/apple-touch-icon.png": "a51a6bf79c29c82fb13e8a26331f89c2f1f1b4a8cffba4df0805ccab9a46509d",
+  "frontend/public/og-image.png": "7b949b46cc777d9d72be8e6f5ae0e99f73136e1ae99ce3cfd0c94de2069e7728"
+}

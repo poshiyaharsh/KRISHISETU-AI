@@ -41,7 +41,7 @@ export const NutritionTable: React.FC<NutritionTableProps> = ({
   };
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-soil/15 bg-white shadow-sm dark:border-soil/30 dark:bg-soil/20">
+    <div className="overflow-x-auto rounded-xl border border-soil/15 bg-white shadow-sm">
       <table
         className="w-full text-left text-sm"
         aria-label={t('nutrition.table_aria_label', 'Nutritional composition table per 100 grams edible portion')}
@@ -49,7 +49,7 @@ export const NutritionTable: React.FC<NutritionTableProps> = ({
         <caption className="sr-only">
           {t('nutrition.table_caption', 'Nutritional profile values per 100 grams edible portion')}
         </caption>
-        <thead className="border-b border-soil/10 bg-cream/40 text-xs font-semibold uppercase tracking-wider text-soil dark:border-soil/20 dark:bg-soil/40 dark:text-cream">
+        <thead className="border-b border-soil/20 bg-mist text-paddy text-xs font-bold uppercase tracking-wider">
           <tr>
             <th scope="col" className="px-4 py-3 sm:px-6">
               {t('nutrition.nutrient_header', 'Nutrient (per 100g)')}
@@ -58,7 +58,7 @@ export const NutritionTable: React.FC<NutritionTableProps> = ({
               comparisonCrops?.map((crop) => (
                 <th key={crop.crop_key} scope="col" className="px-4 py-3 text-right sm:px-6">
                   <div>{t(`crops.${crop.crop_key}`, crop.crop_name)}</div>
-                  <span className="text-[11px] font-normal lowercase tracking-normal text-soil/60 dark:text-cream/60">
+                  <span className="text-[11px] font-normal lowercase tracking-normal text-muted">
                     ({crop.form})
                   </span>
                 </th>
@@ -70,17 +70,21 @@ export const NutritionTable: React.FC<NutritionTableProps> = ({
             )}
           </tr>
         </thead>
-        <tbody className="divide-y divide-soil/10 dark:divide-soil/20">
+        <tbody className="divide-y divide-soil/10">
           {NUTRIENT_DEFS.map((def) => {
             const isEnergy = def.category === 'energy';
             return (
               <tr
                 key={def.key}
-                className={isEnergy ? 'bg-harvest-sun/10 font-medium dark:bg-harvest-sun/5' : 'hover:bg-cream/20'}
+                className={
+                  isEnergy
+                    ? 'bg-mist/50 font-semibold text-heading'
+                    : 'even:bg-mist/20 hover:bg-mist/40 transition-colors'
+                }
               >
                 <th
                   scope="row"
-                  className="px-4 py-3 font-medium text-soil dark:text-cream sm:px-6"
+                  className={`px-4 py-3 sm:px-6 ${isEnergy ? 'font-bold text-heading' : 'font-medium text-soil'}`}
                 >
                   {t(def.labelKey, def.key)}
                 </th>
@@ -88,13 +92,13 @@ export const NutritionTable: React.FC<NutritionTableProps> = ({
                   comparisonCrops?.map((crop) => (
                     <td
                       key={crop.crop_key}
-                      className="px-4 py-3 text-right font-mono text-soil dark:text-cream sm:px-6"
+                      className="px-4 py-3 text-right font-sans tabular-nums font-medium text-soil sm:px-6"
                     >
                       {formatValue(crop.nutrients[def.key], def.unit)}
                     </td>
                   ))
                 ) : (
-                  <td className="px-4 py-3 text-right font-mono text-soil dark:text-cream sm:px-6">
+                  <td className="px-4 py-3 text-right font-sans tabular-nums font-medium text-soil sm:px-6">
                     {formatValue(nutrients?.[def.key], def.unit)}
                   </td>
                 )}
@@ -103,7 +107,7 @@ export const NutritionTable: React.FC<NutritionTableProps> = ({
           })}
         </tbody>
       </table>
-      <div className="border-t border-soil/10 px-4 py-2 text-xs text-soil/60 dark:border-soil/20 dark:text-cream/60">
+      <div className="border-t border-soil/10 px-4 py-2.5 text-xs text-muted">
         * {t('nutrition.basis_note', 'Basis: per 100 g edible portion. Missing values (—) indicate nutrient not analyzed or not reported in source.')}
       </div>
     </div>

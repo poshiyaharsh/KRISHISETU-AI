@@ -1,0 +1,8 @@
+# KrishiSetu AI - Forbidden Brand Hashes (SHA-256)
+# Any asset matching these hashes is an obsolete, low-contrast, or raster-embedded brand asset.
+# Generated during single logo source unification.
+BB9B7A8AA5714908163BC99A0FE484150A6C87C638D84A31762E641E1ECFA904  favicon.svg (old embedded raster PNG)
+5AE354E062F6A95C4B7FBCDDAA4B930A39E10DF0EA3AECEAE62E6F7BC848969E  logo.svg / logo.source.svg (old embedded 244KB base64 PNG)
+C54CF0B3D5B2FABFEA7434BC95605638433BCB6A882F9A96C44086F8F4916ABB  logo.png / logo.master.png (old raster lockup)
+49D881682D1F76819DB7E433C100A3A427DB7104A18F99173C140D66865C4B4F  logo-icon.png / favicon-512.png (old raster icon)
+B9F16494274B65FA8C1100A1DEA23CCD68359C2A91C4086D13A2EF4D2C31200A  preview.png (old brand preview)

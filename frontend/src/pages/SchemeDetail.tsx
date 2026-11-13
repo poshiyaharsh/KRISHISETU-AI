@@ -175,7 +175,7 @@ export const SchemeDetail: React.FC = () => {
         {/* Documents Section */}
         <section className="bg-white rounded-xl border border-mist shadow-xs p-6 space-y-3">
           <div className="flex items-center gap-2 text-paddy font-bold text-lg">
-            <FileText className="w-5 h-5 text-wheat" aria-hidden="true" />
+            <FileText className="w-5 h-5 text-leaf" aria-hidden="true" />
             <h2>{t('schemes.detail.documentsTitle')}</h2>
           </div>
           <p className="text-soil/90 leading-relaxed text-sm whitespace-pre-line">

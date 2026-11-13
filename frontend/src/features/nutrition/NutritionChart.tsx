@@ -18,7 +18,7 @@ interface NutritionChartProps {
   cropName?: string;
 }
 
-const CROP_COLORS = ['#126A08', '#93C810', '#FAC13E'];
+const CROP_COLORS = ['#0F4A32', '#3B8E4F', '#D9A93F'];
 
 export const NutritionChart: React.FC<NutritionChartProps> = ({
   nutrients,
@@ -71,16 +71,16 @@ export const NutritionChart: React.FC<NutritionChartProps> = ({
 
   return (
     <div
-      className="rounded-xl border border-soil/15 bg-white p-4 shadow-sm dark:border-soil/30 dark:bg-soil/20 sm:p-6"
+      className="rounded-xl border border-soil/15 bg-white p-4 shadow-sm sm:p-6"
       role="region"
       aria-label={t('nutrition.chart_aria_label', 'Macronutrient breakdown chart')}
     >
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-base font-semibold text-soil dark:text-cream">
+          <h3 className="text-base font-semibold text-heading">
             {t('nutrition.macro_breakdown', 'Macronutrient Breakdown (grams per 100g)')}
           </h3>
-          <p className="text-xs text-soil/60 dark:text-cream/60">
+          <p className="text-xs text-muted">
             {t(
               'nutrition.macro_subtitle',
               'Compares major nutrients on equal scale. Energy (kcal) is displayed separately.'
@@ -92,38 +92,47 @@ export const NutritionChart: React.FC<NutritionChartProps> = ({
       <div className="h-64 w-full sm:h-72">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E4ECDD" />
             <XAxis
               dataKey="name"
-              stroke="#6B7280"
-              fontSize={12}
+              stroke="#4D6854"
+              tick={{ fill: '#1D2B22', fontSize: 12, fontWeight: 500 }}
               tickLine={false}
               interval={0}
             />
             <YAxis
-              stroke="#6B7280"
-              fontSize={12}
+              stroke="#4D6854"
+              tick={{ fill: '#1D2B22', fontSize: 12, fontWeight: 500 }}
               tickLine={false}
               unit="g"
             />
             <Tooltip
               formatter={(value) => [`${value ?? 0} g`, '']}
               contentStyle={{
-                backgroundColor: '#02280C',
+                backgroundColor: '#0F4A32',
                 color: '#F5F0DC',
                 borderRadius: '8px',
-                border: 'none',
+                border: '1px solid #D9A93F',
                 fontSize: '12px',
+                fontWeight: 500,
               }}
+              itemStyle={{ color: '#F5F0DC' }}
+              labelStyle={{ color: '#D9A93F', fontWeight: 700 }}
             />
             {isComparison && comparisonCrops ? (
               <>
-                <Legend verticalAlign="top" height={36} />
+                <Legend
+                  verticalAlign="top"
+                  height={36}
+                  wrapperStyle={{ color: '#1D2B22', fontSize: '12px', fontWeight: 600 }}
+                />
                 {comparisonCrops.map((c, idx) => (
                   <Bar
                     key={c.crop_key}
                     dataKey={c.crop_name}
                     fill={CROP_COLORS[idx % CROP_COLORS.length]}
+                    stroke={idx % CROP_COLORS.length === 2 ? '#8C5E06' : undefined}
+                    strokeWidth={idx % CROP_COLORS.length === 2 ? 1 : 0}
                     radius={[4, 4, 0, 0]}
                   />
                 ))}
@@ -132,7 +141,7 @@ export const NutritionChart: React.FC<NutritionChartProps> = ({
               <Bar
                 dataKey="amount"
                 name={cropName}
-                fill="#126A08"
+                fill="#0F4A32"
                 radius={[4, 4, 0, 0]}
               />
             )}

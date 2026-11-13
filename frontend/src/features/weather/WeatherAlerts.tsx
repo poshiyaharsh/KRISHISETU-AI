@@ -54,7 +54,7 @@ export const WeatherAlerts: React.FC<WeatherAlertsProps> = ({ daily }) => {
   if (dryCondition) {
     alerts.push({
       id: 'dry-spell',
-      icon: <Sun className="w-5 h-5 text-wheat shrink-0" aria-hidden="true" />,
+      icon: <Sun className="w-5 h-5 text-warning shrink-0" aria-hidden="true" />,
       message: t('weather.alerts.drySpell'),
       type: 'info',
     });

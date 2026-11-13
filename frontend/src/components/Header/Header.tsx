@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Menu, X } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
+import { BrandLogo } from '@/components/brand/BrandLogo';
 import { NavLinks, type NavItem } from './NavLinks';
 import { MobileMenu } from './MobileMenu';
 
@@ -48,11 +49,9 @@ export const Header: React.FC = () => {
           aria-label="KrishiSetu AI, home"
           className="flex items-center gap-[10px] shrink-0 whitespace-nowrap me-8 focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy rounded-md py-1"
         >
-          <img
-            src="/logo-icon.svg"
-            alt=""
-            width="40"
-            height="40"
+          <BrandLogo
+            variant="icon"
+            size={40}
             className="w-10 h-10 shrink-0 select-none pointer-events-none"
           />
           <span className="font-extrabold text-paddy text-2xl leading-none tracking-tight select-none">

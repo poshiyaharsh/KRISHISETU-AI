@@ -1,5 +1,15 @@
-const CACHE_NAME = 'krishisetu-shell-v1';
-const APP_SHELL = ['/', '/index.html', '/offline.html', '/logo-icon.svg', '/site.webmanifest'];
+const CACHE_NAME = 'krishisetu-shell-v2';
+const APP_SHELL = [
+  '/',
+  '/index.html',
+  '/offline.html',
+  '/logo-icon.svg',
+  '/favicon.ico',
+  '/favicon-32.png',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/site.webmanifest',
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

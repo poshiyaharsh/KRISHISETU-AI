@@ -14,6 +14,13 @@ export const colors = {
   info: '#2B6C8F',
 } as const;
 
+export const textColors = {
+  primary: '#1D2B22',
+  heading: '#0F4A32',
+  muted: '#4D6854', // 6.18:1 on white (#FFFFFF), 5.38:1 on cream (#F5F0DC) (both >= 4.5:1)
+  onDark: '#F5F0DC',
+} as const;
+
 export const fontSizes = {
   xs: '0.875rem',
   sm: '1rem',
@@ -34,7 +41,7 @@ export const shadows = {
 
 export const breakpoints = { sm: 480, md: 768, lg: 1024, header: 1100, xl: 1280 } as const;
 
-export const tokens = { colors, fontSizes, radius, shadows, breakpoints } as const;
+export const tokens = { colors, textColors, fontSizes, radius, shadows, breakpoints } as const;
 
 /** Spread into tailwind.config.ts under theme.extend (wired in Phase 1). */
 export const tailwindTheme = {
@@ -46,6 +53,17 @@ export const tailwindTheme = {
     cream: colors.cream,
     mist: colors.mist,
     soil: colors.soil,
+    'text-primary': textColors.primary,
+    'text-heading': textColors.heading,
+    'text-muted': textColors.muted,
+    'text-on-dark': textColors.onDark,
+  },
+  textColor: {
+    primary: textColors.primary,
+    heading: textColors.heading,
+    muted: textColors.muted,
+    'on-dark': textColors.onDark,
+    onDark: textColors.onDark,
   },
   borderRadius: radius,
   boxShadow: shadows,
