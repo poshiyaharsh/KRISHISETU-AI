@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Bot, User, ThumbsUp, ThumbsDown, Copy, Check, ExternalLink } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { User, ThumbsUp, ThumbsDown, Copy, Check, ExternalLink, AlertCircle, RotateCcw } from 'lucide-react';
+import { BrandLogo } from '@/components/brand/BrandLogo';
 import { ChatMessage, ChatSource } from './types';
 
 interface ChatBubbleProps {
   message: ChatMessage;
   onFeedback?: (messageId: string, rating: 'up' | 'down') => void;
+  onSelectSuggestion?: (question: string) => void;
+  onRetry?: (text: string) => void;
 }
 
-export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, onFeedback }) => {
+export const ChatBubble: React.FC<ChatBubbleProps> = ({
+  message,
+  onFeedback,
+  onSelectSuggestion,
+  onRetry,
+}) => {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const isUser = message.role === 'user';
 
@@ -22,7 +32,6 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, onFeedback }) =
   const renderFormattedContent = (text: string) => {
     const lines = text.split('\n');
     return lines.map((line, idx) => {
-      // Bold text formatting **text**
       const parts = line.split(/(\*\*.*?\*\*)/g);
       const renderedLine = parts.map((part, pIdx) => {
         if (part.startsWith('**') && part.endsWith('**')) {
@@ -56,8 +65,11 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, onFeedback }) =
   };
 
   if (isUser) {
+    const errorKey = message.error?.code ? `chat.errors.${message.error.code}` : 'chat.errors.generic';
+    const errorText = message.error ? t(errorKey, message.error.message || t('chat.errors.generic')) : null;
+
     return (
-      <div className="flex justify-end mb-4 group">
+      <div className="flex flex-col items-end mb-4 group">
         <div className="flex gap-2 max-w-[85%] sm:max-w-[75%] items-start flex-row-reverse">
           <div className="w-8 h-8 rounded-full bg-paddy text-cream flex items-center justify-center shrink-0 shadow-xs">
             <User className="w-4 h-4" aria-hidden="true" />
@@ -67,6 +79,29 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, onFeedback }) =
             {message.content}
           </div>
         </div>
+
+        {/* Inline Error Notice Directly Under User Message */}
+        {message.error && (
+          <div
+            role="alert"
+            className="mt-2 mr-10 max-w-[85%] sm:max-w-[75%] p-3 rounded-xl bg-red-50 border border-red-200 text-red-900 text-xs sm:text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 shadow-2xs"
+          >
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-red-600 shrink-0" aria-hidden="true" />
+              <span className="font-medium text-red-900">{errorText}</span>
+            </div>
+            {onRetry && (
+              <button
+                type="button"
+                onClick={() => onRetry(message.content)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-2xs transition-colors shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+              >
+                <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>{t('chat.tryAgain', 'Try again')}</span>
+              </button>
+            )}
+          </div>
+        )}
       </div>
     );
   }
@@ -74,8 +109,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, onFeedback }) =
   return (
     <div className="flex justify-start mb-6 group">
       <div className="flex gap-2.5 max-w-[95%] sm:max-w-[85%] items-start">
-        <div className="w-8 h-8 rounded-full bg-mist text-paddy font-bold flex items-center justify-center shrink-0 shadow-xs border border-mist">
-          <Bot className="w-4 h-4 text-paddy" aria-hidden="true" />
+        <div className="w-8 h-8 rounded-full bg-cream border border-mist p-1 flex items-center justify-center shrink-0 shadow-xs">
+          <BrandLogo variant="icon" size={24} className="w-6 h-6 shrink-0" />
           <span className="sr-only">Krishi Mitra</span>
         </div>
 
@@ -83,7 +118,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, onFeedback }) =
           <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-mist">
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wider text-paddy">Krishi Mitra</span>
-              <span className="text-[10px] font-medium bg-mist text-paddy px-1.5 py-0.5 rounded-full">AI Guide</span>
+              <span className="text-[10px] font-medium bg-mist text-paddy px-1.5 py-0.5 rounded-full">Guide</span>
             </div>
             <div className="flex items-center gap-1">
               <button
@@ -92,7 +127,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, onFeedback }) =
                 aria-label={copied ? 'Copied' : 'Copy message'}
                 className="p-1 text-soil/60 hover:text-paddy rounded transition-colors focus:outline-none focus:ring-1 focus:ring-paddy"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? <Check className="w-3.5 h-3.5 text-leaf" /> : <Copy className="w-3.5 h-3.5" />}
               </button>
             </div>
           </div>
@@ -101,11 +136,32 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, onFeedback }) =
             {renderFormattedContent(message.content)}
           </div>
 
+          {/* Suggested follow-up questions / chips */}
+          {message.suggestions && message.suggestions.length > 0 && (
+            <div className="mt-4 pt-3 border-t border-mist">
+              <div className="text-xs font-semibold text-paddy mb-2">
+                {t('chat.suggestedQuestions', 'Suggested Questions:')}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {message.suggestions.map((s, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => onSelectSuggestion?.(s)}
+                    className="text-left text-xs px-3 py-1.5 rounded-full bg-cream/70 hover:bg-mist text-paddy border border-mist transition-colors font-medium shadow-2xs hover:border-leaf/40"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Source Citation Chips */}
           {message.sources && message.sources.length > 0 && (
             <div className="mt-4 pt-3 border-t border-mist">
               <div className="text-xs font-semibold text-paddy mb-2 flex items-center gap-1">
-                <span>Verified Data Sources:</span>
+                <span>{t('chat.verifiedSources', 'Verified Data Sources:')}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {message.sources.map((src: ChatSource, sIdx: number) => {
@@ -140,7 +196,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, onFeedback }) =
 
           {/* Feedback Thumbs */}
           <div className="mt-3.5 pt-2 flex items-center justify-between text-xs text-soil/60">
-            <span className="text-[11px] text-soil/60">Was this advice helpful?</span>
+            <span className="text-[11px] text-soil/60">{t('chat.helpfulPrompt', 'Was this advice helpful?')}</span>
             <div className="flex items-center gap-2">
               <button
                 type="button"

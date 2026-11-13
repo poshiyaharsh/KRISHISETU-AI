@@ -10,9 +10,13 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   sources?: ChatSource[];
+  suggestions?: string[];
   timestamp: number;
   feedback?: 'up' | 'down';
-  error?: boolean;
+  error?: {
+    code: string;
+    message?: string;
+  };
 }
 
 export interface ChatFeedbackPayload {
@@ -23,10 +27,12 @@ export interface ChatFeedbackPayload {
 }
 
 export interface StreamEvent {
-  type: 'sources' | 'token' | 'done' | 'error';
+  type: 'sources' | 'token' | 'suggestions' | 'done' | 'error';
   sources?: ChatSource[];
   content?: string;
   message?: string;
+  code?: string;
+  suggestions?: string[];
   session_id?: string;
   language?: string;
 }

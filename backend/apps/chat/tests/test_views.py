@@ -212,3 +212,68 @@ def test_gemini_upstream_error_falls_back_gracefully():
         )
         assert 'data: {"type": "token"' in combined
         assert 'data: {"type": "done"' in combined
+
+
+@pytest.mark.django_db
+def test_chat_status_endpoint():
+    """Verify GET /api/chat/status/ returns availability and chunk count."""
+    client = APIClient()
+    resp = client.get("/api/chat/status/")
+    assert resp.status_code == status.HTTP_200_OK
+    data = resp.json()
+    assert data["available"] is True
+    assert data["reason_code"] == "ready"
+    assert data["knowledge_chunks"] > 0
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "msg,expected_lang",
+    [
+        ("hy", "en"),
+        ("namaste", "hi"),
+        ("kem cho", "gu"),
+    ],
+)
+def test_chat_greeting_handler_multilingual(msg, expected_lang):
+    """Test local greetings return status 200 with 3 suggestions without LLM call."""
+    client = APIClient()
+
+    # JSON mode
+    resp_json = client.post(
+        "/api/chat/",
+        {"message": msg, "language": expected_lang, "stream": False},
+        format="json",
+    )
+    assert resp_json.status_code == status.HTTP_200_OK
+    data = resp_json.json()
+    assert len(data["suggestions"]) == 3
+    assert data["sources"] == []
+    assert len(data["message"]) > 0
+
+    # SSE mode
+    resp_sse = client.post(
+        "/api/chat/",
+        {"message": msg, "language": expected_lang, "stream": True},
+        format="json",
+    )
+    assert resp_sse.status_code == status.HTTP_200_OK
+    combined = "".join(
+        c.decode("utf-8") if isinstance(c, bytes) else c
+        for c in resp_sse.streaming_content
+    )
+    assert 'data: {"type": "token"' in combined
+    assert 'data: {"type": "suggestions"' in combined
+    assert 'data: {"type": "done"' in combined
+
+
+@pytest.mark.django_db
+def test_chat_message_too_long():
+    """Verify messages > 1000 characters return code 'message_too_long'."""
+    client = APIClient()
+    long_msg = "A" * 1005
+    resp = client.post("/api/chat/", {"message": long_msg}, format="json")
+    assert resp.status_code == status.HTTP_400_BAD_REQUEST
+    data = resp.json()
+    assert data["error"]["code"] == "message_too_long"
+

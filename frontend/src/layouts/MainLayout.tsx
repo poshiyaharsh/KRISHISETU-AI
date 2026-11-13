@@ -2,6 +2,8 @@ import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Header } from '@/components/Header/Header';
+import { BrandLogo } from '@/components/brand/BrandLogo';
+import { ChatLauncher } from '@/components/chat/ChatLauncher';
 
 export const MainLayout: React.FC = () => {
   const { t } = useTranslation();
@@ -29,7 +31,7 @@ export const MainLayout: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-soil/70 text-center sm:text-left">
             <div className="flex items-center gap-2">
-              <img src="/logo-icon.svg" alt="" className="w-5 h-5" width="20" height="20" />
+              <BrandLogo variant="icon" size={20} className="w-5 h-5 shrink-0" />
               <span className="font-bold text-paddy">KrishiSetu AI</span>
               <span>— {t('common.tagline')}</span>
             </div>
@@ -48,6 +50,9 @@ export const MainLayout: React.FC = () => {
           </p>
         </div>
       </footer>
+
+      {/* Floating Chat Launcher on all pages except /chat */}
+      <ChatLauncher />
     </div>
   );
 };

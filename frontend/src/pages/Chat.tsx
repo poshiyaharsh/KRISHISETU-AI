@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Bot, RotateCcw, AlertCircle, ShieldAlert, Sparkles } from 'lucide-react';
+import { RotateCcw, ShieldAlert, AlertTriangle } from 'lucide-react';
+import { BrandLogo } from '@/components/brand/BrandLogo';
 import { ChatBubble } from '../features/chat/ChatBubble';
 import { ChatInput } from '../features/chat/ChatInput';
 import { StarterQuestions } from '../features/chat/StarterQuestions';
-import { streamChat, submitChatFeedback } from '../features/chat/api';
+import { streamChat, submitChatFeedback, fetchChatStatus } from '../features/chat/api';
 import { ChatMessage, ChatSource } from '../features/chat/types';
 
 const STORAGE_KEY_MESSAGES = 'krishisetu_chat_messages_v1';
@@ -30,9 +31,22 @@ export const Chat: React.FC = () => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [errorBanner, setErrorBanner] = useState<{ message: string; code?: string } | null>(null);
+  const [isUnavailable, setIsUnavailable] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Check chat status on mount
+  useEffect(() => {
+    let isMounted = true;
+    fetchChatStatus().then((status) => {
+      if (isMounted && !status.available) {
+        setIsUnavailable(true);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -67,7 +81,6 @@ export const Chat: React.FC = () => {
       }
       setMessages([]);
       setSessionId(null);
-      setErrorBanner(null);
       try {
         localStorage.removeItem(STORAGE_KEY_MESSAGES);
         localStorage.removeItem(STORAGE_KEY_SESSION);
@@ -78,9 +91,26 @@ export const Chat: React.FC = () => {
   };
 
   const handleSendMessage = async (text: string) => {
-    setErrorBanner(null);
+    if (isUnavailable) return;
+
     const userMsgId = `user-${Date.now()}`;
     const assistantMsgId = `asst-${Date.now()}`;
+
+    // Offline check before network request
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      const offlineMsg: ChatMessage = {
+        id: userMsgId,
+        role: 'user',
+        content: text,
+        timestamp: Date.now(),
+        error: {
+          code: 'offline',
+          message: t('chat.errors.offline'),
+        },
+      };
+      setMessages((prev) => [...prev, offlineMsg]);
+      return;
+    }
 
     const userMsg: ChatMessage = {
       id: userMsgId,
@@ -118,6 +148,11 @@ export const Chat: React.FC = () => {
           prev.map((msg) => (msg.id === assistantMsgId ? { ...msg, content: msg.content + token } : msg))
         );
       },
+      (suggestions: string[]) => {
+        setMessages((prev) =>
+          prev.map((msg) => (msg.id === assistantMsgId ? { ...msg, suggestions } : msg))
+        );
+      },
       (newSessionId: string) => {
         if (newSessionId) {
           setSessionId(newSessionId);
@@ -126,13 +161,21 @@ export const Chat: React.FC = () => {
       },
       (errorMsg: string, errorCode?: string) => {
         setIsLoading(false);
-        setErrorBanner({ message: errorMsg, code: errorCode });
+        // Single error surface: attach error to user message, remove empty assistant bubble
         setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === assistantMsgId && !msg.content
-              ? { ...msg, content: errorMsg, error: true }
-              : msg
-          )
+          prev
+            .filter((msg) => msg.id !== assistantMsgId)
+            .map((msg) =>
+              msg.id === userMsgId
+                ? {
+                    ...msg,
+                    error: {
+                      code: errorCode || 'chat_provider_unavailable',
+                      message: errorMsg,
+                    },
+                  }
+                : msg
+            )
         );
       },
       abortController.signal
@@ -156,24 +199,23 @@ export const Chat: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)] max-w-4xl mx-auto px-3 sm:px-6 py-4">
-      {/* Header with Title and Clear Chat */}
+      {/* Header with Brand Logo and Clear Chat */}
       <header className="flex items-center justify-between pb-3.5 mb-2 border-b border-mist shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-paddy text-cream flex items-center justify-center shadow-xs">
-            <Bot className="w-6 h-6" aria-hidden="true" />
+          <div className="w-12 h-12 rounded-2xl bg-paddy text-cream flex items-center justify-center shadow-xs shrink-0 p-1">
+            <BrandLogo variant="reversed" size={28} className="w-7 h-7" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-lg sm:text-xl font-bold text-paddy font-display">
                 {t('chat.title', 'Krishi Mitra')}
               </h1>
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold bg-mist text-paddy px-2 py-0.5 rounded-full">
-                <Sparkles className="w-3 h-3 text-leaf" aria-hidden="true" />
-                <span>AI 24/7</span>
+              <span className="inline-flex items-center text-[11px] font-semibold bg-mist text-paddy px-2 py-0.5 rounded-full">
+                Advisory
               </span>
             </div>
             <p className="text-xs text-soil/70">
-              {t('chat.subtitle', 'Multilingual 24/7 Agricultural Advisory & Scheme Guide')}
+              {t('chat.subtitle', 'Grounded Agricultural Advisory & Scheme Guide')}
             </p>
           </div>
         </div>
@@ -198,28 +240,18 @@ export const Chat: React.FC = () => {
       >
         <ShieldAlert className="w-4 h-4 text-amber-700 shrink-0" aria-hidden="true" />
         <span className="leading-snug">
-          <strong>Notice:</strong> Krishi Mitra can make mistakes. Always confirm important farming decisions with your
-          local agriculture officer (Gram Sevak) or Krishi Vigyan Kendra (KVK).
+          <strong>Notice:</strong> {t('chat.disclaimerNotice')}
         </span>
       </div>
 
-      {/* Error Banner */}
-      {errorBanner && (
+      {/* Unavailable Status Notice */}
+      {isUnavailable && (
         <div
           role="alert"
-          className="mb-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-900 text-xs sm:text-sm flex items-center justify-between gap-3 shrink-0"
+          className="mb-3 px-4 py-3 rounded-xl bg-amber-100 border border-amber-300 text-amber-950 text-xs sm:text-sm flex items-center gap-2.5 shrink-0"
         >
-          <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
-            <span>{errorBanner.message}</span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setErrorBanner(null)}
-            className="text-red-700 hover:text-red-900 font-semibold text-xs"
-          >
-            Dismiss
-          </button>
+          <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0" />
+          <span>{t('chat.unavailableBanner')}</span>
         </div>
       )}
 
@@ -231,21 +263,27 @@ export const Chat: React.FC = () => {
       >
         {messages.length === 0 ? (
           <div className="h-full flex flex-col justify-center items-center text-center px-4 py-8">
-            <div className="w-16 h-16 rounded-2xl bg-mist/60 border border-mist flex items-center justify-center text-paddy mb-3 shadow-xs">
-              <Bot className="w-8 h-8 text-paddy" />
+            <div className="w-16 h-16 rounded-2xl bg-mist/60 border border-mist flex items-center justify-center p-2 text-paddy mb-3 shadow-xs">
+              <BrandLogo variant="icon" size={40} className="w-10 h-10" />
             </div>
             <h2 className="text-base sm:text-lg font-bold text-paddy mb-1">
-              Namaste! How can Krishi Mitra help you today?
+              {t('chat.emptyHeading', 'Namaste! How can Krishi Mitra help you today?')}
             </h2>
             <p className="text-xs sm:text-sm text-soil/70 max-w-md mb-4">
-              Ask any question about crops, weather forecasts, government subsidies, soil testing, or crop nutrition.
+              {t('chat.emptyDesc', 'Ask any question about crops, weather forecasts, government subsidies, soil testing, or crop nutrition.')}
             </p>
-            <StarterQuestions onSelect={handleSendMessage} disabled={isLoading} />
+            <StarterQuestions onSelect={handleSendMessage} disabled={isLoading || isUnavailable} />
           </div>
         ) : (
           <div>
             {messages.map((msg) => (
-              <ChatBubble key={msg.id} message={msg} onFeedback={handleFeedback} />
+              <ChatBubble
+                key={msg.id}
+                message={msg}
+                onFeedback={handleFeedback}
+                onSelectSuggestion={handleSendMessage}
+                onRetry={handleSendMessage}
+              />
             ))}
             <div ref={messagesEndRef} />
           </div>
@@ -254,7 +292,11 @@ export const Chat: React.FC = () => {
 
       {/* Input Tray */}
       <div className="pt-2 border-t border-mist shrink-0 bg-cream/30">
-        <ChatInput onSend={handleSendMessage} isLoading={isLoading} />
+        <ChatInput
+          onSend={handleSendMessage}
+          isLoading={isLoading}
+          disabled={isUnavailable}
+        />
       </div>
     </div>
   );

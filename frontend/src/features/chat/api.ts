@@ -2,6 +2,24 @@ import { ChatFeedbackPayload, ChatMessage, ChatSource, StreamEvent } from './typ
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 
+export interface ChatStatusResponse {
+  available: boolean;
+  reason_code: string;
+  knowledge_chunks: number;
+}
+
+export async function fetchChatStatus(): Promise<ChatStatusResponse> {
+  try {
+    const response = await fetch(`${API_BASE}/chat/status/`);
+    if (!response.ok) {
+      return { available: false, reason_code: 'status_check_failed', knowledge_chunks: 0 };
+    }
+    return response.json();
+  } catch {
+    return { available: false, reason_code: 'network_unavailable', knowledge_chunks: 0 };
+  }
+}
+
 export async function streamChat(
   message: string,
   history: ChatMessage[],
@@ -9,14 +27,24 @@ export async function streamChat(
   sessionId: string | null,
   onSources: (sources: ChatSource[]) => void,
   onToken: (token: string) => void,
+  onSuggestions: (suggestions: string[]) => void,
   onDone: (sessionId: string, language: string) => void,
   onError: (errorMsg: string, errorCode?: string) => void,
   signal?: AbortSignal
 ): Promise<void> {
-  const historyPayload = history.slice(-6).map((msg) => ({
-    role: msg.role,
-    content: msg.content,
-  }));
+  // If browser is offline, fail immediately with offline error code
+  if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    onError('You are currently offline.', 'offline');
+    return;
+  }
+
+  const historyPayload = history
+    .filter((msg) => !msg.error && msg.content)
+    .slice(-6)
+    .map((msg) => ({
+      role: msg.role,
+      content: msg.content,
+    }));
 
   const payload = {
     message,
@@ -37,7 +65,7 @@ export async function streamChat(
     });
 
     if (!response.ok) {
-      let errorCode = 'server_error';
+      let errorCode = 'chat_provider_unavailable';
       let errorMsg = 'Failed to connect to Krishi Mitra. Please try again.';
       try {
         const errorData = await response.json();
@@ -48,10 +76,10 @@ export async function streamChat(
           errorMsg = errorData.error.message;
         }
       } catch {
-        // Fallback to HTTP status text
         if (response.status === 429) {
           errorCode = 'chat_busy';
-          errorMsg = 'Daily chat quota exceeded or rate limit reached.';
+        } else if (response.status === 400) {
+          errorCode = 'bad_request';
         }
       }
       onError(errorMsg, errorCode);
@@ -59,7 +87,7 @@ export async function streamChat(
     }
 
     if (!response.body) {
-      onError('No response stream available.', 'stream_unavailable');
+      onError('No response stream available.', 'chat_provider_unavailable');
       return;
     }
 
@@ -86,10 +114,12 @@ export async function streamChat(
             onSources(event.sources);
           } else if (event.type === 'token' && event.content !== undefined) {
             onToken(event.content);
+          } else if (event.type === 'suggestions' && event.suggestions) {
+            onSuggestions(event.suggestions);
           } else if (event.type === 'done') {
             onDone(event.session_id || '', event.language || language);
           } else if (event.type === 'error') {
-            onError(event.message || 'Stream error occurred.', 'stream_error');
+            onError(event.message || 'Stream error occurred.', event.code || 'chat_provider_unavailable');
           }
         } catch {
           // Ignore JSON parse error for partial lines
@@ -100,21 +130,20 @@ export async function streamChat(
     if (signal?.aborted) {
       return;
     }
-    const msg = err instanceof Error ? err.message : 'Network connection failed.';
-    onError(msg, 'network_error');
+    const isNetwork = !navigator.onLine || (err instanceof TypeError && err.message.includes('fetch'));
+    onError(
+      isNetwork ? 'You are currently offline.' : 'Advisory connection interrupted. Please try again.',
+      isNetwork ? 'offline' : 'chat_provider_unavailable'
+    );
   }
 }
 
 export async function submitChatFeedback(payload: ChatFeedbackPayload): Promise<void> {
-  const response = await fetch(`${API_BASE}/chat/feedback/`, {
+  await fetch(`${API_BASE}/chat/feedback/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
   });
-
-  if (!response.ok) {
-    throw new Error('Failed to submit feedback.');
-  }
 }
