@@ -66,6 +66,14 @@ class PredictionRecord(models.Model):
     Farmer privacy is preserved: raw IP addresses are salted and hashed.
     """
 
+    user = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="predictions",
+        help_text="Authenticated farmer user account, or null for anonymous guest queries",
+    )
     nitrogen = models.FloatField(help_text="Soil Nitrogen (N) kg/ha")
     phosphorus = models.FloatField(help_text="Soil Phosphorus (P) kg/ha")
     potassium = models.FloatField(help_text="Soil Potassium (K) kg/ha")
