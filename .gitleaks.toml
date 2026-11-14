@@ -1,0 +1,13 @@
+# Gitleaks configuration for KrishiSetu AI
+title = "KrishiSetu Gitleaks Config"
+
+[allowlist]
+description = "Allowlist for public asset hashes, dev-only keys, and test templates"
+paths = [
+  '''brand/forbidden-hashes\.txt''',
+  '''brand/allowed-assets\.json''',
+  '''backend/config/settings/dev\.py''',
+  '''\.github/workflows/ci\.yml''',
+  '''\.env\.example''',
+  '''tests/.*''',
+]

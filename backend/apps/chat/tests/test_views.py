@@ -276,4 +276,3 @@ def test_chat_message_too_long():
     assert resp.status_code == status.HTTP_400_BAD_REQUEST
     data = resp.json()
     assert data["error"]["code"] == "message_too_long"
-

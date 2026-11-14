@@ -1,6 +1,6 @@
 # KrishiSetu AI: Localization & Key Parity Status
 
-> Generated on 2026-11-13 by `scripts/i18n-check.mjs`.
+> Generated on 2026-11-14 by `scripts/i18n-check.mjs`.
 > Single source of truth for multilingual coverage across all 23 scheduled Indian languages.
 
 | Code | Language Coverage | Status | Reviewer | Review Date |

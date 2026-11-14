@@ -115,6 +115,9 @@ jobs:
           python -m ruff check .
           python -m ruff format --check .
 
+      - name: Run ML test suite (pytest)
+        run: python -m pytest tests/
+
   secrets:
     name: Secret Scan (Gitleaks)
     runs-on: ubuntu-latest
@@ -129,5 +132,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run ML test suite (pytest)
-        run: python -m pytest tests/

@@ -40,14 +40,49 @@ logger = logging.getLogger("krishisetu.chat")
 
 # Greetings across en, hi, gu and phonetic transliterations
 GREETINGS_SET = {
-    "hy", "hi", "hey", "hello", "hola", "ok", "okay", "k", "namaste", "namaskar",
-    "pranam", "kem cho", "kemcho", "kaise ho", "kaisa hai", "good morning",
-    "good afternoon", "good evening", "help", "help me", "madad", "madad chahiye",
+    "hy",
+    "hi",
+    "hey",
+    "hello",
+    "hola",
+    "ok",
+    "okay",
+    "k",
+    "namaste",
+    "namaskar",
+    "pranam",
+    "kem cho",
+    "kemcho",
+    "kaise ho",
+    "kaisa hai",
+    "good morning",
+    "good afternoon",
+    "good evening",
+    "help",
+    "help me",
+    "madad",
+    "madad chahiye",
     # Devanagari
-    "नमस्ते", "नमस्कार", "प्रणाम", "राम राम", "हाय", "हेलो", "हाए", "शुभ प्रभात",
-    "मदद", "मदद चाहिए", "कैसे हो", "कैसा है",
+    "नमस्ते",
+    "नमस्कार",
+    "प्रणाम",
+    "राम राम",
+    "हाय",
+    "हेलो",
+    "हाए",
+    "शुभ प्रभात",
+    "मदद",
+    "मदद चाहिए",
+    "कैसे हो",
+    "कैसा है",
     # Gujarati
-    "નમસ્તે", "નમસ્કાર", "પ્રણામ", "કેમ છો", "જય શ્રી કૃષ્ણ", "શુભ પ્રભાત", "મદદ",
+    "નમસ્તે",
+    "નમસ્કાર",
+    "પ્રણામ",
+    "કેમ છો",
+    "જય શ્રી કૃષ્ણ",
+    "શુભ પ્રભાત",
+    "મદદ",
 }
 
 GREETING_RESPONSES = {
@@ -183,7 +218,9 @@ def chat_status_view(request):
         ),
         400: OpenApiResponse(description="Bad request or message too long"),
         429: OpenApiResponse(description="Chat busy or rate limit exceeded"),
-        503: OpenApiResponse(description="Knowledge unavailable or chat provider unavailable"),
+        503: OpenApiResponse(
+            description="Knowledge unavailable or chat provider unavailable"
+        ),
     },
 )
 @api_view(["POST"])
@@ -197,7 +234,11 @@ def chat_view(request):
     # Check message length explicitly for specific error code
     raw_message = request.data.get("message", "")
     if isinstance(raw_message, str) and len(raw_message) > 1000:
-        logger.info("Chat rejected: message_too_long (len=%d) ip_hash=%s", len(raw_message), ip_hash)
+        logger.info(
+            "Chat rejected: message_too_long (len=%d) ip_hash=%s",
+            len(raw_message),
+            ip_hash,
+        )
         return Response(
             {
                 "error": {
@@ -225,7 +266,11 @@ def chat_view(request):
     # 1. Daily spend guard check
     if not _check_and_increment_daily_limit():
         latency_ms = int((time.time() - start_time) * 1000)
-        logger.warning("Daily chat limit exceeded: code=chat_busy ip_hash=%s latency=%sms", ip_hash, latency_ms)
+        logger.warning(
+            "Daily chat limit exceeded: code=chat_busy ip_hash=%s latency=%sms",
+            ip_hash,
+            latency_ms,
+        )
         return Response(
             {
                 "error": {
@@ -276,7 +321,9 @@ def chat_view(request):
         ChatMessage.objects.create(
             session=session_obj,
             role="user",
-            content=user_message if getattr(settings, "CHAT_DEBUG_LOG_CONTENT", False) else "",
+            content=user_message
+            if getattr(settings, "CHAT_DEBUG_LOG_CONTENT", False)
+            else "",
             language=resolved_lang,
         )
         ChatMessage.objects.create(
@@ -288,6 +335,7 @@ def chat_view(request):
         )
 
         if should_stream:
+
             def greeting_stream() -> Generator[str, None, None]:
                 words = greeting_text.split(" ")
                 for i, w in enumerate(words):
@@ -296,7 +344,9 @@ def chat_view(request):
                 yield f"data: {json.dumps({'type': 'suggestions', 'suggestions': suggestions})}\n\n"
                 yield f"data: {json.dumps({'type': 'done', 'session_id': str(session_obj.session_id), 'language': resolved_lang})}\n\n"
 
-            response = StreamingHttpResponse(greeting_stream(), content_type="text/event-stream")
+            response = StreamingHttpResponse(
+                greeting_stream(), content_type="text/event-stream"
+            )
             response["Cache-Control"] = "no-cache"
             response["X-Accel-Buffering"] = "no"
             return response
@@ -332,7 +382,9 @@ def chat_view(request):
         ChatMessage.objects.create(
             session=session_obj,
             role="user",
-            content=user_message if getattr(settings, "CHAT_DEBUG_LOG_CONTENT", False) else "",
+            content=user_message
+            if getattr(settings, "CHAT_DEBUG_LOG_CONTENT", False)
+            else "",
             language=resolved_lang,
         )
         ChatMessage.objects.create(
@@ -344,12 +396,15 @@ def chat_view(request):
         )
 
         if should_stream:
+
             def refusal_stream():
                 yield f"data: {json.dumps({'type': 'token', 'content': refusal_text})}\n\n"
                 yield f"data: {json.dumps({'type': 'sources', 'sources': []})}\n\n"
                 yield f"data: {json.dumps({'type': 'done', 'session_id': str(session_obj.session_id), 'language': resolved_lang})}\n\n"
 
-            response = StreamingHttpResponse(refusal_stream(), content_type="text/event-stream")
+            response = StreamingHttpResponse(
+                refusal_stream(), content_type="text/event-stream"
+            )
             response["Cache-Control"] = "no-cache"
             response["X-Accel-Buffering"] = "no"
             return response
@@ -384,6 +439,7 @@ def chat_view(request):
 
     # 7. Streaming SSE vs Synchronous JSON
     if should_stream:
+
         def event_stream() -> Generator[str, None, None]:
             collected_pieces = []
             try:
@@ -408,14 +464,16 @@ def chat_view(request):
                 )
 
                 if len(sanitized_reply) > len(full_reply):
-                    extra = sanitized_reply[len(full_reply):]
+                    extra = sanitized_reply[len(full_reply) :]
                     yield f"data: {json.dumps({'type': 'token', 'content': extra})}\n\n"
 
                 # Save messages to database
                 ChatMessage.objects.create(
                     session=session_obj,
                     role="user",
-                    content=user_message if getattr(settings, "CHAT_DEBUG_LOG_CONTENT", False) else "",
+                    content=user_message
+                    if getattr(settings, "CHAT_DEBUG_LOG_CONTENT", False)
+                    else "",
                     language=resolved_lang,
                 )
                 ChatMessage.objects.create(
@@ -440,10 +498,17 @@ def chat_view(request):
                 )
             except Exception as e:
                 latency_ms = int((time.time() - start_time) * 1000)
-                logger.error("Chat stream error: code=chat_provider_unavailable ip_hash=%s latency=%sms err=%s", ip_hash, latency_ms, e)
+                logger.error(
+                    "Chat stream error: code=chat_provider_unavailable ip_hash=%s latency=%sms err=%s",
+                    ip_hash,
+                    latency_ms,
+                    e,
+                )
                 yield f"data: {json.dumps({'type': 'error', 'code': 'chat_provider_unavailable', 'message': 'The advisory provider is temporarily unavailable. Please try again.'})}\n\n"
 
-        response = StreamingHttpResponse(event_stream(), content_type="text/event-stream")
+        response = StreamingHttpResponse(
+            event_stream(), content_type="text/event-stream"
+        )
         response["Cache-Control"] = "no-cache"
         response["X-Accel-Buffering"] = "no"
         return response
@@ -463,7 +528,12 @@ def chat_view(request):
         )
     except Exception as e:
         latency_ms = int((time.time() - start_time) * 1000)
-        logger.error("Chat generate error: code=chat_provider_unavailable ip_hash=%s latency=%sms err=%s", ip_hash, latency_ms, e)
+        logger.error(
+            "Chat generate error: code=chat_provider_unavailable ip_hash=%s latency=%sms err=%s",
+            ip_hash,
+            latency_ms,
+            e,
+        )
         return Response(
             {
                 "error": {
@@ -477,7 +547,9 @@ def chat_view(request):
     ChatMessage.objects.create(
         session=session_obj,
         role="user",
-        content=user_message if getattr(settings, "CHAT_DEBUG_LOG_CONTENT", False) else "",
+        content=user_message
+        if getattr(settings, "CHAT_DEBUG_LOG_CONTENT", False)
+        else "",
         language=resolved_lang,
     )
     ChatMessage.objects.create(
