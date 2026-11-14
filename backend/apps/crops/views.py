@@ -115,8 +115,14 @@ class CropRecommendationView(APIView):
         request_id = str(uuid.uuid4())
         client_hash = _hash_client_ip(request)
 
-        # Audit log prediction record
-        PredictionRecord.objects.create(
+        # Audit log prediction record (linking to authenticated farmer if logged in)
+        user = (
+            request.user
+            if getattr(request, "user", None) and request.user.is_authenticated
+            else None
+        )
+        record = PredictionRecord.objects.create(
+            user=user,
             nitrogen=validated_inputs["nitrogen"],
             phosphorus=validated_inputs["phosphorus"],
             potassium=validated_inputs["potassium"],
@@ -132,6 +138,7 @@ class CropRecommendationView(APIView):
 
         response_data = {
             "request_id": request_id,
+            "prediction_id": record.id,
             "results": results_payload,
             "warnings": prediction_result.warnings,
             "model": {

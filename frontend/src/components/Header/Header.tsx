@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User as UserIcon, LogOut } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { BrandLogo } from '@/components/brand/BrandLogo';
+import { useAuth } from '@/features/auth';
 import { NavLinks, type NavItem } from './NavLinks';
 import { MobileMenu } from './MobileMenu';
 
 export const Header: React.FC = () => {
   const { t } = useTranslation();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -34,6 +36,14 @@ export const Header: React.FC = () => {
     { to: '/schemes', label: t('nav.schemes'), available: true },
     { to: '/nutrition', label: t('nav.nutrition'), available: true },
     { to: '/chat', label: t('nav.chatbot'), available: true },
+    ...(isAuthenticated ? [{ to: '/dashboard', label: t('nav.dashboard'), available: true }] : []),
+  ];
+
+  const mobileNavItems: NavItem[] = [
+    ...navItems,
+    ...(isAuthenticated
+      ? [{ to: '/profile', label: t('nav.profile'), available: true }]
+      : [{ to: '/login', label: t('nav.signIn'), available: true }]),
   ];
 
   return (
@@ -47,7 +57,7 @@ export const Header: React.FC = () => {
         <Link
           to="/"
           aria-label="KrishiSetu AI, home"
-          className="flex items-center gap-[10px] shrink-0 whitespace-nowrap me-8 focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy rounded-md py-1"
+          className="flex items-center gap-[10px] shrink-0 whitespace-nowrap me-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy rounded-md py-1"
         >
           <BrandLogo
             variant="icon"
@@ -63,8 +73,41 @@ export const Header: React.FC = () => {
         <div className="hidden header:flex items-center justify-between flex-1">
           <NavLinks items={navItems} />
 
-          {/* Right Side: Language Selector Only */}
-          <div className="flex items-center ms-4">
+          {/* Right Side: Auth Actions + Language Selector */}
+          <div className="flex items-center gap-3 ms-4">
+            {isAuthenticated ? (
+              <div className="flex items-center gap-1.5">
+                <Link
+                  to="/profile"
+                  title={user?.email || t('nav.profile')}
+                  aria-label={t('nav.profile')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-paddy hover:bg-mist/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy"
+                >
+                  <UserIcon className="w-4 h-4 text-paddy" />
+                  <span className="max-w-[110px] truncate">
+                    {user?.profile?.display_name || user?.email?.split('@')[0] || t('nav.profile')}
+                  </span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => logout()}
+                  title={t('auth.logout')}
+                  aria-label={t('auth.logout')}
+                  className="inline-flex items-center justify-center w-9 h-9 rounded-full text-soil/70 hover:text-paddy hover:bg-mist/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold bg-paddy text-on-dark hover:bg-forest transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy"
+              >
+                <UserIcon className="w-4 h-4 text-on-dark" />
+                <span>{t('nav.signIn')}</span>
+              </Link>
+            )}
+
             <LanguageSelector />
           </div>
         </div>
@@ -95,8 +138,9 @@ export const Header: React.FC = () => {
         id="mobile-nav-panel"
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
-        items={navItems}
+        items={mobileNavItems}
         menuButtonRef={menuButtonRef}
+        onLogout={isAuthenticated ? logout : undefined}
       />
     </header>
   );

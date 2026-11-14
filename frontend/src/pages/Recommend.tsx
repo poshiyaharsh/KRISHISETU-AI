@@ -33,6 +33,18 @@ export const Recommend: React.FC = () => {
       setLastInputs(variables);
       setResultData(data);
       setFormServerError(null);
+      if (data.prediction_id) {
+        try {
+          const raw = localStorage.getItem("krishisetu_guest_predictions");
+          const existing = raw ? JSON.parse(raw) : [];
+          if (Array.isArray(existing) && !existing.includes(data.prediction_id)) {
+            existing.push(data.prediction_id);
+            localStorage.setItem("krishisetu_guest_predictions", JSON.stringify(existing));
+          }
+        } catch {
+          // ignore localStorage failure in restricted contexts
+        }
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
     onError: (error) => {

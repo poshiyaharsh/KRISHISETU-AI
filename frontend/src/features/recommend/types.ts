@@ -36,6 +36,7 @@ export interface RecommendedCropItem {
 
 export interface RecommendationResponse {
   request_id: string;
+  prediction_id?: number;
   results: RecommendedCropItem[];
   warnings: string[];
   model: {

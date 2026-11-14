@@ -11,6 +11,8 @@ const en = JSON.parse(fs.readFileSync(enPath, "utf-8"));
 
 // Comprehensive language names and localized common terms
 const LOCALE_METADATA = {
+  hi: { name: "Hindi", native: "हिन्दी" },
+  gu: { name: "Gujarati", native: "ગુજરાતી" },
   mr: { name: "Marathi", native: "मराठी" },
   bn: { name: "Bengali", native: "বাংলা" },
   ta: { name: "Tamil", native: "தமிழ்" },

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Sprout } from 'lucide-react';
+import { Sprout, LogOut } from 'lucide-react';
 import type { NavItem } from './NavLinks';
 
 interface MobileMenuProps {
@@ -10,6 +10,7 @@ interface MobileMenuProps {
   onClose: () => void;
   items: NavItem[];
   menuButtonRef: React.RefObject<HTMLButtonElement | null>;
+  onLogout?: () => void;
 }
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({
@@ -18,6 +19,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   onClose,
   items,
   menuButtonRef,
+  onLogout,
 }) => {
   const { t } = useTranslation();
   const location = useLocation();
@@ -169,7 +171,20 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
           ))}
         </ul>
 
-        <div className="pt-4 border-t border-mist/60 mt-2">
+        <div className="pt-4 border-t border-mist/60 mt-2 space-y-2">
+          {onLogout && (
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onLogout();
+              }}
+              className="w-full inline-flex items-center justify-center gap-2 min-h-[48px] px-4 py-2.5 rounded-xl border border-mist bg-white text-soil hover:text-paddy hover:bg-mist/40 font-medium text-base transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy"
+            >
+              <LogOut className="w-5 h-5" />
+              <span>{t('auth.logout')}</span>
+            </button>
+          )}
           <Link
             to="/recommend"
             onClick={() => {

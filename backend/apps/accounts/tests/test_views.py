@@ -216,3 +216,254 @@ def test_me_endpoint_authenticated_and_unauthenticated(client):
     assert auth_resp.status_code == status.HTTP_200_OK
     assert auth_resp.json()["email"] == "me@krishisetu.in"
     assert "profile" in auth_resp.json()
+
+
+@pytest.mark.django_db
+def test_profile_update(client):
+    """Verify GET and PATCH /api/me/profile/ updates farmer demographic details."""
+    code = generate_otp(email="farmer.profile@krishisetu.in")
+    auth_resp = client.post(
+        reverse("auth-verify-code"),
+        {"email": "farmer.profile@krishisetu.in", "code": code},
+        format="json",
+    )
+    access_token = auth_resp.json()["access_token"]
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {access_token}")
+
+    profile_url = reverse("me-profile")
+    get_resp = client.get(profile_url)
+    assert get_resp.status_code == status.HTTP_200_OK
+
+    patch_resp = client.patch(
+        profile_url,
+        {
+            "display_name": "Suresh Kumar",
+            "preferred_language": "hi",
+            "land_area_value": 3.2,
+            "land_area_unit": "acre",
+            "primary_irrigation_source": "canal",
+        },
+        format="json",
+    )
+    assert patch_resp.status_code == status.HTTP_200_OK
+    data = patch_resp.json()
+    assert data["display_name"] == "Suresh Kumar"
+    assert data["preferred_language"] == "hi"
+    assert data["primary_irrigation_source"] == "canal"
+
+
+@pytest.mark.django_db
+def test_plots_crud_and_max_5_limit(client):
+    """Verify plots CRUD and enforcement of max 5 plots per farmer."""
+    code = generate_otp(email="plots@krishisetu.in")
+    auth_resp = client.post(
+        reverse("auth-verify-code"),
+        {"email": "plots@krishisetu.in", "code": code},
+        format="json",
+    )
+    access_token = auth_resp.json()["access_token"]
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {access_token}")
+
+    plots_url = reverse("me-plots-list-create")
+
+    # Create 5 plots
+    plot_ids = []
+    for i in range(1, 6):
+        resp = client.post(
+            plots_url,
+            {
+                "name": f"Plot #{i}",
+                "area_value": float(i),
+                "area_unit": "acre",
+                "soil_type": "alluvial",
+            },
+            format="json",
+        )
+        assert resp.status_code == status.HTTP_201_CREATED
+        plot_ids.append(resp.json()["id"])
+
+    # Attempt to create 6th plot (Should be rejected)
+    resp_6th = client.post(
+        plots_url,
+        {"name": "Plot #6", "area_value": 2.5, "area_unit": "acre"},
+        format="json",
+    )
+    assert resp_6th.status_code == status.HTTP_400_BAD_REQUEST
+    assert resp_6th.json()["error"]["code"] == "max_plots_exceeded"
+
+    # List plots
+    list_resp = client.get(plots_url)
+    assert list_resp.status_code == status.HTTP_200_OK
+    assert len(list_resp.json()) == 5
+
+    # Update plot
+    detail_url = reverse("me-plot-detail", kwargs={"pk": plot_ids[0]})
+    update_resp = client.patch(detail_url, {"name": "Renamed Main Plot"}, format="json")
+    assert update_resp.status_code == status.HTTP_200_OK
+    assert update_resp.json()["name"] == "Renamed Main Plot"
+
+    # Delete plot
+    del_resp = client.delete(detail_url)
+    assert del_resp.status_code == status.HTTP_204_NO_CONTENT
+
+    # Now can create another plot
+    resp_after_del = client.post(
+        plots_url,
+        {"name": "New Allowed Plot", "area_value": 1.0, "area_unit": "acre"},
+        format="json",
+    )
+    assert resp_after_del.status_code == status.HTTP_201_CREATED
+
+
+@pytest.mark.django_db
+def test_cross_user_plot_isolation(client):
+    """Verify that User B cannot view, edit, or delete User A's plot (returns 404)."""
+    # User A creates a plot
+    code_a = generate_otp(email="user.a@krishisetu.in")
+    auth_a = client.post(
+        reverse("auth-verify-code"),
+        {"email": "user.a@krishisetu.in", "code": code_a},
+        format="json",
+    )
+    token_a = auth_a.json()["access_token"]
+
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token_a}")
+    create_resp = client.post(
+        reverse("me-plots-list-create"),
+        {"name": "User A Private Field", "area_value": 4.0, "area_unit": "acre"},
+        format="json",
+    )
+    plot_a_id = create_resp.json()["id"]
+
+    # User B logs in
+    code_b = generate_otp(email="user.b@krishisetu.in")
+    auth_b = client.post(
+        reverse("auth-verify-code"),
+        {"email": "user.b@krishisetu.in", "code": code_b},
+        format="json",
+    )
+    token_b = auth_b.json()["access_token"]
+
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token_b}")
+    cross_url = reverse("me-plot-detail", kwargs={"pk": plot_a_id})
+
+    # Cross-user GET returns 404
+    assert client.get(cross_url).status_code == status.HTTP_404_NOT_FOUND
+    # Cross-user PATCH returns 404
+    assert (
+        client.patch(cross_url, {"name": "Hacked Name"}, format="json").status_code
+        == status.HTTP_404_NOT_FOUND
+    )
+    # Cross-user DELETE returns 404
+    assert client.delete(cross_url).status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+def test_saved_schemes_crud_and_isolation(client):
+    """Verify bookmarking schemes and cross-user deletion isolation."""
+    from apps.schemes.models import Scheme, SchemeCategory
+
+    cat = SchemeCategory.objects.create(name="Irrigation", slug="irrigation")
+    Scheme.objects.create(
+        slug="pmksy-test",
+        name="PM Krishi Sinchayee Yojana",
+        short_description="Irrigation support",
+        description="Full details",
+        category=cat,
+        level="central",
+        department="MoA",
+        official_url="https://pmksy.gov.in/",
+        last_verified_on=timezone.now().date(),
+    )
+
+    code_a = generate_otp(email="schemes.a@krishisetu.in")
+    auth_a = client.post(
+        reverse("auth-verify-code"),
+        {"email": "schemes.a@krishisetu.in", "code": code_a},
+        format="json",
+    )
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {auth_a.json()['access_token']}")
+
+    # Bookmark scheme
+    save_url = reverse("me-saved-schemes")
+    save_resp = client.post(save_url, {"scheme_slug": "pmksy-test"}, format="json")
+    assert save_resp.status_code == status.HTTP_201_CREATED
+    assert save_resp.json()["slug"] == "pmksy-test"
+
+    # List bookmarks
+    list_resp = client.get(save_url)
+    assert list_resp.status_code == status.HTTP_200_OK
+    assert len(list_resp.json()) == 1
+
+    # User B cannot delete User A's bookmark
+    code_b = generate_otp(email="schemes.b@krishisetu.in")
+    auth_b = client.post(
+        reverse("auth-verify-code"),
+        {"email": "schemes.b@krishisetu.in", "code": code_b},
+        format="json",
+    )
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {auth_b.json()['access_token']}")
+
+    del_url = reverse("me-saved-scheme-delete", kwargs={"slug": "pmksy-test"})
+    assert client.delete(del_url).status_code == status.HTTP_404_NOT_FOUND
+
+    # User A deletes their bookmark
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {auth_a.json()['access_token']}")
+    assert client.delete(del_url).status_code == status.HTTP_204_NO_CONTENT
+    assert len(client.get(save_url).json()) == 0
+
+
+@pytest.mark.django_db
+def test_claim_history_and_authenticated_recommendation(client):
+    """Verify anonymous predictions can be claimed and new recommendations link automatically."""
+    from apps.crops.models import PredictionRecord
+
+    # Create 2 anonymous prediction records
+    pred1 = PredictionRecord.objects.create(
+        user=None,
+        nitrogen=50,
+        phosphorus=50,
+        potassium=50,
+        temperature=25,
+        humidity=70,
+        ph=6.5,
+        rainfall=150,
+        results=[{"crop": "rice", "score": 0.9}],
+        model_version="test-1",
+    )
+    pred2 = PredictionRecord.objects.create(
+        user=None,
+        nitrogen=40,
+        phosphorus=40,
+        potassium=40,
+        temperature=22,
+        humidity=65,
+        ph=7.0,
+        rainfall=100,
+        results=[{"crop": "maize", "score": 0.85}],
+        model_version="test-1",
+    )
+
+    code = generate_otp(email="claim@krishisetu.in")
+    auth_resp = client.post(
+        reverse("auth-verify-code"),
+        {"email": "claim@krishisetu.in", "code": code},
+        format="json",
+    )
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {auth_resp.json()['access_token']}")
+
+    # Claim history
+    claim_resp = client.post(
+        reverse("me-claim-history"),
+        {"prediction_ids": [pred1.id, pred2.id]},
+        format="json",
+    )
+    assert claim_resp.status_code == status.HTTP_200_OK
+    assert claim_resp.json()["claimed_count"] == 2
+
+    # Query predictions history
+    history_resp = client.get(reverse("me-predictions"))
+    assert history_resp.status_code == status.HTTP_200_OK
+    data = history_resp.json()
+    assert data["count"] == 2
+    assert len(data["results"]) == 2

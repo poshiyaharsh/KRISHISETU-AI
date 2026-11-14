@@ -11,9 +11,13 @@ const Schemes = lazy(() => import("@/pages/Schemes"));
 const SchemeDetail = lazy(() => import("@/pages/SchemeDetail"));
 const Nutrition = lazy(() => import("@/pages/Nutrition"));
 const Chat = lazy(() => import("@/pages/Chat"));
+const Login = lazy(() => import("@/pages/Login"));
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const Profile = lazy(() => import("@/pages/Profile"));
 const About = lazy(() => import("@/pages/About"));
 const Privacy = lazy(() => import("@/pages/Privacy"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
   <Suspense
@@ -85,6 +89,34 @@ export const router = createBrowserRouter([
         element: (
           <SuspenseWrapper>
             <Chat />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "login",
+        element: (
+          <SuspenseWrapper>
+            <Login />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "dashboard",
+        element: (
+          <SuspenseWrapper>
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "profile",
+        element: (
+          <SuspenseWrapper>
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
           </SuspenseWrapper>
         ),
       },
