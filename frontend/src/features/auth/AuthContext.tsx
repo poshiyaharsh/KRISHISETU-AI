@@ -7,6 +7,7 @@ import {
   requestCodeApi,
   updateProfileApi,
   verifyCodeApi,
+  type RequestCodeResponse,
 } from './api';
 import type { AuthTokens, FarmerProfile, User } from './types';
 
@@ -18,7 +19,7 @@ interface AuthContextValue {
   tokens: AuthTokens | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  requestCode: (email: string, language?: string) => Promise<void>;
+  requestCode: (email: string, language?: string) => Promise<RequestCodeResponse>;
   verifyCode: (email: string, code: string, language?: string) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<FarmerProfile>) => Promise<FarmerProfile>;
@@ -88,8 +89,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     refreshMe();
   }, [refreshMe]);
 
-  const requestCode = async (email: string, language = 'en') => {
-    await requestCodeApi(email, language);
+  const requestCode = async (email: string, language = 'en'): Promise<RequestCodeResponse> => {
+    return requestCodeApi(email, language);
   };
 
   const verifyCode = async (email: string, code: string, language = 'en') => {
@@ -148,7 +149,7 @@ const defaultAuthContextValue: AuthContextValue = {
   tokens: null,
   isAuthenticated: false,
   isLoading: false,
-  requestCode: async () => {},
+  requestCode: async () => ({ status: 'ok', message: '' }),
   verifyCode: async () => {},
   logout: async () => {},
   updateProfile: async () => ({} as FarmerProfile),

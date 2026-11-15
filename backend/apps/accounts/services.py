@@ -158,6 +158,15 @@ def generate_otp(email: str, language: str = "en") -> str:
     except Exception as e:
         logger.error("Failed to send verification email to %s: %s", normalized_email, e)
 
+    if settings.DEBUG:
+        logger.info(
+            "\n============================================================\n"
+            "[KRISHISETU OTP] Code for %s: %s\n"
+            "============================================================",
+            normalized_email,
+            code,
+        )
+
     return code
 
 

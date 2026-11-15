@@ -2,6 +2,7 @@
 Authentication and Profile API views for KrishiSetu AI accounts.
 """
 
+from django.conf import settings
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiResponse, extend_schema
@@ -69,8 +70,9 @@ def request_code_view(request):
     email = serializer.validated_data["email"]
     language = serializer.validated_data.get("language", "en")
 
+    code = None
     try:
-        generate_otp(email=email, language=language)
+        code = generate_otp(email=email, language=language)
     except AuthException as e:
         return Response(
             {"error": {"code": e.code, "message": e.message}},
@@ -80,13 +82,14 @@ def request_code_view(request):
         # Fallback for unexpected mail transport errors; maintain anti-enumeration response
         pass
 
-    return Response(
-        {
-            "status": "ok",
-            "message": "If this email is valid, a verification code has been sent.",
-        },
-        status=status.HTTP_200_OK,
-    )
+    response_data = {
+        "status": "ok",
+        "message": "If this email is valid, a verification code has been sent.",
+    }
+    if settings.DEBUG and code:
+        response_data["dev_code"] = code
+
+    return Response(response_data, status=status.HTTP_200_OK)
 
 
 @extend_schema(

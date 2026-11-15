@@ -15,6 +15,7 @@ export const Login: React.FC = () => {
   const [step, setStep] = useState<'email' | 'code'>('email');
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
+  const [devCode, setDevCode] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -45,7 +46,11 @@ export const Login: React.FC = () => {
     setErrorMessage(null);
 
     try {
-      await requestCode(email.trim(), i18n.language);
+      const res = await requestCode(email.trim(), i18n.language);
+      if (res?.dev_code) {
+        setDevCode(res.dev_code);
+        setCode(res.dev_code);
+      }
       setStep('code');
       setCountdown(60);
     } catch (err: unknown) {
@@ -152,6 +157,22 @@ export const Login: React.FC = () => {
           </form>
         ) : (
           <form className="mt-8 space-y-6" onSubmit={handleVerifyCode}>
+            {devCode && (
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 flex items-center justify-between">
+                <div>
+                  <span className="font-bold">Dev/Local OTP:</span>{' '}
+                  <code className="bg-amber-100 px-1.5 py-0.5 rounded font-mono font-bold text-soil">{devCode}</code>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCode(devCode)}
+                  className="text-xs font-semibold text-paddy hover:underline"
+                >
+                  Auto-fill
+                </button>
+              </div>
+            )}
+
             <div>
               <label htmlFor="code" className="block text-sm font-medium text-soil mb-1">
                 {t('auth.code_label', '6-Digit Code')}

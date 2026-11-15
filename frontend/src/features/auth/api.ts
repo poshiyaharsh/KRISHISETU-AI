@@ -10,6 +10,7 @@ import type {
 export interface RequestCodeResponse {
   status: string;
   message: string;
+  dev_code?: string;
 }
 
 export interface VerifyCodeResponse {
