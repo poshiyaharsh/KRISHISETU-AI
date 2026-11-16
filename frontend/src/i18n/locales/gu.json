@@ -347,7 +347,12 @@
     "logout": "સાઇન આઉટ",
     "rate_limited": "ખૂબ વધુ વિનંતીઓ. કૃપા કરીને એક કલાક પછી ફરી પ્રયાસ કરો.",
     "invalid_code": "અમાન્ય અથવા સમાપ્ત થયેલ ચકાસણી કોડ. કૃપા કરીને તપાસીને ફરી પ્રયાસ કરો.",
-    "generic_error": "અણધારી ભૂલ આવી. કૃપા કરીને ફરી પ્રયાસ કરો."
+    "generic_error": "અણધારી ભૂલ આવી. કૃપા કરીને ફરી પ્રયાસ કરો.",
+    "check_spam": "It can take a minute. Check your spam or promotions folder.",
+    "code_expiry": "Valid for 10 minutes.",
+    "use_different_email": "Use a different email",
+    "email_delivery_failed": "We could not send the email right now. Please try again in a few minutes.",
+    "back_to_home": "Back to home"
   },
   "profile": {
     "title": "ખેડૂત પ્રોફાઇલ અને સેટિંગ્સ",

@@ -26,11 +26,11 @@ const LOGO_FILES: Record<BrandLogoVariant, string> = {
   mono: '/logo-mono.svg',
 };
 
-const DEFAULT_SIZES: Record<BrandLogoVariant, { width: number | string; height: number | string }> = {
-  icon: { width: 32, height: 32 },
-  mono: { width: 32, height: 32 },
-  lockup: { width: 'auto', height: 36 },
-  reversed: { width: 'auto', height: 36 },
+const DEFAULT_SIZES: Record<BrandLogoVariant, { width: number; height: number }> = {
+  icon: { width: 120, height: 120 },
+  mono: { width: 120, height: 120 },
+  lockup: { width: 520, height: 120 },
+  reversed: { width: 520, height: 120 },
 };
 
 export const BrandLogo: React.FC<BrandLogoProps> = ({
@@ -45,7 +45,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   const src = LOGO_FILES[variant];
 
   const defaultDimension = DEFAULT_SIZES[variant];
-  const width = size !== undefined ? (variant === 'icon' || variant === 'mono' ? size : 'auto') : defaultDimension.width;
+  const width = size !== undefined ? (variant === 'icon' || variant === 'mono' ? size : defaultDimension.width) : defaultDimension.width;
   const height = size !== undefined ? size : defaultDimension.height;
 
   return (

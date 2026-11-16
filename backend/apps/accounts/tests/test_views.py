@@ -32,7 +32,7 @@ def test_request_code_happy_path_multilingual(client):
     assert resp.json()["status"] == "ok"
     assert "verification code has been sent" in resp.json()["message"]
     assert len(mail.outbox) == 1
-    assert "Your KrishiSetu AI Verification Code" in mail.outbox[0].subject
+    assert "Your KrishiSetu AI login code" in mail.outbox[0].subject
 
     # Verify plaintext code is NOT stored in DB
     otp = EmailVerificationOTP.objects.get(email="farmer1@krishisetu.in")
@@ -50,7 +50,7 @@ def test_request_code_happy_path_multilingual(client):
     # Identical response structure (Anti-enumeration)
     assert resp_hi.json() == resp.json()
     assert len(mail.outbox) == 2
-    assert "सत्यापन कोड" in mail.outbox[1].subject
+    assert "लॉगिन कोड" in mail.outbox[1].subject
 
 
 @pytest.mark.django_db

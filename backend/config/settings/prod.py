@@ -2,6 +2,7 @@
 Production settings for KrishiSetu AI backend.
 """
 
+from django.core.exceptions import ImproperlyConfigured
 from .base import *  # noqa: F403
 
 DEBUG = False
@@ -55,3 +56,19 @@ if SENTRY_DSN:
         sentry_sdk.init(dsn=SENTRY_DSN, send_default_pii=False, traces_sample_rate=0.1)
     except ImportError:
         pass
+
+# Production safety: validate email delivery backend configuration
+_insecure_backends = ("console", "locmem", "filebased", "dummy")
+if any(b in EMAIL_BACKEND.lower() for b in _insecure_backends):  # noqa: F405
+    raise ImproperlyConfigured(
+        f"EMAIL_BACKEND in production cannot be a non-delivering backend ({EMAIL_BACKEND}). "  # noqa: F405
+        "Configure standard SMTP or transactional email provider."
+    )
+
+if "smtp" in EMAIL_BACKEND.lower():  # noqa: F405
+    if not EMAIL_HOST:  # noqa: F405
+        raise ImproperlyConfigured("EMAIL_HOST must be set in production.")
+    if not EMAIL_HOST_USER:  # noqa: F405
+        raise ImproperlyConfigured("EMAIL_HOST_USER must be set in production.")
+    if not EMAIL_HOST_PASSWORD:  # noqa: F405
+        raise ImproperlyConfigured("EMAIL_HOST_PASSWORD must be set in production.")

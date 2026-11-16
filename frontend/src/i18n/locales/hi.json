@@ -347,7 +347,12 @@
     "logout": "साइन आउट",
     "rate_limited": "बहुत अधिक अनुरोध। कृपया एक घंटे बाद पुनः प्रयास करें।",
     "invalid_code": "अमान्य या समाप्त सत्यापन कोड। कृपया जांचें और पुनः प्रयास करें।",
-    "generic_error": "एक अनपेक्षित त्रुटि हुई। कृपया पुनः प्रयास करें।"
+    "generic_error": "एक अनपेक्षित त्रुटि हुई। कृपया पुनः प्रयास करें।",
+    "check_spam": "It can take a minute. Check your spam or promotions folder.",
+    "code_expiry": "Valid for 10 minutes.",
+    "use_different_email": "Use a different email",
+    "email_delivery_failed": "We could not send the email right now. Please try again in a few minutes.",
+    "back_to_home": "Back to home"
   },
   "profile": {
     "title": "किसान प्रोफ़ाइल और सेटिंग्स",

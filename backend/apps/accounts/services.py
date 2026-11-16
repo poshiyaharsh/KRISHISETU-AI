@@ -6,8 +6,11 @@ from datetime import timedelta
 import hashlib
 import logging
 import secrets
+import smtplib
+import socket
+import ssl
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
 from django.utils import timezone
 
 from .authentication import create_access_token
@@ -21,34 +24,95 @@ HOURLY_RATE_LIMIT = 5
 REFRESH_TOKEN_TTL_DAYS = 30
 
 EMAIL_SUBJECTS = {
-    "en": "Your KrishiSetu AI Verification Code",
-    "hi": "आपका कृषिसेतु AI सत्यापन कोड",
-    "gu": "તમારો કૃષિસેતુ AI વેરિફિકેશન કોડ",
+    "en": "Your KrishiSetu AI login code",
+    "hi": "आपका कृषिसेतु AI लॉगिन कोड",
+    "gu": "તમારો કૃષિસેતુ AI લૉગિન કોડ",
 }
 
-EMAIL_BODIES = {
+EMAIL_TEXT_BODIES = {
     "en": (
         "Namaste!\n\n"
-        "Your verification code for KrishiSetu AI is:\n\n"
+        "Your login code for KrishiSetu AI is:\n\n"
         "  {code}\n\n"
-        "This code is valid for 10 minutes. For your security, do not share this code with anyone.\n\n"
-        "— Team KrishiSetu AI"
+        "This code is valid for 10 minutes.\n"
+        "If you did not ask for this, ignore this email.\n\n"
+        "— KrishiSetu AI"
     ),
     "hi": (
         "नमस्ते!\n\n"
-        "कृषिसेतु AI के लिए आपका सत्यापन कोड है:\n\n"
+        "कृषिसेतु AI के लिए आपका लॉगिन कोड है:\n\n"
         "  {code}\n\n"
-        "यह कोड 10 मिनट के लिए मान्य है। अपनी सुरक्षा के लिए, यह कोड किसी के साथ साझा न करें।\n\n"
-        "— टीम कृषिसेतु AI"
+        "यह कोड 10 मिनट के लिए मान्य है।\n"
+        "यदि आपने यह अनुरोध नहीं किया है, तो इस ईमेल को अनदेखा करें।\n\n"
+        "— KrishiSetu AI"
     ),
     "gu": (
         "નમસ્તે!\n\n"
-        "કૃષિસેતુ AI માટે તમારો વેરિફિકેશન કોડ છે:\n\n"
+        "કૃષિસેતુ AI માટે તમારો લૉગિન કોડ છે:\n\n"
         "  {code}\n\n"
-        "આ કોડ 10 મિનિટ માટે માન્ય છે. તમારી સુરક્ષા માટે, આ કોડ કોઈની સાથે શેર કરશો નહીં.\n\n"
-        "— ટીમ કૃષિસેતુ AI"
+        "આ કોડ 10 મિનિટ માટે માન્ય છે.\n"
+        "જો તમે આ માટે વિનંતી નથી કરી, તો આ ઈમેલને અવગણો.\n\n"
+        "— KrishiSetu AI"
     ),
 }
+
+EMAIL_HTML_BODIES = {
+    "en": (
+        "<!DOCTYPE html>"
+        "<html><body style='font-family: sans-serif; line-height: 1.6; color: #1D2B22; max-width: 500px; margin: 0 auto; padding: 24px;'>"
+        "<h2 style='color: #0F4A32; margin-top: 0;'>Namaste!</h2>"
+        "<p style='margin-bottom: 24px;'>Your login verification code for KrishiSetu AI is:</p>"
+        "<div style='background-color: #E4ECDD; padding: 18px 24px; border-radius: 12px; text-align: center; margin: 24px 0;'>"
+        "<span style='font-family: monospace; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #0F4A32;'>{code}</span>"
+        "</div>"
+        "<p style='font-size: 14px; color: #4D6854; margin-bottom: 8px;'>This code is valid for <strong>10 minutes</strong>.</p>"
+        "<p style='font-size: 13px; color: #666;'>If you did not ask for this, ignore this email.</p>"
+        "<hr style='border: none; border-top: 1px solid #E4ECDD; margin: 24px 0;' />"
+        "<p style='font-size: 12px; color: #4D6854; margin: 0;'>KrishiSetu AI — Smarter Farming. Better Decisions. Brighter Tomorrow.</p>"
+        "</body></html>"
+    ),
+    "hi": (
+        "<!DOCTYPE html>"
+        "<html><body style='font-family: sans-serif; line-height: 1.6; color: #1D2B22; max-width: 500px; margin: 0 auto; padding: 24px;'>"
+        "<h2 style='color: #0F4A32; margin-top: 0;'>नमस्ते!</h2>"
+        "<p style='margin-bottom: 24px;'>कृषिसेतु AI के लिए आपका लॉगिन सत्यापन कोड है:</p>"
+        "<div style='background-color: #E4ECDD; padding: 18px 24px; border-radius: 12px; text-align: center; margin: 24px 0;'>"
+        "<span style='font-family: monospace; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #0F4A32;'>{code}</span>"
+        "</div>"
+        "<p style='font-size: 14px; color: #4D6854; margin-bottom: 8px;'>यह कोड <strong>10 मिनट</strong> के लिए मान्य है।</p>"
+        "<p style='font-size: 13px; color: #666;'>यदि आपने यह अनुरोध नहीं किया है, तो इस ईमेल को अनदेखा करें।</p>"
+        "<hr style='border: none; border-top: 1px solid #E4ECDD; margin: 24px 0;' />"
+        "<p style='font-size: 12px; color: #4D6854; margin: 0;'>कृषिसेतु AI — बेहतर निर्णय, समृद्ध किसान।</p>"
+        "</body></html>"
+    ),
+    "gu": (
+        "<!DOCTYPE html>"
+        "<html><body style='font-family: sans-serif; line-height: 1.6; color: #1D2B22; max-width: 500px; margin: 0 auto; padding: 24px;'>"
+        "<h2 style='color: #0F4A32; margin-top: 0;'>નમસ્તે!</h2>"
+        "<p style='margin-bottom: 24px;'>કૃષિસેતુ AI માટે તમારો લૉગિન વેરિફિકેશન કોડ છે:</p>"
+        "<div style='background-color: #E4ECDD; padding: 18px 24px; border-radius: 12px; text-align: center; margin: 24px 0;'>"
+        "<span style='font-family: monospace; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #0F4A32;'>{code}</span>"
+        "</div>"
+        "<p style='font-size: 14px; color: #4D6854; margin-bottom: 8px;'>આ કોડ <strong>10 મિનિટ</strong> માટે માન્ય છે.</p>"
+        "<p style='font-size: 13px; color: #666;'>જો તમે આ માટે વિનંતી નથી કરી, તો આ ઈમેલને અવગણો.</p>"
+        "<hr style='border: none; border-top: 1px solid #E4ECDD; margin: 24px 0;' />"
+        "<p style='font-size: 12px; color: #4D6854; margin: 0;'>કૃષિસેતુ AI — સ્માર્ટ ખેતી, સમૃદ્ધ ખેડૂત.</p>"
+        "</body></html>"
+    ),
+}
+
+
+def mask_recipient(email_str: str) -> str:
+    """Mask email for privacy and security in logs (e.g. ha***@gmail.com)."""
+    if not email_str:
+        return "<empty>"
+    clean = email_str.strip().lower()
+    if "@" not in clean:
+        return f"set ({len(clean)} chars)"
+    parts = clean.split("@", 1)
+    user, domain = parts[0], parts[1]
+    masked = f"{user[0]}***" if len(user) <= 2 else f"{user[:2]}***"
+    return f"{masked}@{domain}"
 
 
 class AuthException(Exception):
@@ -101,10 +165,99 @@ class InvalidRefreshTokenError(AuthException):
         super().__init__(code="invalid_refresh_token", message=message, status_code=401)
 
 
+class OtpDeliveryError(AuthException):
+    def __init__(
+        self,
+        code: str = "email_delivery_failed",
+        message: str = "We could not send the email right now. Please try again in a few minutes.",
+    ):
+        super().__init__(code=code, message=message, status_code=503)
+
+
+def send_otp_email(user_or_email: str, code: str, language: str = "en") -> None:
+    """
+    Renders multi-part plain text + HTML templates and sends OTP code with EMAIL_TIMEOUT.
+    Logs structured error lines without leaking plain secrets or full email addresses.
+    Raises OtpDeliveryError on any transport failure.
+    """
+    recipient = user_or_email.strip().lower()
+    masked = mask_recipient(recipient)
+
+    lang = language.lower()[:2]
+    if lang not in EMAIL_SUBJECTS:
+        lang = "en"
+
+    subject = EMAIL_SUBJECTS[lang]
+    text_content = EMAIL_TEXT_BODIES[lang].format(code=code)
+    html_content = EMAIL_HTML_BODIES[lang].format(code=code)
+    from_email = getattr(
+        settings, "DEFAULT_FROM_EMAIL", "KrishiSetu AI <noreply@krishisetu.in>"
+    )
+
+    msg = EmailMultiAlternatives(
+        subject=subject,
+        body=text_content,
+        from_email=from_email,
+        to=[recipient],
+    )
+    msg.attach_alternative(html_content, "text/html")
+
+    try:
+        msg.send(fail_silently=False)
+        logger.info("OTP email successfully dispatched to %s", masked)
+    except smtplib.SMTPAuthenticationError as e:
+        logger.error(
+            "Email delivery failed: class=SMTPAuthenticationError smtp_code=%s recipient=%s",
+            getattr(e, "smtp_code", 535),
+            masked,
+        )
+        raise OtpDeliveryError("email_delivery_failed") from e
+    except smtplib.SMTPSenderRefused as e:
+        logger.error(
+            "Email delivery failed: class=SMTPSenderRefused smtp_code=%s recipient=%s",
+            getattr(e, "smtp_code", "unknown"),
+            masked,
+        )
+        raise OtpDeliveryError("email_delivery_failed") from e
+    except smtplib.SMTPRecipientsRefused as e:
+        logger.error(
+            "Email delivery failed: class=SMTPRecipientsRefused recipient=%s",
+            masked,
+        )
+        raise OtpDeliveryError("email_delivery_failed") from e
+    except smtplib.SMTPConnectError as e:
+        logger.error(
+            "Email delivery failed: class=SMTPConnectError recipient=%s",
+            masked,
+        )
+        raise OtpDeliveryError("email_delivery_failed") from e
+    except (socket.timeout, TimeoutError) as e:
+        logger.error(
+            "Email delivery failed: class=SocketTimeout recipient=%s",
+            masked,
+        )
+        raise OtpDeliveryError("email_delivery_failed") from e
+    except ssl.SSLError as e:
+        logger.error(
+            "Email delivery failed: class=SSLError recipient=%s",
+            masked,
+        )
+        raise OtpDeliveryError("email_delivery_failed") from e
+    except Exception as e:
+        logger.error(
+            "Email delivery failed: class=%s recipient=%s error=%s",
+            type(e).__name__,
+            masked,
+            e,
+        )
+        raise OtpDeliveryError("email_delivery_failed") from e
+
+
 def generate_otp(email: str, language: str = "en") -> str:
     """
-    Generate a 6-digit OTP, store its salted SHA-256 hash, and deliver via email.
+    Generate a 6-digit OTP, deliver via email, and store its salted SHA-256 hash in DB.
     Enforces hourly rate limits and invalidates prior unused codes.
+    Crucial: Saves DB record ONLY after successful email dispatch so failures do not consume limits.
     """
     normalized_email = email.lower().strip()
     now = timezone.now()
@@ -116,7 +269,9 @@ def generate_otp(email: str, language: str = "en") -> str:
         created_at__gte=one_hour_ago,
     ).count()
     if recent_requests >= HOURLY_RATE_LIMIT:
-        logger.warning("Auth rate limit exceeded for email: %s", normalized_email)
+        logger.warning(
+            "Auth rate limit exceeded for email: %s", mask_recipient(normalized_email)
+        )
         raise RateLimitedError()
 
     # 2. Invalidate previous unused codes for this email
@@ -130,7 +285,10 @@ def generate_otp(email: str, language: str = "en") -> str:
     code_hash = hashlib.sha256(f"{salt}:{code}".encode()).hexdigest()
     expires_at = now + timedelta(minutes=OTP_TTL_MINUTES)
 
-    # 4. Save hashed record to DB
+    # 4. Dispatch email first; raises OtpDeliveryError on failure (no DB record saved)
+    send_otp_email(normalized_email, code, language)
+
+    # 5. Save hashed record to DB only after successful delivery
     EmailVerificationOTP.objects.create(
         email=normalized_email,
         salt=salt,
@@ -138,51 +296,9 @@ def generate_otp(email: str, language: str = "en") -> str:
         expires_at=expires_at,
     )
 
-    # 5. Dispatch email
-    lang = language.lower()[:2]
-    if lang not in EMAIL_SUBJECTS:
-        lang = "en"
-
-    subject = EMAIL_SUBJECTS[lang]
-    body = EMAIL_BODIES[lang].format(code=code)
-    from_email = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@krishisetu.in")
-
-    def _dispatch_mail():
-        try:
-            send_mail(
-                subject=subject,
-                message=body,
-                from_email=from_email,
-                recipient_list=[normalized_email],
-                fail_silently=False,
-            )
-            logger.info("Verification code delivered via email to %s", normalized_email)
-        except Exception as e:
-            logger.error(
-                "Failed to send verification email to %s: %s", normalized_email, e
-            )
-
-    # In test suites (locmem backend / mail.outbox present), dispatch synchronously
-    from django.core import mail
-
-    if (
-        getattr(settings, "EMAIL_DISPATCH_SYNC", False)
-        or hasattr(mail, "outbox")
-        or "locmem" in getattr(settings, "EMAIL_BACKEND", "")
-    ):
-        _dispatch_mail()
-    else:
-        import threading
-
-        threading.Thread(target=_dispatch_mail, daemon=True).start()
-
     if settings.DEBUG:
         logger.info(
-            "\n============================================================\n"
-            "[KRISHISETU OTP] Code for %s: %s\n"
-            "============================================================",
-            normalized_email,
-            code,
+            "[KRISHISETU OTP] Code generated for %s", mask_recipient(normalized_email)
         )
 
     return code
@@ -204,65 +320,80 @@ def create_refresh_token_record(user: User) -> str:
 
 def verify_otp(email: str, code: str, language: str = "en") -> tuple[User, str, str]:
     """
-    Verify the submitted 6-digit code against the latest active OTP hash.
-    Returns (user, access_token, refresh_token).
+    Verify the 6-digit OTP against active database hash in constant time.
+    Tracks failed attempts and invalidates on max attempts (5) or expiration (10 min).
+    Returns user, short-lived access token, and long-lived refresh token.
     """
     normalized_email = email.lower().strip()
     now = timezone.now()
 
-    # 1. Lookup latest OTP record for this email
-    otp = EmailVerificationOTP.objects.filter(
-        email=normalized_email, is_used=False
-    ).first()
-    if not otp:
+    otp_record = (
+        EmailVerificationOTP.objects.filter(
+            email=normalized_email,
+            is_used=False,
+        )
+        .order_by("-created_at")
+        .first()
+    )
+
+    if not otp_record:
+        logger.warning(
+            "Verification attempted with no active code: %s",
+            mask_recipient(normalized_email),
+        )
         raise CodeNotFoundError()
 
-    # 2. Check Expiration
-    if otp.expires_at < now:
-        otp.is_used = True
-        otp.save(update_fields=["is_used"])
-        raise CodeExpiredError()
-
-    # 3. Check Attempt Limit
-    if otp.attempts >= OTP_MAX_ATTEMPTS:
-        otp.is_used = True
-        otp.save(update_fields=["is_used"])
+    if otp_record.attempts >= OTP_MAX_ATTEMPTS:
+        otp_record.is_used = True
+        otp_record.save(update_fields=["is_used"])
+        logger.warning(
+            "Verification code attempts exceeded for %s",
+            mask_recipient(normalized_email),
+        )
         raise TooManyAttemptsError()
 
-    # 4. Constant-Time Hash Comparison
-    expected_hash = hashlib.sha256(f"{otp.salt}:{code.strip()}".encode()).hexdigest()
-    if not secrets.compare_digest(expected_hash, otp.code_hash):
-        otp.attempts += 1
-        if otp.attempts >= OTP_MAX_ATTEMPTS:
-            otp.is_used = True
-        otp.save(update_fields=["attempts", "is_used"])
+    if now > otp_record.expires_at:
+        otp_record.is_used = True
+        otp_record.save(update_fields=["is_used"])
+        logger.warning(
+            "Verification code expired for %s", mask_recipient(normalized_email)
+        )
+        raise CodeExpiredError()
+
+    computed_hash = hashlib.sha256(f"{otp_record.salt}:{code}".encode()).hexdigest()
+    if not secrets.compare_digest(computed_hash, otp_record.code_hash):
+        otp_record.attempts += 1
+        if otp_record.attempts >= OTP_MAX_ATTEMPTS:
+            otp_record.is_used = True
+        otp_record.save(update_fields=["attempts", "is_used"])
+        logger.warning(
+            "Invalid OTP attempt (%d/%d) for %s",
+            otp_record.attempts,
+            OTP_MAX_ATTEMPTS,
+            mask_recipient(normalized_email),
+        )
         raise InvalidCodeError()
 
-    # 5. Success: Consume OTP
-    otp.is_used = True
-    otp.save(update_fields=["is_used"])
+    otp_record.is_used = True
+    otp_record.save(update_fields=["is_used"])
 
-    # 6. Retrieve or Register User
-    user, created = User.objects.get_or_create(
-        email=normalized_email,
-        defaults={
-            "is_active": True,
-            "consented_at": now,
-            "consent_version": "1.0",
-        },
-    )
-
+    user, created = User.objects.get_or_create(email=normalized_email)
     user.last_login = now
-    user.save(update_fields=["last_login"])
+    if created or user.consented_at is None:
+        user.consented_at = now
+    user.save(update_fields=["last_login", "consented_at"])
 
-    # 7. Ensure FarmerProfile exists
-    preferred_lang = language.lower()[:2] if language else "en"
-    FarmerProfile.objects.get_or_create(
-        user=user,
-        defaults={"preferred_language": preferred_lang},
-    )
+    if created:
+        FarmerProfile.objects.create(
+            user=user,
+            display_name=normalized_email.split("@")[0],
+            preferred_language=language[:2],
+        )
+        logger.info(
+            "New farmer registered via passwordless email: %s",
+            mask_recipient(normalized_email),
+        )
 
-    # 8. Issue Token Pair
     access_token = create_access_token(user)
     refresh_token = create_refresh_token_record(user)
 
@@ -271,36 +402,38 @@ def verify_otp(email: str, code: str, language: str = "en") -> tuple[User, str, 
 
 def rotate_refresh_token(raw_refresh_token: str) -> tuple[str, str]:
     """
-    Validate refresh token, revoke old token, and issue new (access_token, refresh_token) pair.
+    Rotates a refresh token: verifies and revokes old token, returns new access & refresh tokens.
+    Protects against reuse attacks.
     """
-    token_hash = hashlib.sha256(raw_refresh_token.strip().encode()).hexdigest()
+    token_hash = hashlib.sha256(raw_refresh_token.encode()).hexdigest()
     now = timezone.now()
 
-    token_obj = (
+    token_record = (
         RefreshToken.objects.select_related("user")
         .filter(
             token_hash=token_hash,
             is_revoked=False,
-            expires_at__gte=now,
+            expires_at__gt=now,
         )
         .first()
     )
 
-    if not token_obj or not token_obj.user.is_active:
+    if not token_record:
+        logger.warning("Invalid or expired refresh token attempted")
         raise InvalidRefreshTokenError()
 
-    # Revoke current refresh token
-    token_obj.is_revoked = True
-    token_obj.save(update_fields=["is_revoked"])
+    token_record.is_revoked = True
+    token_record.save(update_fields=["is_revoked"])
 
-    # Issue new token pair
-    new_access_token = create_access_token(token_obj.user)
-    new_refresh_token = create_refresh_token_record(token_obj.user)
+    new_refresh_token = create_refresh_token_record(token_record.user)
+    new_access_token = create_access_token(token_record.user)
 
     return new_access_token, new_refresh_token
 
 
 def revoke_refresh_token(raw_refresh_token: str) -> None:
-    """Revoke a refresh token on logout."""
-    token_hash = hashlib.sha256(raw_refresh_token.strip().encode()).hexdigest()
-    RefreshToken.objects.filter(token_hash=token_hash).update(is_revoked=True)
+    """Explicitly revokes a refresh token on logout."""
+    token_hash = hashlib.sha256(raw_refresh_token.encode()).hexdigest()
+    RefreshToken.objects.filter(token_hash=token_hash, is_revoked=False).update(
+        is_revoked=True
+    )

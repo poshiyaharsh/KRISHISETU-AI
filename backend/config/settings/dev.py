@@ -23,6 +23,13 @@ CORS_ALLOWED_ORIGINS = env.list(
 )
 
 # Email in dev prints to console by default unless explicitly configured
+ALLOW_CONSOLE_EMAIL = env.bool("ALLOW_CONSOLE_EMAIL", default=True)
 EMAIL_BACKEND = env(
     "EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
 )
+if ALLOW_CONSOLE_EMAIL and "console" in EMAIL_BACKEND.lower():
+    import logging
+
+    logging.getLogger("krishisetu.accounts").info(
+        "OTP emails are being printed, not sent (console backend active)."
+    )

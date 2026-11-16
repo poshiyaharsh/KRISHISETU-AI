@@ -25,4 +25,14 @@ All environment variables used across KrishiSetu AI. **Never commit real values 
 | `CHAT_DAILY_LIMIT` | Render | No | `500` | Daily request ceiling before returning `chat_busy` |
 | `CHAT_RATE_LIMIT` | Render | No | `10/min` | Scoped DRF rate limit per client IP |
 | `SENTRY_DSN` | Render | No | `https://key@o0.ingest.sentry.io/0` | Optional Sentry project DSN (`send_default_pii=False`) |
+| `EMAIL_BACKEND` | Render | Yes | `django.core.mail.backends.smtp.EmailBackend` | Production mail backend (`console` rejected in prod by `prod.py`) |
+| `EMAIL_HOST` | Render | Yes (if SMTP) | `smtp.gmail.com` | Outbound mail server hostname |
+| `EMAIL_PORT` | Render | Yes (if SMTP) | `587` | Port 587 (STARTTLS) or 465 (SSL) |
+| `EMAIL_USE_TLS` | Render | No | `True` | Set `True` for port 587; `False` for port 465 |
+| `EMAIL_USE_SSL` | Render | No | `False` | Set `True` for port 465; `False` for port 587 |
+| `EMAIL_TIMEOUT` | Render | No | `10` | Socket timeout in seconds (default `10`) to prevent hanging requests |
+| `EMAIL_HOST_USER` | Render | Yes (if SMTP) | `kisan.advisory@gmail.com` | Full mailbox username / email address |
+| `EMAIL_HOST_PASSWORD` | Render | Yes (if SMTP) | `16-char-app-password` | Gmail 2-Step Verification App Password (no spaces) |
+| `DEFAULT_FROM_EMAIL` | Render | Yes | `KrishiSetu AI <kisan.advisory@gmail.com>` | Sender display name and address |
+| `ALLOW_CONSOLE_EMAIL` | Local | No (Dev only) | `1` | Enables console output of OTPs in local development (`DEBUG=True`) |
 | `VITE_API_BASE_URL` | Vercel | Yes | `https://krishisetu-api.onrender.com/api` | Render backend public URL + `/api` suffix |

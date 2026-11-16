@@ -347,7 +347,12 @@
     "logout": "Sign Out",
     "rate_limited": "Too many code requests. Please wait an hour before trying again.",
     "invalid_code": "Invalid or expired verification code. Please check and try again.",
-    "generic_error": "An unexpected error occurred. Please try again."
+    "generic_error": "An unexpected error occurred. Please try again.",
+    "check_spam": "It can take a minute. Check your spam or promotions folder.",
+    "code_expiry": "Valid for 10 minutes.",
+    "use_different_email": "Use a different email",
+    "email_delivery_failed": "We could not send the email right now. Please try again in a few minutes.",
+    "back_to_home": "Back to home"
   },
   "profile": {
     "title": "Farmer Profile & Settings",

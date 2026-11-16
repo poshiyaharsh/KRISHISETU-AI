@@ -1,9 +1,12 @@
-const CACHE_NAME = 'krishisetu-shell-v2';
+const CACHE_NAME = 'krishisetu-shell-v3';
 const APP_SHELL = [
   '/',
   '/index.html',
   '/offline.html',
+  '/logo.svg',
   '/logo-icon.svg',
+  '/logo-reversed.svg',
+  '/logo-mono.svg',
   '/favicon.ico',
   '/favicon-32.png',
   '/icon-192.png',

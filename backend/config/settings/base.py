@@ -211,6 +211,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 1048576  # 1 MB request size limit
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576
 
 # Email Configuration (Passwordless Auth OTP)
+ALLOW_CONSOLE_EMAIL = env.bool("ALLOW_CONSOLE_EMAIL", default=True)
 EMAIL_BACKEND = env(
     "EMAIL_BACKEND",
     default="django.core.mail.backends.console.EmailBackend"
@@ -221,12 +222,12 @@ EMAIL_HOST = env("EMAIL_HOST", default="smtp.gmail.com")
 EMAIL_PORT = env.int("EMAIL_PORT", default=587)
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
 EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)
+EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT", default=10)
 EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 DEFAULT_FROM_EMAIL = env(
     "DEFAULT_FROM_EMAIL", default="KrishiSetu AI <noreply@krishisetu.in>"
 )
-EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT", default=5)
 RETURN_DEV_OTP = env.bool("RETURN_DEV_OTP", default=False)
 
 # Structured Logging with Request IDs (no PII or chat message content)
