@@ -24,6 +24,7 @@ from .serializers import (
     ClaimHistorySerializer,
     FarmerProfileSerializer,
     FarmPlotSerializer,
+    GoogleAuthSerializer,
     PredictionRecordSerializer,
     RefreshTokenSerializer,
     RequestCodeSerializer,
@@ -33,11 +34,112 @@ from .serializers import (
 )
 from .services import (
     AuthException,
+    authenticate_or_register_google_user,
+    delete_user_account,
     generate_otp,
+    logout_all_sessions,
     revoke_refresh_token,
     rotate_refresh_token,
+    verify_google_credential,
     verify_otp,
 )
+
+COOKIE_NAME = "krishisetu_rf"
+COOKIE_MAX_AGE = 30 * 24 * 60 * 60  # 30 days
+
+
+def set_refresh_cookie(response: Response, raw_token: str) -> None:
+    """Sets the refresh token in an httpOnly, Secure cookie."""
+    is_secure = not getattr(settings, "DEBUG", True)
+    response.set_cookie(
+        key=COOKIE_NAME,
+        value=raw_token,
+        max_age=COOKIE_MAX_AGE,
+        httponly=True,
+        secure=is_secure,
+        samesite="Lax",
+        path="/api/auth/",
+    )
+
+
+def clear_refresh_cookie(response: Response) -> None:
+    """Clears the refresh token cookie."""
+    response.delete_cookie(key=COOKIE_NAME, path="/api/auth/")
+
+
+def check_refresh_csrf(request) -> bool:
+    """
+    CSRF defense for cookie-based refresh requests.
+    Validates custom header X-KrishiSetu-Client or X-Requested-With.
+    """
+    client_header = request.headers.get("X-KrishiSetu-Client") or request.headers.get(
+        "X-Requested-With"
+    )
+    return bool(client_header)
+
+
+@extend_schema(
+    summary="Authenticate with Google Identity Services",
+    description="Verifies a Google ID token and issues an access token and rotating refresh token.",
+    request=GoogleAuthSerializer,
+    responses={
+        200: OpenApiResponse(description="Google authentication successful"),
+        400: OpenApiResponse(description="Invalid token, audience, or unverified email"),
+    },
+)
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def google_auth_view(request):
+    """Authenticate or register a farmer using Google Sign-In (GIS)."""
+    serializer = GoogleAuthSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(
+            {
+                "error": {
+                    "code": "bad_request",
+                    "message": "Invalid Google authentication submission.",
+                    "details": serializer.errors,
+                }
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    credential = serializer.validated_data["credential"]
+    client_type = serializer.validated_data.get("client_type", "web")
+    language = serializer.validated_data.get("language", "en")
+
+    try:
+        token_info = verify_google_credential(credential)
+        user, access_token, refresh_token = authenticate_or_register_google_user(
+            token_info, request=request, language=language
+        )
+    except AuthException as e:
+        return Response(
+            {"error": {"code": e.code, "message": e.message}},
+            status=e.status_code,
+        )
+    except Exception as e:
+        return Response(
+            {"error": {"code": "google_auth_failed", "message": str(e)}},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    user_data = UserSerializer(user).data
+    response_data = {
+        "status": "ok",
+        "access_token": access_token,
+        "token_type": "Bearer",
+        "expires_in": 900,
+        "user": user_data,
+    }
+
+    if client_type == "mobile":
+        response_data["refresh_token"] = refresh_token
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    response = Response(response_data, status=status.HTTP_200_OK)
+    set_refresh_cookie(response, refresh_token)
+    return response
 
 
 @extend_schema(
@@ -123,10 +225,11 @@ def verify_code_view(request):
     email = serializer.validated_data["email"]
     code = serializer.validated_data["code"]
     language = serializer.validated_data.get("language", "en")
+    client_type = serializer.validated_data.get("client_type", "web")
 
     try:
         user, access_token, refresh_token = verify_otp(
-            email=email, code=code, language=language
+            email=email, code=code, language=language, request=request
         )
     except AuthException as e:
         return Response(
@@ -135,15 +238,22 @@ def verify_code_view(request):
         )
 
     user_data = UserSerializer(user).data
-    return Response(
-        {
-            "status": "ok",
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "user": user_data,
-        },
-        status=status.HTTP_200_OK,
-    )
+    response_data = {
+        "status": "ok",
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "Bearer",
+        "expires_in": 900,
+        "user": user_data,
+    }
+
+    if client_type == "mobile":
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    # For web clients, set refresh token in httpOnly, secure cookie
+    response = Response(response_data, status=status.HTTP_200_OK)
+    set_refresh_cookie(response, refresh_token)
+    return response
 
 
 @extend_schema(
@@ -153,6 +263,7 @@ def verify_code_view(request):
     responses={
         200: OpenApiResponse(description="Tokens rotated successfully"),
         401: OpenApiResponse(description="Invalid, revoked, or expired refresh token"),
+        403: OpenApiResponse(description="CSRF verification failed"),
     },
 )
 @api_view(["POST"])
@@ -172,29 +283,66 @@ def refresh_token_view(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    raw_token = serializer.validated_data["refresh_token"]
+    raw_token = serializer.validated_data.get("refresh_token")
+    client_type = serializer.validated_data.get("client_type", "web")
+    is_cookie_session = False
+
+    if not raw_token:
+        # Check cookie
+        raw_token = request.COOKIES.get(COOKIE_NAME)
+        if not raw_token:
+            return Response(
+                {
+                    "error": {
+                        "code": "bad_request",
+                        "message": "No refresh token provided in body or cookie.",
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        is_cookie_session = True
+
+        # CSRF check on cookie refresh
+        if not check_refresh_csrf(request):
+            return Response(
+                {
+                    "error": {
+                        "code": "csrf_rejected",
+                        "message": "Missing CSRF verification header (X-KrishiSetu-Client).",
+                    }
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
     try:
-        access_token, new_refresh_token = rotate_refresh_token(raw_token)
+        access_token, new_refresh_token = rotate_refresh_token(
+            raw_token, request=request
+        )
     except AuthException as e:
         return Response(
             {"error": {"code": e.code, "message": e.message}},
             status=e.status_code,
         )
 
-    return Response(
-        {
-            "status": "ok",
-            "access_token": access_token,
-            "refresh_token": new_refresh_token,
-        },
-        status=status.HTTP_200_OK,
-    )
+    response_data = {
+        "status": "ok",
+        "access_token": access_token,
+        "refresh_token": new_refresh_token,
+        "token_type": "Bearer",
+        "expires_in": 900,
+    }
+
+    if client_type == "mobile" and not is_cookie_session:
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    response = Response(response_data, status=status.HTTP_200_OK)
+    set_refresh_cookie(response, new_refresh_token)
+    return response
 
 
 @extend_schema(
     summary="Logout and revoke session",
-    description="Revokes the active refresh token.",
+    description="Revokes the active refresh token and clears session cookie.",
     request=RefreshTokenSerializer,
     responses={
         200: OpenApiResponse(description="Logged out successfully"),
@@ -203,32 +351,63 @@ def refresh_token_view(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def logout_view(request):
-    """Revoke refresh token on client logout."""
-    raw_token = request.data.get("refresh_token")
+    """Revoke refresh token on client logout and clear cookie."""
+    raw_token = request.data.get("refresh_token") or request.COOKIES.get(COOKIE_NAME)
     if raw_token and isinstance(raw_token, str):
-        revoke_refresh_token(raw_token)
+        revoke_refresh_token(raw_token, request=request)
 
-    return Response(
+    response = Response(
         {"status": "ok", "message": "Logged out successfully."},
         status=status.HTTP_200_OK,
     )
+    clear_refresh_cookie(response)
+    return response
 
 
 @extend_schema(
-    summary="Get current farmer account and profile",
-    description="Returns the profile and demographic details of the authenticated farmer.",
+    summary="Logout everywhere",
+    description="Revokes all refresh tokens for the authenticated user across all devices.",
+    responses={
+        200: OpenApiResponse(description="All sessions revoked"),
+        401: OpenApiResponse(description="Unauthenticated"),
+    },
+)
+@api_view(["POST"])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def logout_everywhere_view(request):
+    """Revokes all active refresh tokens for the authenticated user."""
+    logout_all_sessions(request.user, request=request)
+    response = Response(
+        {"status": "ok", "message": "All sessions revoked successfully."},
+        status=status.HTTP_200_OK,
+    )
+    clear_refresh_cookie(response)
+    return response
+
+
+@extend_schema(
+    summary="Get current farmer account or delete account",
+    description="Returns profile details of the authenticated farmer, or deletes account (Right to Erasure under DPDP Act 2023).",
     responses={
         200: UserSerializer,
+        204: OpenApiResponse(description="Account deleted successfully"),
         401: OpenApiResponse(
             description="Authentication credentials missing or invalid"
         ),
     },
 )
-@api_view(["GET"])
+@api_view(["GET", "DELETE"])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def me_view(request):
-    """Retrieve authenticated user's account details and agricultural profile."""
+    """Retrieve or delete authenticated user's account details and agricultural profile."""
+    if request.method == "DELETE":
+        delete_user_account(request.user, request=request)
+        response = Response(status=status.HTTP_204_NO_CONTENT)
+        clear_refresh_cookie(response)
+        return response
+
     serializer = UserSerializer(request.user)
     return Response(serializer.data, status=status.HTTP_200_OK)
 

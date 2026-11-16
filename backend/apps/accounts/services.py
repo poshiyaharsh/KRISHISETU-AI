@@ -14,7 +14,29 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils import timezone
 
 from .authentication import create_access_token
-from .models import EmailVerificationOTP, FarmerProfile, RefreshToken, User
+from .models import (
+    AuthEvent,
+    EmailVerificationOTP,
+    FarmerProfile,
+    RefreshToken,
+    SocialIdentity,
+    User,
+)
+
+try:
+    from anymail.exceptions import (
+        AnymailAPIError,
+        AnymailConfigurationError,
+        AnymailRequestsAPIError,
+    )
+
+    _ANYMAIL_EXCEPTIONS = (
+        AnymailAPIError,
+        AnymailConfigurationError,
+        AnymailRequestsAPIError,
+    )
+except ImportError:
+    _ANYMAIL_EXCEPTIONS = ()
 
 logger = logging.getLogger("krishisetu.accounts")
 
@@ -243,6 +265,14 @@ def send_otp_email(user_or_email: str, code: str, language: str = "en") -> None:
             masked,
         )
         raise OtpDeliveryError("email_delivery_failed") from e
+    except _ANYMAIL_EXCEPTIONS as e:
+        logger.error(
+            "Email delivery failed (Anymail API): class=%s recipient=%s error=%s",
+            type(e).__name__,
+            masked,
+            e,
+        )
+        raise OtpDeliveryError("email_delivery_failed") from e
     except Exception as e:
         logger.error(
             "Email delivery failed: class=%s recipient=%s error=%s",
@@ -304,24 +334,60 @@ def generate_otp(email: str, language: str = "en") -> str:
     return code
 
 
-def create_refresh_token_record(user: User) -> str:
-    """Generate a high-entropy 64-char refresh token, hash it, and save in DB."""
+def hash_client_id(request) -> str:
+    """Computes salted SHA-256 hash of client IP and User-Agent. Never stores raw IP."""
+    if not request:
+        return ""
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(",")[0].strip()
+    else:
+        ip = request.META.get("REMOTE_ADDR", "")
+    ua = request.META.get("HTTP_USER_AGENT", "")
+    salt = getattr(settings, "SECRET_KEY", "default-salt")
+    return hashlib.sha256(f"{salt}:{ip}:{ua}".encode()).hexdigest()
+
+
+def log_auth_event(
+    event_type: str, user: User | None = None, request=None
+) -> AuthEvent:
+    """Records an authentication security audit event without storing raw PII."""
+    hashed_client = hash_client_id(request) if request else ""
+    user_agent = request.META.get("HTTP_USER_AGENT", "")[:255] if request else ""
+    return AuthEvent.objects.create(
+        user=user,
+        event_type=event_type,
+        hashed_client_id=hashed_client,
+        user_agent=user_agent,
+    )
+
+
+def create_refresh_token_record(user: User, family: str | None = None) -> str:
+    """
+    Generate a high-entropy 64-char refresh token, hash it, and save in DB.
+    Assigns or preserves the token family for rotation reuse detection.
+    """
     raw_token = secrets.token_hex(32)
     token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
     expires_at = timezone.now() + timedelta(days=REFRESH_TOKEN_TTL_DAYS)
+    token_family = family or secrets.token_hex(16)
 
     RefreshToken.objects.create(
         user=user,
         token_hash=token_hash,
+        family=token_family,
         expires_at=expires_at,
     )
     return raw_token
 
 
-def verify_otp(email: str, code: str, language: str = "en") -> tuple[User, str, str]:
+def verify_otp(
+    email: str, code: str, language: str = "en", request=None
+) -> tuple[User, str, str]:
     """
     Verify the 6-digit OTP against active database hash in constant time.
     Tracks failed attempts and invalidates on max attempts (5) or expiration (10 min).
+    Marks email_verified=True on successful verification.
     Returns user, short-lived access token, and long-lived refresh token.
     """
     normalized_email = email.lower().strip()
@@ -379,9 +445,10 @@ def verify_otp(email: str, code: str, language: str = "en") -> tuple[User, str, 
 
     user, created = User.objects.get_or_create(email=normalized_email)
     user.last_login = now
+    user.email_verified = True
     if created or user.consented_at is None:
         user.consented_at = now
-    user.save(update_fields=["last_login", "consented_at"])
+    user.save(update_fields=["last_login", "email_verified", "consented_at"])
 
     if created:
         FarmerProfile.objects.create(
@@ -394,46 +461,257 @@ def verify_otp(email: str, code: str, language: str = "en") -> tuple[User, str, 
             mask_recipient(normalized_email),
         )
 
+    log_auth_event("email_otp_verified", user=user, request=request)
+
     access_token = create_access_token(user)
     refresh_token = create_refresh_token_record(user)
 
     return user, access_token, refresh_token
 
 
-def rotate_refresh_token(raw_refresh_token: str) -> tuple[str, str]:
+def rotate_refresh_token(
+    raw_refresh_token: str, request=None
+) -> tuple[str, str]:
     """
-    Rotates a refresh token: verifies and revokes old token, returns new access & refresh tokens.
-    Protects against reuse attacks.
+    Rotates a refresh token with token family reuse detection.
+    If an already-revoked refresh token is presented, revokes all tokens in that family.
+    Returns (new_access_token, new_refresh_token).
     """
     token_hash = hashlib.sha256(raw_refresh_token.encode()).hexdigest()
     now = timezone.now()
 
     token_record = (
         RefreshToken.objects.select_related("user")
-        .filter(
-            token_hash=token_hash,
-            is_revoked=False,
-            expires_at__gt=now,
-        )
+        .filter(token_hash=token_hash)
         .first()
     )
 
-    if not token_record:
+    if not token_record or token_record.expires_at <= now:
         logger.warning("Invalid or expired refresh token attempted")
         raise InvalidRefreshTokenError()
 
+    # Reuse detection
+    if token_record.is_revoked:
+        logger.warning(
+            "Refresh token reuse detected for family %s user %s. Revoking family.",
+            token_record.family,
+            mask_recipient(token_record.user.email),
+        )
+        if token_record.family:
+            RefreshToken.objects.filter(family=token_record.family).update(
+                is_revoked=True
+            )
+        log_auth_event("token_reuse_detected", user=token_record.user, request=request)
+        raise InvalidRefreshTokenError(
+            "Refresh token reuse detected. Session terminated."
+        )
+
+    # Valid rotation
     token_record.is_revoked = True
     token_record.save(update_fields=["is_revoked"])
 
-    new_refresh_token = create_refresh_token_record(token_record.user)
+    new_refresh_token = create_refresh_token_record(
+        token_record.user, family=token_record.family
+    )
     new_access_token = create_access_token(token_record.user)
+    log_auth_event("token_refreshed", user=token_record.user, request=request)
 
     return new_access_token, new_refresh_token
 
 
-def revoke_refresh_token(raw_refresh_token: str) -> None:
+def revoke_refresh_token(raw_refresh_token: str, request=None) -> None:
     """Explicitly revokes a refresh token on logout."""
     token_hash = hashlib.sha256(raw_refresh_token.encode()).hexdigest()
-    RefreshToken.objects.filter(token_hash=token_hash, is_revoked=False).update(
+    record = RefreshToken.objects.filter(token_hash=token_hash, is_revoked=False).first()
+    if record:
+        record.is_revoked = True
+        record.save(update_fields=["is_revoked"])
+        log_auth_event("logout", user=record.user, request=request)
+
+
+def logout_all_sessions(user: User, request=None) -> int:
+    """Revokes all active refresh tokens for the user across all devices."""
+    count = RefreshToken.objects.filter(user=user, is_revoked=False).update(
         is_revoked=True
     )
+    log_auth_event("logout_everywhere", user=user, request=request)
+    return count
+
+
+def delete_user_account(user: User, request=None) -> None:
+    """
+    Right to Erasure (DPDP Act 2023): deletes farmer personal record, profiles,
+    plots, saved schemes, tokens, and social identities.
+    """
+    log_auth_event("account_deleted", user=user, request=request)
+    user.delete()
+
+
+def verify_google_credential(credential: str) -> dict:
+    """
+    Verifies a Google ID token with google-auth library.
+    Checks signature, expiry, issuer, audience against settings.GOOGLE_OAUTH_CLIENT_IDS,
+    and requires email_verified == True.
+    """
+    from google.auth.transport import requests as google_requests
+    from google.oauth2 import id_token
+
+    allowed_audiences = getattr(settings, "GOOGLE_OAUTH_CLIENT_IDS", [])
+
+    try:
+        idinfo = id_token.verify_oauth2_token(
+            credential,
+            google_requests.Request(),
+            clock_skew_in_seconds=10,
+        )
+    except Exception as e:
+        logger.warning("Google ID token signature verification failed: %s", e)
+        raise AuthException(
+            code="invalid_google_token",
+            message=f"Google ID token signature or format is invalid: {e}",
+            status_code=400,
+        )
+
+    # 1. Issuer verification
+    issuer = idinfo.get("iss", "")
+    if issuer not in ("accounts.google.com", "https://accounts.google.com"):
+        logger.warning("Google ID token has invalid issuer: %s", issuer)
+        raise AuthException(
+            code="invalid_issuer",
+            message=f"Token issuer '{issuer}' is not accounts.google.com.",
+            status_code=400,
+        )
+
+    # 2. Audience verification
+    aud = idinfo.get("aud")
+    if allowed_audiences and aud not in allowed_audiences:
+        logger.warning(
+            "Google ID token audience %s not in GOOGLE_OAUTH_CLIENT_IDS", aud
+        )
+        raise AuthException(
+            code="audience_mismatch",
+            message="Google ID token audience does not match registered client IDs.",
+            status_code=400,
+        )
+
+    # 3. Email verified requirement
+    if not idinfo.get("email_verified", False):
+        logger.warning(
+            "Google account %s is not marked email_verified",
+            mask_recipient(idinfo.get("email", "")),
+        )
+        raise AuthException(
+            code="unverified_google_email",
+            message="Google account email is not verified.",
+            status_code=400,
+        )
+
+    # 4. Required claims
+    if not idinfo.get("sub"):
+        raise AuthException(
+            code="missing_sub",
+            message="Google token does not contain a subject ID (sub).",
+            status_code=400,
+        )
+
+    if not idinfo.get("email"):
+        raise AuthException(
+            code="missing_email",
+            message="Google token does not contain an email claim.",
+            status_code=400,
+        )
+
+    return idinfo
+
+
+def authenticate_or_register_google_user(
+    token_info: dict, request=None, language: str = "en"
+) -> tuple[User, str, str]:
+    """
+    Authenticates or creates a User via Google Identity.
+    Matches person by stable token 'sub' stored in SocialIdentity.
+    Account linking: links to existing user with same email ONLY if email was verified.
+    """
+    sub = str(token_info["sub"])
+    email = token_info["email"].strip().lower()
+    name = token_info.get("name", "")
+    now = timezone.now()
+
+    # 1. Lookup by SocialIdentity (provider='google', subject=sub)
+    social_id = (
+        SocialIdentity.objects.select_related("user")
+        .filter(provider="google", subject=sub)
+        .first()
+    )
+
+    if social_id:
+        user = social_id.user
+        if not user.is_active:
+            raise AuthException(
+                code="account_disabled",
+                message="Your account is disabled.",
+                status_code=403,
+            )
+        user.last_login = now
+        user.save(update_fields=["last_login"])
+        log_auth_event("google_login", user=user, request=request)
+    else:
+        # 2. Check if a User already exists with the same email
+        existing_user = User.objects.filter(email=email).first()
+        if existing_user:
+            # ONLY link if email was verified (by email code or Google)
+            if not existing_user.email_verified:
+                logger.warning(
+                    "Refusing to link Google account to unverified user %s",
+                    mask_recipient(email),
+                )
+                raise AuthException(
+                    code="unverified_email_linking_forbidden",
+                    message="Cannot link Google account to an unverified email. Please verify your email via one-time code first.",
+                    status_code=400,
+                )
+
+            # Link existing verified user
+            user = existing_user
+            SocialIdentity.objects.create(
+                provider="google",
+                subject=sub,
+                user=user,
+                email=email,
+            )
+            user.last_login = now
+            user.save(update_fields=["last_login"])
+            log_auth_event("account_linked", user=user, request=request)
+            logger.info(
+                "Linked Google identity to verified user %s", mask_recipient(email)
+            )
+        else:
+            # 3. Create new user with consent recorded
+            user = User.objects.create(
+                email=email,
+                email_verified=True,
+                is_active=True,
+                consented_at=now,
+                consent_version="1.0",
+                last_login=now,
+            )
+            FarmerProfile.objects.create(
+                user=user,
+                display_name=name or email.split("@")[0],
+                preferred_language=language[:2] if language else "en",
+            )
+            SocialIdentity.objects.create(
+                provider="google",
+                subject=sub,
+                user=user,
+                email=email,
+            )
+            log_auth_event("google_signup", user=user, request=request)
+            logger.info(
+                "Registered new user via Google Sign-In: %s", mask_recipient(email)
+            )
+
+    access_token = create_access_token(user)
+    refresh_token = create_refresh_token_record(user)
+
+    return user, access_token, refresh_token

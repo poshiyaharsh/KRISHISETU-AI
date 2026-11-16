@@ -40,6 +40,10 @@ class User(models.Model):
         default="1.0",
         help_text="Version of terms & privacy policy accepted by the user",
     )
+    email_verified = models.BooleanField(
+        default=False,
+        help_text="Designates whether user email has been verified via OTP or Google",
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -86,7 +90,7 @@ class EmailVerificationOTP(models.Model):
 
 class RefreshToken(models.Model):
     """
-    Opaque refresh token stored as SHA-256 hash with automatic rotation and revocation.
+    Opaque refresh token stored as SHA-256 hash with token family rotation and reuse detection.
     """
 
     user = models.ForeignKey(
@@ -95,6 +99,12 @@ class RefreshToken(models.Model):
         related_name="refresh_tokens",
     )
     token_hash = models.CharField(max_length=64, unique=True, db_index=True)
+    family = models.CharField(
+        max_length=64,
+        blank=True,
+        db_index=True,
+        help_text="Token family identifier for rotation and reuse detection",
+    )
     expires_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_revoked = models.BooleanField(default=False)
@@ -105,7 +115,60 @@ class RefreshToken(models.Model):
         verbose_name_plural = "Refresh Tokens"
 
     def __str__(self) -> str:
-        return f"RefreshToken for {self.user.email} (revoked={self.is_revoked})"
+        return f"RefreshToken for {self.user.email} (family={self.family}, revoked={self.is_revoked})"
+
+
+class SocialIdentity(models.Model):
+    """
+    Social OAuth identity (e.g. Google) linked to a user account.
+    Identifies a user primarily by the provider's stable subject ID (sub).
+    """
+
+    provider = models.CharField(max_length=32, default="google")
+    subject = models.CharField(max_length=255, db_index=True)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="social_identities",
+    )
+    email = models.EmailField(blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        unique_together = ("provider", "subject")
+        verbose_name = "Social Identity"
+        verbose_name_plural = "Social Identities"
+
+    def __str__(self) -> str:
+        return f"{self.provider}:{self.subject} -> {self.user.email}"
+
+
+class AuthEvent(models.Model):
+    """
+    Security and compliance audit log for authentication events.
+    Stores salted SHA-256 hashed client identifiers; raw IP addresses are NEVER stored.
+    """
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="auth_events",
+    )
+    event_type = models.CharField(max_length=64)
+    hashed_client_id = models.CharField(max_length=64, blank=True, default="")
+    user_agent = models.CharField(max_length=255, blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Auth Event"
+        verbose_name_plural = "Auth Events"
+
+    def __str__(self) -> str:
+        return f"{self.event_type} - {self.user.email if self.user else 'anonymous'} at {self.created_at}"
 
 
 class LandAreaUnit(models.TextChoices):

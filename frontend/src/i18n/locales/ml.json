@@ -352,7 +352,11 @@
     "code_expiry": "Valid for 10 minutes.",
     "use_different_email": "Use a different email",
     "email_delivery_failed": "We could not send the email right now. Please try again in a few minutes.",
-    "back_to_home": "Back to home"
+    "back_to_home": "Back to home",
+    "continue_with_google": "Continue with Google",
+    "google_unavailable": "Google Sign-In is unavailable (blocked by ad-blocker or offline). Please use email verification below.",
+    "or_email": "or continue with email",
+    "terms_notice": "By signing in, you agree to KrishiSetu AI's Terms & Privacy Policy (DPDP Act 2023)."
   },
   "profile": {
     "title": "Farmer Profile & Settings",

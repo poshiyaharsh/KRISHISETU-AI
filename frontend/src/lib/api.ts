@@ -85,6 +85,7 @@ export async function apiGet<T>(endpoint: string, options: ApiRequestOptions = {
     const response = await fetch(url, {
       ...fetchOptions,
       method: 'GET',
+      credentials: fetchOptions.credentials || 'include',
       signal: controller.signal,
       headers: buildHeaders(fetchOptions.headers, false),
     });
@@ -141,6 +142,7 @@ export async function apiPost<T>(
     const response = await fetch(url, {
       ...fetchOptions,
       method: 'POST',
+      credentials: fetchOptions.credentials || 'include',
       signal: controller.signal,
       headers: buildHeaders(fetchOptions.headers, body !== undefined),
       body: body !== undefined ? JSON.stringify(body) : undefined,
@@ -202,6 +204,7 @@ export async function apiPatch<T>(
     const response = await fetch(url, {
       ...fetchOptions,
       method: 'PATCH',
+      credentials: fetchOptions.credentials || 'include',
       signal: controller.signal,
       headers: buildHeaders(fetchOptions.headers, true),
       body: JSON.stringify(body),
@@ -258,6 +261,7 @@ export async function apiDelete<T = void>(
     const response = await fetch(url, {
       ...fetchOptions,
       method: 'DELETE',
+      credentials: fetchOptions.credentials || 'include',
       signal: controller.signal,
       headers: buildHeaders(fetchOptions.headers, false),
     });

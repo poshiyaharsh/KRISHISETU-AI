@@ -36,6 +36,10 @@ class Command(BaseCommand):
         email_backend = getattr(
             settings, "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"
         )
+        email_provider = getattr(settings, "EMAIL_PROVIDER", "smtp")
+        brevo_key = getattr(settings, "BREVO_API_KEY", "")
+        resend_key = getattr(settings, "RESEND_API_KEY", "")
+        google_clients = getattr(settings, "GOOGLE_OAUTH_CLIENT_IDS", [])
         email_host = getattr(settings, "EMAIL_HOST", "")
         email_port = getattr(settings, "EMAIL_PORT", 587)
         use_tls = getattr(settings, "EMAIL_USE_TLS", False)
@@ -49,7 +53,19 @@ class Command(BaseCommand):
         # 1. Print configuration table
         self.stdout.write(f"Settings Module      : {settings_mod}")
         self.stdout.write(f"DEBUG Mode           : {debug}")
+        self.stdout.write(f"EMAIL_PROVIDER       : {email_provider}")
         self.stdout.write(f"EMAIL_BACKEND        : {email_backend}")
+        if email_provider == "brevo":
+            self.stdout.write(
+                f"BREVO_API_KEY        : {'set (' + str(len(brevo_key)) + ' chars)' if brevo_key else '<missing>'}"
+            )
+        elif email_provider == "resend":
+            self.stdout.write(
+                f"RESEND_API_KEY       : {'set (' + str(len(resend_key)) + ' chars)' if resend_key else '<missing>'}"
+            )
+        self.stdout.write(
+            f"GOOGLE CLIENT IDS    : {len(google_clients)} client(s) configured"
+        )
         self.stdout.write(f"EMAIL_HOST           : {email_host or '<not configured>'}")
         self.stdout.write(f"EMAIL_PORT           : {email_port}")
         self.stdout.write(f"EMAIL_USE_TLS        : {use_tls}")

@@ -352,7 +352,11 @@
     "code_expiry": "Valid for 10 minutes.",
     "use_different_email": "Use a different email",
     "email_delivery_failed": "We could not send the email right now. Please try again in a few minutes.",
-    "back_to_home": "Back to home"
+    "back_to_home": "Back to home",
+    "continue_with_google": "Google के साथ जारी रखें",
+    "google_unavailable": "Google साइन-इन अनुपलब्ध है (एड-ब्लॉकर या ऑफ़लाइन के कारण)। कृपया नीचे ईमेल से लॉगिन करें।",
+    "or_email": "या ईमेल के साथ जारी रखें",
+    "terms_notice": "साइन इन करके, आप कृषिसेतु AI के नियम और गोपनीयता नीति (DPDP अधिनियम 2023) से सहमत होते हैं।"
   },
   "profile": {
     "title": "किसान प्रोफ़ाइल और सेटिंग्स",

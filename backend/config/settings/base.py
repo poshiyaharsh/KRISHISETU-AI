@@ -45,6 +45,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "corsheaders",
     "drf_spectacular",
+    "anymail",
 ]
 
 LOCAL_APPS = [
@@ -210,14 +211,37 @@ ADMIN_URL = env("ADMIN_URL", default="krishi-portal-ops/")
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1048576  # 1 MB request size limit
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576
 
-# Email Configuration (Passwordless Auth OTP)
-ALLOW_CONSOLE_EMAIL = env.bool("ALLOW_CONSOLE_EMAIL", default=True)
-EMAIL_BACKEND = env(
-    "EMAIL_BACKEND",
-    default="django.core.mail.backends.console.EmailBackend"
-    if DEBUG
-    else "django.core.mail.backends.smtp.EmailBackend",
+# Google OAuth2 Client Configuration
+GOOGLE_OAUTH_CLIENT_IDS = env.list(
+    "GOOGLE_OAUTH_CLIENT_IDS",
+    default=["1234567890-testclientid.apps.googleusercontent.com"],
 )
+
+# Email Provider Configuration (Brevo, Resend, SMTP, Console)
+ALLOW_CONSOLE_EMAIL = env.bool("ALLOW_CONSOLE_EMAIL", default=True)
+EMAIL_PROVIDER = env("EMAIL_PROVIDER", default="console" if DEBUG else "brevo").lower()
+BREVO_API_KEY = env("BREVO_API_KEY", default="")
+RESEND_API_KEY = env("RESEND_API_KEY", default="")
+
+ANYMAIL = {}
+if EMAIL_PROVIDER == "brevo":
+    EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
+    ANYMAIL["BREVO_API_KEY"] = BREVO_API_KEY
+elif EMAIL_PROVIDER == "resend":
+    EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
+    ANYMAIL["RESEND_API_KEY"] = RESEND_API_KEY
+elif EMAIL_PROVIDER == "smtp":
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+elif EMAIL_PROVIDER == "console":
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = env(
+        "EMAIL_BACKEND",
+        default="django.core.mail.backends.console.EmailBackend"
+        if DEBUG
+        else "django.core.mail.backends.smtp.EmailBackend",
+    )
+
 EMAIL_HOST = env("EMAIL_HOST", default="smtp.gmail.com")
 EMAIL_PORT = env.int("EMAIL_PORT", default=587)
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)

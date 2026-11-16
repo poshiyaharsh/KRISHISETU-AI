@@ -5,7 +5,7 @@ Serializers for accounts, authentication, and farmer profiles.
 from rest_framework import serializers
 
 from apps.crops.models import PredictionRecord
-from .models import FarmerProfile, FarmPlot, SavedScheme, User
+from .models import FarmerProfile, FarmPlot, SavedScheme, SocialIdentity, User
 
 
 class RequestCodeSerializer(serializers.Serializer):
@@ -34,12 +34,44 @@ class VerifyCodeSerializer(serializers.Serializer):
         default="en",
         required=False,
     )
+    client_type = serializers.ChoiceField(
+        choices=["web", "mobile"],
+        default="web",
+        required=False,
+        help_text="Client platform ('web' sets secure cookie, 'mobile' returns in JSON)",
+    )
+
+
+class GoogleAuthSerializer(serializers.Serializer):
+    credential = serializers.CharField(
+        required=True,
+        help_text="Google ID token (JWT) returned by Google Identity Services",
+    )
+    client_type = serializers.ChoiceField(
+        choices=["web", "mobile"],
+        default="web",
+        required=False,
+        help_text="Client platform ('web' sets secure cookie, 'mobile' returns in JSON)",
+    )
+    language = serializers.CharField(
+        max_length=10,
+        default="en",
+        required=False,
+        help_text="Preferred language for farmer profile",
+    )
 
 
 class RefreshTokenSerializer(serializers.Serializer):
     refresh_token = serializers.CharField(
-        required=True,
-        help_text="Opaque 64-character refresh token",
+        required=False,
+        allow_blank=True,
+        default="",
+        help_text="Opaque 64-character refresh token (optional if provided in cookie)",
+    )
+    client_type = serializers.ChoiceField(
+        choices=["web", "mobile"],
+        default="web",
+        required=False,
     )
 
 
@@ -166,19 +198,29 @@ class ClaimHistorySerializer(serializers.Serializer):
     )
 
 
+class SocialIdentitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SocialIdentity
+        fields = ["provider", "email", "created_at"]
+        read_only_fields = fields
+
+
 class UserSerializer(serializers.ModelSerializer):
     profile = FarmerProfileSerializer(read_only=True)
+    identities = SocialIdentitySerializer(source="social_identities", many=True, read_only=True)
 
     class Meta:
         model = User
         fields = [
             "id",
             "email",
+            "email_verified",
             "is_active",
             "created_at",
             "last_login",
             "consented_at",
             "consent_version",
             "profile",
+            "identities",
         ]
         read_only_fields = fields

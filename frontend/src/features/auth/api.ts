@@ -16,14 +16,21 @@ export interface RequestCodeResponse {
 export interface VerifyCodeResponse {
   status: string;
   access_token: string;
-  refresh_token: string;
+  refresh_token?: string;
+  user: User;
+}
+
+export interface GoogleAuthResponse {
+  status: string;
+  access_token: string;
+  refresh_token?: string;
   user: User;
 }
 
 export interface RefreshTokenResponse {
   status: string;
   access_token: string;
-  refresh_token: string;
+  refresh_token?: string;
 }
 
 export interface PaginatedPredictionsResponse {
@@ -39,6 +46,18 @@ export interface ClaimHistoryResponse {
   message: string;
 }
 
+export async function googleAuthApi(
+  credential: string,
+  clientType: 'web' | 'mobile' = 'web',
+  language = 'en'
+): Promise<GoogleAuthResponse> {
+  return apiPost<GoogleAuthResponse>(
+    '/auth/google/',
+    { credential, client_type: clientType, language },
+    { timeoutMs: 25000 }
+  );
+}
+
 export async function requestCodeApi(
   email: string,
   language = 'en'
@@ -49,17 +68,38 @@ export async function requestCodeApi(
 export async function verifyCodeApi(
   email: string,
   code: string,
-  language = 'en'
+  language = 'en',
+  clientType: 'web' | 'mobile' = 'web'
 ): Promise<VerifyCodeResponse> {
-  return apiPost<VerifyCodeResponse>('/auth/verify-code/', { email, code, language }, { timeoutMs: 25000 });
+  return apiPost<VerifyCodeResponse>(
+    '/auth/verify-code/',
+    { email, code, language, client_type: clientType },
+    { timeoutMs: 25000 }
+  );
 }
 
-export async function refreshTokenApi(refreshToken: string): Promise<RefreshTokenResponse> {
-  return apiPost<RefreshTokenResponse>('/auth/refresh/', { refresh_token: refreshToken });
+export async function refreshTokenApi(refreshToken?: string): Promise<RefreshTokenResponse> {
+  return apiPost<RefreshTokenResponse>(
+    '/auth/refresh/',
+    { refresh_token: refreshToken || '' },
+    {
+      headers: {
+        'X-KrishiSetu-Client': 'web',
+      },
+    }
+  );
 }
 
-export async function logoutApi(refreshToken: string): Promise<{ status: string }> {
-  return apiPost<{ status: string }>('/auth/logout/', { refresh_token: refreshToken });
+export async function logoutApi(refreshToken?: string): Promise<{ status: string }> {
+  return apiPost<{ status: string }>('/auth/logout/', { refresh_token: refreshToken || '' });
+}
+
+export async function logoutEverywhereApi(): Promise<{ status: string }> {
+  return apiPost<{ status: string }>('/auth/logout-everywhere/');
+}
+
+export async function deleteAccountApi(): Promise<void> {
+  return apiDelete('/me/');
 }
 
 export async function getMeApi(): Promise<User> {

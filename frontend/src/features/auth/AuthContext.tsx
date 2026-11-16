@@ -2,8 +2,12 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { setAuthTokenGetter } from '@/lib/api';
 import {
   claimHistoryApi,
+  deleteAccountApi,
   getMeApi,
+  googleAuthApi,
   logoutApi,
+  logoutEverywhereApi,
+  refreshTokenApi,
   requestCodeApi,
   updateProfileApi,
   verifyCodeApi,
@@ -11,7 +15,6 @@ import {
 } from './api';
 import type { AuthTokens, FarmerProfile, User } from './types';
 
-const TOKEN_STORAGE_KEY = 'krishisetu_auth_tokens';
 const GUEST_PREDICTIONS_KEY = 'krishisetu_guest_predictions';
 
 interface AuthContextValue {
@@ -21,7 +24,10 @@ interface AuthContextValue {
   isLoading: boolean;
   requestCode: (email: string, language?: string) => Promise<RequestCodeResponse>;
   verifyCode: (email: string, code: string, language?: string) => Promise<void>;
+  loginWithGoogle: (credential: string, language?: string) => Promise<void>;
   logout: () => Promise<void>;
+  logoutEverywhere: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
   updateProfile: (data: Partial<FarmerProfile>) => Promise<FarmerProfile>;
   refreshMe: () => Promise<void>;
   claimLocalPredictions: () => Promise<number>;
@@ -30,26 +36,15 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [tokens, setTokens] = useState<AuthTokens | null>(() => {
-    try {
-      const stored = localStorage.getItem(TOKEN_STORAGE_KEY);
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  });
-
+  // In-memory access token storage (never saved to localStorage or sessionStorage)
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Synchronize api client token getter
+  // Synchronize API client token getter with in-memory token
   useEffect(() => {
-    if (tokens?.access_token) {
-      setAuthTokenGetter(() => tokens.access_token);
-    } else {
-      setAuthTokenGetter(() => null);
-    }
-  }, [tokens]);
+    setAuthTokenGetter(() => accessToken);
+  }, [accessToken]);
 
   const claimLocalPredictions = useCallback(async (): Promise<number> => {
     try {
@@ -67,57 +62,94 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const refreshMe = useCallback(async () => {
-    if (!tokens?.access_token) {
+    if (!accessToken) {
       setUser(null);
-      setIsLoading(false);
       return;
     }
     try {
       const me = await getMeApi();
       setUser(me);
     } catch {
-      // Access token might be expired or invalid
-      setTokens(null);
+      setAccessToken(null);
       setUser(null);
-      localStorage.removeItem(TOKEN_STORAGE_KEY);
-    } finally {
-      setIsLoading(false);
     }
-  }, [tokens]);
+  }, [accessToken]);
 
+  // Initial silent session check via httpOnly cookie on mount
   useEffect(() => {
-    refreshMe();
-  }, [refreshMe]);
+    let isMounted = true;
+    const initializeSession = async () => {
+      try {
+        const data = await refreshTokenApi();
+        if (isMounted && data.access_token) {
+          setAccessToken(data.access_token);
+          setAuthTokenGetter(() => data.access_token);
+          const me = await getMeApi();
+          if (isMounted) {
+            setUser(me);
+          }
+        }
+      } catch {
+        // Unauthenticated guest mode
+        if (isMounted) {
+          setAccessToken(null);
+          setUser(null);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    initializeSession();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const requestCode = async (email: string, language = 'en'): Promise<RequestCodeResponse> => {
     return requestCodeApi(email, language);
   };
 
   const verifyCode = async (email: string, code: string, language = 'en') => {
-    const data = await verifyCodeApi(email, code, language);
-    const newTokens: AuthTokens = {
-      access_token: data.access_token,
-      refresh_token: data.refresh_token,
-    };
-    setTokens(newTokens);
+    const data = await verifyCodeApi(email, code, language, 'web');
+    setAccessToken(data.access_token);
     setUser(data.user);
-    localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(newTokens));
+    claimLocalPredictions();
+  };
 
-    // Automatically claim predictions saved before login
+  const loginWithGoogle = async (credential: string, language = 'en') => {
+    const data = await googleAuthApi(credential, 'web', language);
+    setAccessToken(data.access_token);
+    setUser(data.user);
     claimLocalPredictions();
   };
 
   const logout = async () => {
-    if (tokens?.refresh_token) {
-      try {
-        await logoutApi(tokens.refresh_token);
-      } catch {
-        // Silently proceed with local teardown
-      }
+    try {
+      await logoutApi();
+    } catch {
+      // Silently proceed with local teardown
     }
-    setTokens(null);
+    setAccessToken(null);
     setUser(null);
-    localStorage.removeItem(TOKEN_STORAGE_KEY);
+  };
+
+  const logoutEverywhere = async () => {
+    try {
+      await logoutEverywhereApi();
+    } catch {
+      // Silently proceed with local teardown
+    }
+    setAccessToken(null);
+    setUser(null);
+  };
+
+  const deleteAccount = async () => {
+    await deleteAccountApi();
+    setAccessToken(null);
+    setUser(null);
   };
 
   const updateProfile = async (data: Partial<FarmerProfile>): Promise<FarmerProfile> => {
@@ -128,14 +160,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return updated;
   };
 
+  const tokens: AuthTokens | null = accessToken
+    ? { access_token: accessToken }
+    : null;
+
   const value: AuthContextValue = {
     user,
     tokens,
-    isAuthenticated: Boolean(user && tokens),
+    isAuthenticated: Boolean(user && accessToken),
     isLoading,
     requestCode,
     verifyCode,
+    loginWithGoogle,
     logout,
+    logoutEverywhere,
+    deleteAccount,
     updateProfile,
     refreshMe,
     claimLocalPredictions,
@@ -151,7 +190,10 @@ const defaultAuthContextValue: AuthContextValue = {
   isLoading: false,
   requestCode: async () => ({ status: 'ok', message: '' }),
   verifyCode: async () => {},
+  loginWithGoogle: async () => {},
   logout: async () => {},
+  logoutEverywhere: async () => {},
+  deleteAccount: async () => {},
   updateProfile: async () => ({} as FarmerProfile),
   refreshMe: async () => {},
   claimLocalPredictions: async () => 0,

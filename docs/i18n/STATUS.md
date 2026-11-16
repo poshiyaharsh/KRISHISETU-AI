@@ -5,29 +5,29 @@
 
 | Code | Language Coverage | Status | Reviewer | Review Date |
 |---|---|---|---|---|
-| `en` | 100% (361/361 keys) | **Ready** | Core Team (Reviewed) | 2026-11-09 |
-| `gu` | 100% (361/361 keys) | **Ready** | Core Team (Reviewed) | 2026-11-09 |
-| `hi` | 100% (361/361 keys) | **Ready** | Core Team (Reviewed) | 2026-11-09 |
-| `as` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `bn` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `brx` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `doi` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `kn` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `kok` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `ks` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `mai` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `ml` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `mni` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `mr` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `ne` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `or` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `pa` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `sa` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `sat` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `sd` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `ta` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `te` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
-| `ur` | 100% (361/361 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `en` | 100% (365/365 keys) | **Ready** | Core Team (Reviewed) | 2026-11-09 |
+| `gu` | 100% (365/365 keys) | **Ready** | Core Team (Reviewed) | 2026-11-09 |
+| `hi` | 100% (365/365 keys) | **Ready** | Core Team (Reviewed) | 2026-11-09 |
+| `as` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `bn` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `brx` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `doi` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `kn` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `kok` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `ks` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `mai` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `ml` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `mni` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `mr` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `ne` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `or` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `pa` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `sa` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `sat` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `sd` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `ta` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `te` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
+| `ur` | 100% (365/365 keys) | **Beta** | Machine Draft (Automated) | Pending Human Review |
 
 ## Quality Tiers
 

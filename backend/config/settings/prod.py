@@ -69,10 +69,18 @@ if not _is_build:
     if any(b in EMAIL_BACKEND.lower() for b in _insecure_backends):  # noqa: F405
         raise ImproperlyConfigured(
             f"EMAIL_BACKEND in production cannot be a non-delivering backend ({EMAIL_BACKEND}). "  # noqa: F405
-            "Configure standard SMTP or transactional email provider."
+            "Configure transactional email provider (EMAIL_PROVIDER=brevo or resend) or standard SMTP."
         )
 
-    if "smtp" in EMAIL_BACKEND.lower():  # noqa: F405
+    if EMAIL_PROVIDER == "brevo" and not BREVO_API_KEY:  # noqa: F405
+        raise ImproperlyConfigured(
+            "BREVO_API_KEY must be set in production when EMAIL_PROVIDER=brevo."
+        )
+    elif EMAIL_PROVIDER == "resend" and not RESEND_API_KEY:  # noqa: F405
+        raise ImproperlyConfigured(
+            "RESEND_API_KEY must be set in production when EMAIL_PROVIDER=resend."
+        )
+    elif EMAIL_PROVIDER == "smtp" or "smtp" in EMAIL_BACKEND.lower():  # noqa: F405
         if not EMAIL_HOST:  # noqa: F405
             raise ImproperlyConfigured("EMAIL_HOST must be set in production.")
         if not EMAIL_HOST_USER:  # noqa: F405

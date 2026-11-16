@@ -6,6 +6,8 @@ from django.urls import path
 
 from .views import (
     claim_history_view,
+    google_auth_view,
+    logout_everywhere_view,
     logout_view,
     me_view,
     plot_detail_view,
@@ -21,10 +23,12 @@ from .views import (
 
 urlpatterns = [
     # Auth Endpoints
+    path("auth/google/", google_auth_view, name="auth-google"),
     path("auth/request-code/", request_code_view, name="auth-request-code"),
     path("auth/verify-code/", verify_code_view, name="auth-verify-code"),
     path("auth/refresh/", refresh_token_view, name="auth-refresh"),
     path("auth/logout/", logout_view, name="auth-logout"),
+    path("auth/logout-everywhere/", logout_everywhere_view, name="auth-logout-everywhere"),
     # Profile & Account Endpoints
     path("me/", me_view, name="me-detail"),
     path("me/profile/", profile_view, name="me-profile"),

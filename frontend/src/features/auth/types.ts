@@ -61,18 +61,26 @@ export interface UserPredictionRecord {
   created_at: string;
 }
 
+export interface SocialIdentity {
+  provider: string;
+  email: string;
+  created_at: string;
+}
+
 export interface User {
   id: number;
   email: string;
+  email_verified?: boolean;
   is_active?: boolean;
   created_at: string;
   last_login?: string | null;
   consented_at?: string | null;
   consent_version?: string;
   profile: FarmerProfile;
+  identities?: SocialIdentity[];
 }
 
 export interface AuthTokens {
   access_token: string;
-  refresh_token: string;
+  refresh_token?: string;
 }

@@ -5,11 +5,13 @@ Django admin configuration for Accounts and Farmer Profiles.
 from django.contrib import admin
 
 from .models import (
+    AuthEvent,
     EmailVerificationOTP,
     FarmerProfile,
     FarmPlot,
     RefreshToken,
     SavedScheme,
+    SocialIdentity,
     User,
 )
 
@@ -80,3 +82,19 @@ class SavedSchemeAdmin(admin.ModelAdmin):
     list_display = ("user", "scheme", "created_at")
     list_filter = ("created_at",)
     search_fields = ("user__email", "scheme__slug", "scheme__name_en")
+
+
+@admin.register(SocialIdentity)
+class SocialIdentityAdmin(admin.ModelAdmin):
+    list_display = ("provider", "subject", "user", "email", "created_at")
+    list_filter = ("provider", "created_at")
+    search_fields = ("subject", "user__email", "email")
+    readonly_fields = ("created_at",)
+
+
+@admin.register(AuthEvent)
+class AuthEventAdmin(admin.ModelAdmin):
+    list_display = ("event_type", "user", "hashed_client_id", "created_at")
+    list_filter = ("event_type", "created_at")
+    search_fields = ("event_type", "user__email", "hashed_client_id")
+    readonly_fields = ("created_at",)

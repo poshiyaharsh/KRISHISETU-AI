@@ -11,16 +11,40 @@ describe('Login Page', () => {
     await i18n.changeLanguage('en');
   });
 
-  it('renders email input and sign-in button initially', () => {
+  it('renders brand logo, Google container, email input, and guest link initially', () => {
+    vi.spyOn(authModule, 'useAuth').mockReturnValue({
+      user: null,
+      tokens: null,
+      isAuthenticated: false,
+      isLoading: false,
+      requestCode: vi.fn(),
+      verifyCode: vi.fn(),
+      loginWithGoogle: vi.fn(),
+      logout: vi.fn(),
+      logoutEverywhere: vi.fn(),
+      deleteAccount: vi.fn(),
+      updateProfile: vi.fn(),
+      refreshMe: vi.fn(),
+      claimLocalPredictions: vi.fn(),
+    });
+
     render(
       <MemoryRouter>
         <Login />
       </MemoryRouter>
     );
 
+    // Brand logo wrapped in home link
+    const logoLink = screen.getByRole('link', { name: /krishisetu ai, home/i });
+    expect(logoLink).toBeInTheDocument();
+
+    // Headings and inputs
     expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
     expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /send verification code/i })).toBeInTheDocument();
+
+    // Guest link
+    expect(screen.getByText(/continue as guest/i)).toBeInTheDocument();
   });
 
   it('progresses to OTP verification step on successful code request', async () => {
@@ -32,7 +56,10 @@ describe('Login Page', () => {
       isLoading: false,
       requestCode: requestCodeMock,
       verifyCode: vi.fn(),
+      loginWithGoogle: vi.fn(),
       logout: vi.fn(),
+      logoutEverywhere: vi.fn(),
+      deleteAccount: vi.fn(),
       updateProfile: vi.fn(),
       refreshMe: vi.fn(),
       claimLocalPredictions: vi.fn(),
@@ -71,7 +98,10 @@ describe('Login Page', () => {
       isLoading: false,
       requestCode: requestCodeMock,
       verifyCode: vi.fn(),
+      loginWithGoogle: vi.fn(),
       logout: vi.fn(),
+      logoutEverywhere: vi.fn(),
+      deleteAccount: vi.fn(),
       updateProfile: vi.fn(),
       refreshMe: vi.fn(),
       claimLocalPredictions: vi.fn(),
