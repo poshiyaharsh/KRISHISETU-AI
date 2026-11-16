@@ -147,16 +147,34 @@ def generate_otp(email: str, language: str = "en") -> str:
     body = EMAIL_BODIES[lang].format(code=code)
     from_email = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@krishisetu.in")
 
-    try:
-        send_mail(
-            subject=subject,
-            message=body,
-            from_email=from_email,
-            recipient_list=[normalized_email],
-            fail_silently=False,
-        )
-    except Exception as e:
-        logger.error("Failed to send verification email to %s: %s", normalized_email, e)
+    def _dispatch_mail():
+        try:
+            send_mail(
+                subject=subject,
+                message=body,
+                from_email=from_email,
+                recipient_list=[normalized_email],
+                fail_silently=False,
+            )
+            logger.info("Verification code delivered via email to %s", normalized_email)
+        except Exception as e:
+            logger.error(
+                "Failed to send verification email to %s: %s", normalized_email, e
+            )
+
+    # In test suites (locmem backend / mail.outbox present), dispatch synchronously
+    from django.core import mail
+
+    if (
+        getattr(settings, "EMAIL_DISPATCH_SYNC", False)
+        or hasattr(mail, "outbox")
+        or "locmem" in getattr(settings, "EMAIL_BACKEND", "")
+    ):
+        _dispatch_mail()
+    else:
+        import threading
+
+        threading.Thread(target=_dispatch_mail, daemon=True).start()
 
     if settings.DEBUG:
         logger.info(

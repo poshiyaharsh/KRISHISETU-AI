@@ -86,7 +86,7 @@ def request_code_view(request):
         "status": "ok",
         "message": "If this email is valid, a verification code has been sent.",
     }
-    if settings.DEBUG and code:
+    if (settings.DEBUG or getattr(settings, "RETURN_DEV_OTP", False)) and code:
         response_data["dev_code"] = code
 
     return Response(response_data, status=status.HTTP_200_OK)

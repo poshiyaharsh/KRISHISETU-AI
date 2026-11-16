@@ -43,7 +43,7 @@ export async function requestCodeApi(
   email: string,
   language = 'en'
 ): Promise<RequestCodeResponse> {
-  return apiPost<RequestCodeResponse>('/auth/request-code/', { email, language });
+  return apiPost<RequestCodeResponse>('/auth/request-code/', { email, language }, { timeoutMs: 25000 });
 }
 
 export async function verifyCodeApi(
@@ -51,7 +51,7 @@ export async function verifyCodeApi(
   code: string,
   language = 'en'
 ): Promise<VerifyCodeResponse> {
-  return apiPost<VerifyCodeResponse>('/auth/verify-code/', { email, code, language });
+  return apiPost<VerifyCodeResponse>('/auth/verify-code/', { email, code, language }, { timeoutMs: 25000 });
 }
 
 export async function refreshTokenApi(refreshToken: string): Promise<RefreshTokenResponse> {

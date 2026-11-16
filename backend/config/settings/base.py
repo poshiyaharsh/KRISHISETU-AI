@@ -226,6 +226,8 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 DEFAULT_FROM_EMAIL = env(
     "DEFAULT_FROM_EMAIL", default="KrishiSetu AI <noreply@krishisetu.in>"
 )
+EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT", default=5)
+RETURN_DEV_OTP = env.bool("RETURN_DEV_OTP", default=False)
 
 # Structured Logging with Request IDs (no PII or chat message content)
 LOGGING = {
