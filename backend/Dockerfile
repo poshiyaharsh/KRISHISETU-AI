@@ -49,9 +49,11 @@ COPY backend /app/backend
 
 WORKDIR /app/backend
 
-# Collect static files for WhiteNoise at build time using dummy build key
+# Collect static files for WhiteNoise at build time using dummy build keys
 RUN SECRET_KEY=build-only-placeholder-key-not-used-at-runtime-0123456789 \
     ALLOWED_HOSTS=localhost \
+    EMAIL_HOST_USER=build-placeholder@example.com \
+    EMAIL_HOST_PASSWORD=build-placeholder-password \
     python manage.py collectstatic --noinput
 
 RUN chown -R appuser:appgroup /app

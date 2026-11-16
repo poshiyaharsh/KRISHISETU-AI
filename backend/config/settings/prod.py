@@ -2,6 +2,7 @@
 Production settings for KrishiSetu AI backend.
 """
 
+import sys
 from django.core.exceptions import ImproperlyConfigured
 from .base import *  # noqa: F403
 
@@ -57,18 +58,24 @@ if SENTRY_DSN:
     except ImportError:
         pass
 
-# Production safety: validate email delivery backend configuration
-_insecure_backends = ("console", "locmem", "filebased", "dummy")
-if any(b in EMAIL_BACKEND.lower() for b in _insecure_backends):  # noqa: F405
-    raise ImproperlyConfigured(
-        f"EMAIL_BACKEND in production cannot be a non-delivering backend ({EMAIL_BACKEND}). "  # noqa: F405
-        "Configure standard SMTP or transactional email provider."
-    )
+# Production safety: validate email delivery backend configuration at runtime.
+# Skip during build-time commands (collectstatic) or when using the Docker build placeholder key.
+_is_build = (
+    SECRET_KEY == "build-only-placeholder-key-not-used-at-runtime-0123456789"
+    or any(cmd in sys.argv for cmd in ("collectstatic",))
+)
+if not _is_build:
+    _insecure_backends = ("console", "locmem", "filebased", "dummy")
+    if any(b in EMAIL_BACKEND.lower() for b in _insecure_backends):  # noqa: F405
+        raise ImproperlyConfigured(
+            f"EMAIL_BACKEND in production cannot be a non-delivering backend ({EMAIL_BACKEND}). "  # noqa: F405
+            "Configure standard SMTP or transactional email provider."
+        )
 
-if "smtp" in EMAIL_BACKEND.lower():  # noqa: F405
-    if not EMAIL_HOST:  # noqa: F405
-        raise ImproperlyConfigured("EMAIL_HOST must be set in production.")
-    if not EMAIL_HOST_USER:  # noqa: F405
-        raise ImproperlyConfigured("EMAIL_HOST_USER must be set in production.")
-    if not EMAIL_HOST_PASSWORD:  # noqa: F405
-        raise ImproperlyConfigured("EMAIL_HOST_PASSWORD must be set in production.")
+    if "smtp" in EMAIL_BACKEND.lower():  # noqa: F405
+        if not EMAIL_HOST:  # noqa: F405
+            raise ImproperlyConfigured("EMAIL_HOST must be set in production.")
+        if not EMAIL_HOST_USER:  # noqa: F405
+            raise ImproperlyConfigured("EMAIL_HOST_USER must be set in production.")
+        if not EMAIL_HOST_PASSWORD:  # noqa: F405
+            raise ImproperlyConfigured("EMAIL_HOST_PASSWORD must be set in production.")
