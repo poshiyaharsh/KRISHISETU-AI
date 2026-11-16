@@ -5,6 +5,10 @@
   "framework": "vite",
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://krishisetu-api-n0by.onrender.com/api/:path*"
+    },
+    {
       "source": "/((?!assets/|sw\\.js$|offline\\.html$|site\\.webmanifest$|favicon.*|logo.*|apple-touch-icon\\.png$|og-image\\.png$).*)",
       "destination": "/index.html"
     }

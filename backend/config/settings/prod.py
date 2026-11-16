@@ -10,8 +10,18 @@ DEBUG = False
 SECRET_KEY = env("SECRET_KEY")  # noqa: F405
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")  # noqa: F405
-CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])  # noqa: F405
+CSRF_TRUSTED_ORIGINS = env.list(  # noqa: F405
+    "CSRF_TRUSTED_ORIGINS",
+    default=[
+        "https://*.vercel.app",
+        "https://krishisetu.vercel.app",
+        "https://krishisetu-ai-gamma.vercel.app",
+    ],
+)
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])  # noqa: F405
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https:\/\/.*\.vercel\.app$",
+]
 
 # PostgreSQL connection tuning & SSL enforcement in production
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("DB_CONN_MAX_AGE", default=600)  # noqa: F405
