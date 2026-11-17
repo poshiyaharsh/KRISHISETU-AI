@@ -17,6 +17,7 @@ const Profile = lazy(() => import("@/pages/Profile"));
 const About = lazy(() => import("@/pages/About"));
 const Privacy = lazy(() => import("@/pages/Privacy"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
+const DevUiKit = lazy(() => import("@/pages/DevUiKit"));
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -136,6 +137,18 @@ export const router = createBrowserRouter([
           </SuspenseWrapper>
         ),
       },
+      ...(import.meta.env.DEV
+        ? [
+            {
+              path: "dev/ui-kit",
+              element: (
+                <SuspenseWrapper>
+                  <DevUiKit />
+                </SuspenseWrapper>
+              ),
+            },
+          ]
+        : []),
       {
         path: "*",
         element: (

@@ -5,6 +5,20 @@ export default {
   theme: {
     extend: {
       colors: {
+        surface: 'var(--ks-color-surface)',
+        'surface-raised': 'var(--ks-color-surface-raised)',
+        'surface-sunken': 'var(--ks-color-surface-sunken)',
+        primary: 'var(--ks-color-primary)',
+        'primary-light': 'var(--ks-color-primary-light)',
+        'primary-contrast': 'var(--ks-color-primary-contrast)',
+        accent: 'var(--ks-color-accent)',
+        'accent-light': 'var(--ks-color-accent-light)',
+        'accent-contrast': 'var(--ks-color-accent-contrast)',
+        border: 'var(--ks-color-border)',
+        'border-wheat': 'var(--ks-color-border-wheat)',
+        focus: 'var(--ks-color-focus)',
+
+        // Legacy palette mappings
         paddy: 'var(--ks-color-paddy)',
         paddyLight: 'var(--ks-color-paddy-light)',
         leaf: 'var(--ks-color-leaf)',
@@ -29,6 +43,16 @@ export default {
         'on-dark': 'var(--ks-text-on-dark)',
         onDark: 'var(--ks-text-on-dark)',
       },
+      zIndex: {
+        base: 'var(--ks-z-base)',
+        sticky: 'var(--ks-z-sticky)',
+        header: 'var(--ks-z-header)',
+        bottomnav: 'var(--ks-z-bottomnav)',
+        launcher: 'var(--ks-z-launcher)',
+        drawer: 'var(--ks-z-drawer)',
+        modal: 'var(--ks-z-modal)',
+        toast: 'var(--ks-z-toast)',
+      },
       borderRadius: {
         sm: 'var(--ks-radius-sm)',
         md: 'var(--ks-radius-md)',
@@ -38,6 +62,7 @@ export default {
       boxShadow: {
         sm: 'var(--ks-shadow-sm)',
         md: 'var(--ks-shadow-md)',
+        lg: 'var(--ks-shadow-lg)',
       },
       fontFamily: {
         sans: 'var(--ks-font-sans)',
@@ -46,7 +71,7 @@ export default {
         sm: '480px',
         md: '768px',
         lg: '1024px',
-        header: '1100px',
+        header: '1024px',
         xl: '1280px',
       },
     },

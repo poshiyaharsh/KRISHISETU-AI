@@ -231,7 +231,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
         {searchResults.length > 0 && (
           <ul
             role="listbox"
-            className="absolute z-20 left-0 right-0 mt-1 max-h-56 overflow-auto bg-white border border-mist rounded-lg shadow-lg py-1 text-sm divide-y divide-mist"
+            className="absolute z-sticky left-0 right-0 mt-1 max-h-56 overflow-auto bg-white border border-mist rounded-lg shadow-lg py-1 text-sm divide-y divide-mist"
           >
             {searchResults.map((item, idx) => (
               <li

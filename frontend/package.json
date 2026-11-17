@@ -11,6 +11,7 @@
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "check:css-vars": "node ../scripts/check-css-vars.mjs",
+    "check:z-index": "node ../scripts/check-z-index.mjs",
     "check:text-colors": "node ../scripts/check-text-colors.mjs",
     "check:brand": "node ../scripts/check-brand.mjs",
     "test": "vitest run"

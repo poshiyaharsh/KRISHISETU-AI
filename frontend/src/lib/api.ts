@@ -73,7 +73,7 @@ function buildHeaders(customHeaders?: HeadersInit, hasBody = false): Record<stri
  * Perform a typed HTTP GET request to the KrishiSetu backend API.
  */
 export async function apiGet<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
-  const { timeoutMs = 8000, ...fetchOptions } = options;
+  const { timeoutMs = 30000, ...fetchOptions } = options;
   const baseUrl = getApiBaseUrl();
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const url = `${baseUrl}${normalizedEndpoint}`;
@@ -130,7 +130,7 @@ export async function apiPost<T>(
   body?: unknown,
   options: ApiRequestOptions = {}
 ): Promise<T> {
-  const { timeoutMs = 12000, ...fetchOptions } = options;
+  const { timeoutMs = 60000, ...fetchOptions } = options;
   const baseUrl = getApiBaseUrl();
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const url = `${baseUrl}${normalizedEndpoint}`;
@@ -192,7 +192,7 @@ export async function apiPatch<T>(
   body: unknown,
   options: ApiRequestOptions = {}
 ): Promise<T> {
-  const { timeoutMs = 12000, ...fetchOptions } = options;
+  const { timeoutMs = 60000, ...fetchOptions } = options;
   const baseUrl = getApiBaseUrl();
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const url = `${baseUrl}${normalizedEndpoint}`;
@@ -249,7 +249,7 @@ export async function apiDelete<T = void>(
   endpoint: string,
   options: ApiRequestOptions = {}
 ): Promise<T> {
-  const { timeoutMs = 10000, ...fetchOptions } = options;
+  const { timeoutMs = 30000, ...fetchOptions } = options;
   const baseUrl = getApiBaseUrl();
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const url = `${baseUrl}${normalizedEndpoint}`;

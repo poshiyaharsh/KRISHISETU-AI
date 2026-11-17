@@ -1,52 +1,101 @@
-/* KrishiSetu AI design tokens. Source of truth for CSS.
+/* KrishiSetu AI design tokens v2. Source of truth for CSS.
    Keep in sync with tokens.ts. Prefix: --ks- */
 :root {
-  /* Color */
-  --ks-color-paddy: #0f4a32;       /* deep green: text, primary buttons, headers */
-  --ks-color-paddy-light: #185a3e; /* slightly lighter green for gradient stops */
-  --ks-color-leaf: #3b8e4f;        /* graphics, icons, large accents */
-  --ks-color-sprout: #4fa35b;      /* illustrations only */
-  --ks-color-wheat: #d9a93f;       /* soft gold: highlights, secondary buttons */
-  --ks-color-cream: #f5f0dc;       /* page background */
-  --ks-color-mist: #e4ecdd;        /* cards, skeletons, dividers */
-  --ks-color-soil: #1d2b22;        /* body text on light backgrounds */
+  /* ==========================================================================
+     Semantic Color Roles (Tokens v2)
+     All text pairs evaluated for WCAG 2.1 compliance (>= 4.5:1 for body text)
+     ========================================================================== */
 
-  /* Semantic Text Tokens */
-  --ks-text-primary: #1d2b22;       /* soil */
-  --ks-text-heading: #0f4a32;       /* paddy */
-  --ks-text-muted: #4d6854;         /* darker grey-green: 6.18:1 on white (#ffffff), 5.38:1 on cream (#f5f0dc) (both >= 4.5:1) */
-  --ks-text-on-dark: #f5f0dc;       /* cream on dark backgrounds */
+  /* Surface roles */
+  --ks-color-surface: #ffffff;           /* Base card / container surface */
+  --ks-color-surface-raised: #ffffff;    /* Elevated dialogs, popovers, menus */
+  --ks-color-surface-sunken: #f4f1ea;    /* Inset field backgrounds, muted sections */
 
-  --ks-color-success: #236e3b;
-  --ks-color-warning: #8c5e06;
-  --ks-color-danger: #b3402f;
-  --ks-color-info: #2b6c8f;
+  /* Text roles & WCAG Contrast Ratios (written inline per AGENTS.md rule) */
+  --ks-text-primary: #1d2b22;       /* Primary body text (14.60:1 on #ffffff, 13.03:1 on #f4f1ea, min 4.5:1) */
+  --ks-text-heading: #0f4a32;       /* Primary headings & brand titles (10.07:1 on #ffffff, 8.98:1 on #f4f1ea, min 4.5:1) */
+  --ks-text-muted: #4d6854;         /* Secondary text / captions (6.02:1 on #ffffff, 5.37:1 on #f4f1ea, min 4.5:1) */
+  --ks-text-on-dark: #fbfbf7;       /* Light text on dark green surfaces (9.65:1 on #0f4a32, min 4.5:1) */
 
-  /* Typography: one family, per-script Noto fonts are loaded per language */
+  /* Primary brand & contrast */
+  --ks-color-primary: #0f4a32;            /* Deep Paddy Green brand color */
+  --ks-color-primary-light: #185a3e;      /* Interactive hover / active green */
+  --ks-color-primary-contrast: #ffffff;   /* Contrast text on primary button (10.07:1, min 4.5:1) */
+
+  /* Accent (Harvest Wheat Gold) */
+  --ks-color-accent: #d9a93f;             /* Soft Wheat Gold for badges and highlights */
+  --ks-color-accent-light: #fef3c7;       /* Pale Gold tint for chip / notice surfaces */
+  --ks-color-accent-contrast: #1d2b22;    /* Dark soil text on wheat gold (6.75:1, min 4.5:1) */
+
+  /* Borders & Structure */
+  --ks-color-border: #e2ddd5;             /* Neutral matte container border */
+  --ks-color-border-wheat: #d9a93f;       /* Seed packet top decorative stripe */
+  --ks-color-focus: #0f4a32;              /* Accessible keyboard focus ring indicator */
+
+  /* Feedback & Status */
+  --ks-color-success: #236e3b;            /* Success badges & confirmation (5.83:1 on #ffffff, min 4.5:1) */
+  --ks-color-warning: #8c5e06;            /* Alert warnings & caveats (5.50:1 on #ffffff, min 4.5:1) */
+  --ks-color-danger: #b3402f;             /* Destructive actions & errors (5.38:1 on #ffffff, min 4.5:1) */
+  --ks-color-info: #2b6c8f;               /* Informational alerts & advisories (5.59:1 on #ffffff, min 4.5:1) */
+
+  /* Legacy color aliases (Preserved for backwards compatibility with v1 views) */
+  --ks-color-paddy: #0f4a32;
+  --ks-color-paddy-light: #185a3e;
+  --ks-color-leaf: #3b8e4f;
+  --ks-color-sprout: #4fa35b;
+  --ks-color-wheat: #d9a93f;
+  --ks-color-cream: #f5f0dc;
+  --ks-color-mist: #e4ecdd;
+  --ks-color-soil: #1d2b22;
+
+  /* ==========================================================================
+     Layout Variables
+     ========================================================================== */
+  --header-h: 68px;
+  --bottomnav-h: 70px;
+  --sticky-cta-h: 64px;
+  --page-gutter: clamp(1rem, 0.75rem + 1vw, 2rem);
+
+  /* ==========================================================================
+     Named Z-Index Scale (No arbitrary z-index allowed)
+     ========================================================================== */
+  --ks-z-base: 0;
+  --ks-z-sticky: 50;
+  --ks-z-header: 100;
+  --ks-z-bottomnav: 200;
+  --ks-z-launcher: 300;
+  --ks-z-drawer: 400;
+  --ks-z-modal: 500;
+  --ks-z-toast: 600;
+
+  /* ==========================================================================
+     Typography
+     ========================================================================== */
   --ks-font-sans: "Noto Sans", "Noto Sans Devanagari", "Noto Sans Gujarati",
     "Noto Sans Bengali", "Noto Sans Gurmukhi", "Noto Sans Tamil",
     "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Malayalam",
     "Noto Sans Oriya", "Noto Naskh Arabic", "Noto Sans Ol Chiki",
     "Noto Sans Meetei Mayek", system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  --ks-text-xs: 0.875rem;
-  --ks-text-sm: 1rem;
-  --ks-text-base: 1.125rem;   /* 18px: farmer-friendly default */
-  --ks-text-lg: 1.25rem;
-  --ks-text-xl: 1.5rem;
-  --ks-text-2xl: 1.875rem;
-  --ks-text-3xl: 2.375rem;
-  --ks-text-4xl: 3rem;
+  /* Fluid type scale with clamp() */
+  --ks-text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.875rem);
+  --ks-text-sm: clamp(0.875rem, 0.84rem + 0.2vw, 1rem);
+  --ks-text-base: clamp(1rem, 0.96rem + 0.25vw, 1.125rem);    /* 18px on desktop, 16px on small mobile */
+  --ks-text-lg: clamp(1.125rem, 1.08rem + 0.35vw, 1.25rem);
+  --ks-text-xl: clamp(1.25rem, 1.18rem + 0.5vw, 1.5rem);
+  --ks-text-2xl: clamp(1.5rem, 1.38rem + 0.75vw, 1.875rem);
+  --ks-text-3xl: clamp(1.875rem, 1.7rem + 1.25vw, 2.375rem);
+  --ks-text-4xl: clamp(2.25rem, 2rem + 1.75vw, 3rem);
 
   --ks-leading-tight: 1.2;
-  --ks-leading-body: 1.7;     /* Indic scripts need extra height */
+  --ks-leading-body: 1.7;     /* Indic scripts requirement (Hindi, Gujarati, Urdu) */
 
   --ks-weight-regular: 400;
   --ks-weight-medium: 500;
   --ks-weight-bold: 700;
   --ks-weight-heavy: 800;
 
-  /* Spacing (4px base) */
+  /* Spacing */
   --ks-space-1: 0.25rem;
   --ks-space-2: 0.5rem;
   --ks-space-3: 0.75rem;
@@ -56,15 +105,16 @@
   --ks-space-12: 3rem;
   --ks-space-16: 4rem;
 
-  /* Shape */
+  /* Shape & Radius */
   --ks-radius-sm: 6px;
   --ks-radius-md: 10px;
-  --ks-radius-lg: 18px;
-  --ks-radius-pill: 999px;
+  --ks-radius-lg: 18px;       /* 18px Seed Packet Card standard */
+  --ks-radius-pill: 9999px;
 
-  /* Elevation: green-tinted, not neutral grey */
-  --ks-shadow-sm: 0 2px 6px rgba(15, 74, 50, 0.1);
-  --ks-shadow-md: 0 8px 22px rgba(15, 74, 50, 0.14);
+  /* Elevation (Warm agricultural green tint) */
+  --ks-shadow-sm: 0 2px 6px rgba(15, 74, 50, 0.08);
+  --ks-shadow-md: 0 8px 22px rgba(15, 74, 50, 0.12);
+  --ks-shadow-lg: 0 16px 36px rgba(15, 74, 50, 0.16);
 
   /* Motion */
   --ks-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -75,11 +125,11 @@
   /* Touch target minimum */
   --ks-tap-min: 48px;
 
-  /* Responsive header collapse measured breakpoint */
-  --ks-breakpoint-header: 1100px;
+  /* Measured breakpoint where header single-line nav fits */
+  --ks-breakpoint-header: 1024px;
 }
 
 :focus-visible {
-  outline: 3px solid var(--ks-color-wheat);
+  outline: 3px solid var(--ks-color-accent);
   outline-offset: 2px;
 }

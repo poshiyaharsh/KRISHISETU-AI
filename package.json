@@ -17,11 +17,16 @@
     "typecheck": "npm --prefix frontend run typecheck",
     "check:text-colors": "node scripts/check-text-colors.mjs",
     "check:brand": "node scripts/check-brand.mjs",
+    "check:images": "node scripts/images/check-images.mjs",
+    "optimize:images": "node scripts/images/optimize.mjs",
+    "check:tokens": "node scripts/check-tokens.mjs",
+    "check:z-index": "node scripts/check-z-index.mjs",
     "i18n:check": "node scripts/i18n-check.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
-    "@playwright/test": "^1.65.0"
+    "@playwright/test": "^1.65.0",
+    "sharp": "^0.35.5"
   },
   "dependencies": {
     "@neon/config": "^1.14.0",

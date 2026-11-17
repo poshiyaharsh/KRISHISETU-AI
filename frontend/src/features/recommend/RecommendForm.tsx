@@ -141,7 +141,7 @@ export const RecommendForm: React.FC<RecommendFormProps> = ({
                       <Tooltip.Content
                         id={helperId}
                         side="top"
-                        className="z-50 max-w-xs rounded-lg bg-[#02280C] text-white px-3 py-2 text-xs leading-relaxed shadow-lg select-none"
+                        className="z-modal max-w-xs rounded-lg bg-[#02280C] text-white px-3 py-2 text-xs leading-relaxed shadow-lg select-none"
                       >
                         {t(`recommend.fields.${key}.tooltip`)}
                         <Tooltip.Arrow className="fill-[#02280C]" />

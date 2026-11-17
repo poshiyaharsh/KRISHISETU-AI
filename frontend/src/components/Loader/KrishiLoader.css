@@ -14,7 +14,7 @@
 .kl-root--fullscreen {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: var(--ks-z-toast);
   background: var(--ks-color-cream, #f5f0dc);
 }
 

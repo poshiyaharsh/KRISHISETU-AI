@@ -27,9 +27,9 @@ export const NavLinks: React.FC<NavLinksProps> = ({ items, className = '', onIte
                 to={item.to}
                 onClick={onItemClick}
                 className={({ isActive }) =>
-                  `relative inline-flex items-center justify-center h-[44px] px-3 text-base font-medium whitespace-nowrap shrink-0 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy ${
+                  `relative inline-flex items-center justify-center h-[40px] xl:h-[44px] px-2.5 xl:px-3 text-sm xl:text-base font-medium whitespace-nowrap shrink-0 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy ${
                     isActive
-                      ? 'text-paddy after:absolute after:bottom-1 after:inset-x-3 after:h-[3px] after:bg-wheat after:rounded-full'
+                      ? 'text-paddy after:absolute after:bottom-1 after:inset-x-2.5 xl:after:inset-x-3 after:h-[3px] after:bg-wheat after:rounded-full'
                       : 'text-soil/80 hover:text-paddy hover:bg-mist/70'
                   }`
                 }

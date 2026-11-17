@@ -41,9 +41,20 @@ export const Login: React.FC = () => {
   const [devCode, setDevCode] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSlow, setIsSlow] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isDeliveryFailed, setIsDeliveryFailed] = useState(false);
   const [googleAvailable, setGoogleAvailable] = useState<boolean | null>(null);
+
+  // Free-tier wake up indicator
+  useEffect(() => {
+    if (!isSubmitting) {
+      setIsSlow(false);
+      return;
+    }
+    const timer = setTimeout(() => setIsSlow(true), 3500);
+    return () => clearTimeout(timer);
+  }, [isSubmitting]);
 
   // If already logged in, redirect
   useEffect(() => {
@@ -252,7 +263,7 @@ export const Login: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-md w-full bg-white p-8 sm:p-10 rounded-3xl shadow-md border border-mist">
+      <div className="max-w-md w-full bg-white p-6 sm:p-10 rounded-3xl shadow-card border border-mist/80 border-t-4 border-t-wheat">
         {/* Brand Header with Lockup Logo centered above the form */}
         <div className="text-center">
           <div className="flex justify-center mb-6">
@@ -395,6 +406,13 @@ export const Login: React.FC = () => {
                   </>
                 )}
               </button>
+
+              {isSubmitting && isSlow && (
+                <div className="p-3 bg-amber-50/90 border border-amber-200/80 rounded-xl text-xs text-amber-900 flex items-center justify-center gap-2 text-center animate-fadeIn">
+                  <Loader2 className="w-4 h-4 text-amber-700 animate-spin shrink-0" />
+                  <span>{t('auth.waking_server', 'Connecting to server... Free-tier host wakes up in 30-45s on first visit.')}</span>
+                </div>
+              )}
             </form>
           </div>
         ) : (
@@ -504,6 +522,13 @@ export const Login: React.FC = () => {
                 </>
               )}
             </button>
+
+            {isSubmitting && isSlow && (
+              <div className="p-3 bg-amber-50/90 border border-amber-200/80 rounded-xl text-xs text-amber-900 flex items-center justify-center gap-2 text-center animate-fadeIn">
+                <Loader2 className="w-4 h-4 text-amber-700 animate-spin shrink-0" />
+                <span>{t('auth.waking_server', 'Connecting to server... Free-tier host wakes up in 30-45s on first visit.')}</span>
+              </div>
+            )}
           </form>
         )}
 

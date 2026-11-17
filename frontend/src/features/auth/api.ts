@@ -54,7 +54,7 @@ export async function googleAuthApi(
   return apiPost<GoogleAuthResponse>(
     '/auth/google/',
     { credential, client_type: clientType, language },
-    { timeoutMs: 25000 }
+    { timeoutMs: 60000 }
   );
 }
 
@@ -62,7 +62,7 @@ export async function requestCodeApi(
   email: string,
   language = 'en'
 ): Promise<RequestCodeResponse> {
-  return apiPost<RequestCodeResponse>('/auth/request-code/', { email, language }, { timeoutMs: 25000 });
+  return apiPost<RequestCodeResponse>('/auth/request-code/', { email, language }, { timeoutMs: 60000 });
 }
 
 export async function verifyCodeApi(
@@ -74,7 +74,7 @@ export async function verifyCodeApi(
   return apiPost<VerifyCodeResponse>(
     '/auth/verify-code/',
     { email, code, language, client_type: clientType },
-    { timeoutMs: 25000 }
+    { timeoutMs: 60000 }
   );
 }
 

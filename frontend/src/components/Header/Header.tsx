@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Menu, X, User as UserIcon, LogOut } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
@@ -10,6 +10,7 @@ import { MobileMenu } from './MobileMenu';
 
 export const Header: React.FC = () => {
   const { t } = useTranslation();
+  const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -22,54 +23,59 @@ export const Header: React.FC = () => {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial check
+    handleScroll();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
   const navItems: NavItem[] = [
-    { to: '/', label: t('nav.home'), available: true },
-    { to: '/recommend', label: t('nav.recommend'), available: true },
-    { to: '/weather', label: t('nav.weather'), available: true },
-    { to: '/schemes', label: t('nav.schemes'), available: true },
-    { to: '/nutrition', label: t('nav.nutrition'), available: true },
-    { to: '/chat', label: t('nav.chatbot'), available: true },
-    ...(isAuthenticated ? [{ to: '/dashboard', label: t('nav.dashboard'), available: true }] : []),
+    { to: '/', label: t('nav.home', 'Home'), available: true },
+    { to: '/recommend', label: t('nav.recommend', 'Crop Advice'), available: true },
+    { to: '/weather', label: t('nav.weather', 'Weather'), available: true },
+    { to: '/schemes', label: t('nav.schemes', 'Schemes'), available: true },
+    { to: '/nutrition', label: t('nav.nutrition', 'Nutrition'), available: true },
+    { to: '/chat', label: t('nav.chatbot', 'Krishi Mitra'), available: true },
+    ...(isAuthenticated ? [{ to: '/dashboard', label: t('nav.dashboard', 'Dashboard'), available: true }] : []),
   ];
 
   const mobileNavItems: NavItem[] = [
     ...navItems,
     ...(isAuthenticated
-      ? [{ to: '/profile', label: t('nav.profile'), available: true }]
-      : [{ to: '/login', label: t('nav.signIn'), available: true }]),
+      ? [{ to: '/profile', label: t('nav.profile', 'Profile'), available: true }]
+      : [{ to: '/login', label: t('nav.signIn', 'Sign In'), available: true }]),
   ];
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full h-16 header:h-[72px] bg-cream border-b border-mist transition-shadow duration-200 motion-reduce:transition-none ${
+      className={`sticky top-0 z-header w-full h-16 header:h-[72px] bg-cream border-b border-mist transition-shadow duration-200 motion-reduce:transition-none ${
         isScrolled ? 'shadow-sm' : ''
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
-        {/* Step 2: Brand Block (Left) */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+        {/* Brand Block (Left): Logo + Name only */}
         <Link
           to="/"
           aria-label="KrishiSetu AI, home"
-          className="flex items-center gap-[10px] shrink-0 whitespace-nowrap me-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy rounded-md py-1"
+          className="flex items-center gap-2 sm:gap-[10px] shrink-0 whitespace-nowrap me-2 sm:me-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy rounded-md py-1"
         >
           <BrandLogo
             variant="icon"
-            size={40}
-            className="w-10 h-10 shrink-0 select-none pointer-events-none"
+            size={36}
+            className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 select-none pointer-events-none"
           />
-          <span className="font-extrabold text-paddy text-2xl leading-none tracking-tight select-none">
+          <span className="font-extrabold text-paddy text-lg sm:text-2xl leading-none tracking-tight select-none">
             KrishiSetu <span className="text-leaf">AI</span>
           </span>
         </Link>
 
-        {/* Step 4: Desktop Nav Links (Center / Right) */}
+        {/* Desktop Nav Links (1024px and up on one line) */}
         <div className="hidden header:flex items-center justify-between flex-1">
           <NavLinks items={navItems} />
 
@@ -79,20 +85,20 @@ export const Header: React.FC = () => {
               <div className="flex items-center gap-1.5">
                 <Link
                   to="/profile"
-                  title={user?.email || t('nav.profile')}
-                  aria-label={t('nav.profile')}
+                  title={user?.email || t('nav.profile', 'Profile')}
+                  aria-label={t('nav.profile', 'Profile')}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-paddy hover:bg-mist/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy"
                 >
                   <UserIcon className="w-4 h-4 text-paddy" />
                   <span className="max-w-[110px] truncate">
-                    {user?.profile?.display_name || user?.email?.split('@')[0] || t('nav.profile')}
+                    {user?.profile?.display_name || user?.email?.split('@')[0] || t('nav.profile', 'Profile')}
                   </span>
                 </Link>
                 <button
                   type="button"
                   onClick={() => logout()}
-                  title={t('auth.logout')}
-                  aria-label={t('auth.logout')}
+                  title={t('auth.logout', 'Log Out')}
+                  aria-label={t('auth.logout', 'Log Out')}
                   className="inline-flex items-center justify-center w-9 h-9 rounded-full text-soil/70 hover:text-paddy hover:bg-mist/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy"
                 >
                   <LogOut className="w-4 h-4" />
@@ -104,7 +110,7 @@ export const Header: React.FC = () => {
                 className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold bg-paddy text-on-dark hover:bg-forest transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy"
               >
                 <UserIcon className="w-4 h-4 text-on-dark" />
-                <span>{t('nav.signIn')}</span>
+                <span>{t('nav.signIn', 'Sign In')}</span>
               </Link>
             )}
 
@@ -112,7 +118,7 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Tablet & Mobile Right Actions (< 1100px) */}
+        {/* Tablet & Mobile Right Actions (< 1024px) */}
         <div className="flex header:hidden items-center gap-2">
           <LanguageSelector />
           <button
@@ -121,7 +127,7 @@ export const Header: React.FC = () => {
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-nav-panel"
-            aria-label={mobileMenuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
+            aria-label={mobileMenuOpen ? t('nav.closeMenu', 'Close navigation menu') : t('nav.openMenu', 'Open navigation menu')}
             className="w-12 h-12 min-w-[48px] min-h-[48px] flex items-center justify-center rounded-xl text-paddy hover:bg-mist/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-paddy transition-colors"
           >
             {mobileMenuOpen ? (
@@ -133,7 +139,7 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Step 5: Mobile Navigation Panel */}
+      {/* Mobile Navigation Panel */}
       <MobileMenu
         id="mobile-nav-panel"
         isOpen={mobileMenuOpen}
@@ -145,3 +151,5 @@ export const Header: React.FC = () => {
     </header>
   );
 };
+
+export default Header;

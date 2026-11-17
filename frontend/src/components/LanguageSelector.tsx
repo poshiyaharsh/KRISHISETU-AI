@@ -62,7 +62,7 @@ export const LanguageSelector: React.FC = () => {
         <div
           role="listbox"
           aria-label="Available languages"
-          className="absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl bg-white border border-mist shadow-md p-3 z-50 animate-in fade-in zoom-in-95 duration-150 max-h-[80vh] flex flex-col"
+          className="absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl bg-white border border-mist shadow-md p-3 z-modal animate-in fade-in zoom-in-95 duration-150 max-h-[80vh] flex flex-col"
         >
           {/* Search box */}
           <div className="relative mb-3">

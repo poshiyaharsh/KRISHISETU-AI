@@ -1,0 +1,536 @@
+{
+  "version": "2.0.0",
+  "generatedAt": "2026-11-17T12:04:58.536Z",
+  "slots": {
+    "hero-farmer-field": {
+      "id": "hero-farmer-field",
+      "aspectRatio": "16/9",
+      "widths": [
+        480,
+        768,
+        1280,
+        1920
+      ],
+      "formats": [
+        "avif",
+        "webp",
+        "jpg"
+      ],
+      "files": {
+        "480": {
+          "avif": {
+            "file": "hero-farmer-field-480.avif",
+            "bytes": 4307
+          },
+          "webp": {
+            "file": "hero-farmer-field-480.webp",
+            "bytes": 4966
+          },
+          "jpg": {
+            "file": "hero-farmer-field-480.jpg",
+            "bytes": 6700
+          }
+        },
+        "768": {
+          "avif": {
+            "file": "hero-farmer-field-768.avif",
+            "bytes": 6666
+          },
+          "webp": {
+            "file": "hero-farmer-field-768.webp",
+            "bytes": 8450
+          },
+          "jpg": {
+            "file": "hero-farmer-field-768.jpg",
+            "bytes": 13082
+          }
+        },
+        "1280": {
+          "avif": {
+            "file": "hero-farmer-field-1280.avif",
+            "bytes": 10975
+          },
+          "webp": {
+            "file": "hero-farmer-field-1280.webp",
+            "bytes": 16298
+          },
+          "jpg": {
+            "file": "hero-farmer-field-1280.jpg",
+            "bytes": 25743
+          }
+        },
+        "1920": {
+          "avif": {
+            "file": "hero-farmer-field-1920.avif",
+            "bytes": 16628
+          },
+          "webp": {
+            "file": "hero-farmer-field-1920.webp",
+            "bytes": 25604
+          },
+          "jpg": {
+            "file": "hero-farmer-field-1920.jpg",
+            "bytes": 47987
+          }
+        }
+      },
+      "lqip": "data:image/webp;base64,UklGRhQBAABXRUJQVlA4WAoAAAAQAAAAFwAADQAAQUxQSJYAAAABuS5E9D/gOLJt09rftpXxT/CP/+jZNs65N4SICZgAP0j2KWQFOFNjuRQjxNjYGiiFPFRERb2NjYwlVFRMQZlcSyGTgkowfj7mIn82KsOAhaVQBOjc3MfdxtpKAnI2k8lSclUAYGzl7OHoC5hTlUwlATAyAQCxuaGBgU4FKlCagA3on9kBfqlSKVUqACNDIDgEZEWEOQBWUDggWAAAAPADAJ0BKhgADgA/OYa7VC8pJiMwCAHgJwlsAJ0ygANNvBlSh0Z+BYAA/sSIEqE5gaA9A8b/ra8tmoqMms8lo8ZAa13uTOBujxBJ/MFR89hjDdTV5UNQAAA="
+    },
+    "tile-crop-advice": {
+      "id": "tile-crop-advice",
+      "aspectRatio": "1/1",
+      "widths": [
+        320,
+        480
+      ],
+      "formats": [
+        "avif",
+        "webp",
+        "jpg"
+      ],
+      "files": {
+        "320": {
+          "avif": {
+            "file": "tile-crop-advice-320.avif",
+            "bytes": 3266
+          },
+          "webp": {
+            "file": "tile-crop-advice-320.webp",
+            "bytes": 4392
+          },
+          "jpg": {
+            "file": "tile-crop-advice-320.jpg",
+            "bytes": 5133
+          }
+        },
+        "480": {
+          "avif": {
+            "file": "tile-crop-advice-480.avif",
+            "bytes": 5263
+          },
+          "webp": {
+            "file": "tile-crop-advice-480.webp",
+            "bytes": 6774
+          },
+          "jpg": {
+            "file": "tile-crop-advice-480.jpg",
+            "bytes": 8767
+          }
+        }
+      },
+      "lqip": "data:image/webp;base64,UklGRlQBAABXRUJQVlA4WAoAAAAQAAAAFwAAFwAAQUxQSNMAAAABuYzofwCWbdumo30Z2+Zn0om0pbpt276ILkoNiJiACfgI3/3s33jiY5IEUD4YvhdLLqGIAIClB4qLeOap49Ky4MUb7YrniUtqEhoA4JJy4YvrmSutKaMGAK69uvAmQhri+ghYOqLtUyJgIC2lDO68e3MIXE88wkgSAHzYp3ieeYCqyIIXtyyIiyXeLA1MNTVkfIJb947duPXERfTM7ZipAG+OsevYg09fpJKSnjxYgEDJ0iCQCSGWIDSFoiiCAFiylpYMw/BRaRBpGZZlLRGUBP8+AFZQOCBaAAAAMAQAnQEqGAAYAD85lMBZryomo6gIAeAnCUAYmwIiwbfYo/YvwFCo4twAAP7DFYLHz5L21IHKBfiqewJqj1LQXQemFX5/n1nMfsfUiII0Yw8AKFIsOlUSAAAA"
+    },
+    "tile-weather": {
+      "id": "tile-weather",
+      "aspectRatio": "1/1",
+      "widths": [
+        320,
+        480
+      ],
+      "formats": [
+        "avif",
+        "webp",
+        "jpg"
+      ],
+      "files": {
+        "320": {
+          "avif": {
+            "file": "tile-weather-320.avif",
+            "bytes": 3600
+          },
+          "webp": {
+            "file": "tile-weather-320.webp",
+            "bytes": 5018
+          },
+          "jpg": {
+            "file": "tile-weather-320.jpg",
+            "bytes": 5629
+          }
+        },
+        "480": {
+          "avif": {
+            "file": "tile-weather-480.avif",
+            "bytes": 5818
+          },
+          "webp": {
+            "file": "tile-weather-480.webp",
+            "bytes": 7930
+          },
+          "jpg": {
+            "file": "tile-weather-480.jpg",
+            "bytes": 9738
+          }
+        }
+      },
+      "lqip": "data:image/webp;base64,UklGRmoBAABXRUJQVlA4WAoAAAAQAAAAFwAAFwAAQUxQSNMAAAABuYzofwCWbdumo30Z2+Zn0om0pbpt276ILkoNiJiACfgI3/3s33jiY5IEUD4YvhdLLqGIAIClB4qLeOap49Ky4MUb7YrniUtqEhoA4JJy4YvrmSutKaMGAK69uvAmQhri+ghYOqLtUyJgIC2lDO68e3MIXE88wkgSAHzYp3ieeYCqyIIXtyyIiyXeLA1MNTVkfIJb947duPXERfTM7ZipAG+OsevYg09fpJKSnjxYgEDJ0iCQCSGWIDSFoiiCAFiylpYMw/BRaRBpGZZlLRGUBP8+AFZQOCBwAAAAkAQAnQEqGAAYAD85kLxVryomJLAYCAHgJwlsAJ0vwkB2FJ8mDIFYlARatGggAP7EgX/Jq7F3mHm+fyGu7ZulfbG6+ghkRKJAbF/rUM6GuYA9pwfWHHCNq4mevIvLLStDtrdYi6JM4Tfq0cvPu7AAAA=="
+    },
+    "tile-schemes": {
+      "id": "tile-schemes",
+      "aspectRatio": "1/1",
+      "widths": [
+        320,
+        480
+      ],
+      "formats": [
+        "avif",
+        "webp",
+        "jpg"
+      ],
+      "files": {
+        "320": {
+          "avif": {
+            "file": "tile-schemes-320.avif",
+            "bytes": 3434
+          },
+          "webp": {
+            "file": "tile-schemes-320.webp",
+            "bytes": 4806
+          },
+          "jpg": {
+            "file": "tile-schemes-320.jpg",
+            "bytes": 5602
+          }
+        },
+        "480": {
+          "avif": {
+            "file": "tile-schemes-480.avif",
+            "bytes": 5688
+          },
+          "webp": {
+            "file": "tile-schemes-480.webp",
+            "bytes": 7578
+          },
+          "jpg": {
+            "file": "tile-schemes-480.jpg",
+            "bytes": 9706
+          }
+        }
+      },
+      "lqip": "data:image/webp;base64,UklGRmgBAABXRUJQVlA4WAoAAAAQAAAAFwAAFwAAQUxQSNMAAAABuYzofwCWbdumo30Z2+Zn0om0pbpt276ILkoNiJiACfgI3/3s33jiY5IEUD4YvhdLLqGIAIClB4qLeOap49Ky4MUb7YrniUtqEhoA4JJy4YvrmSutKaMGAK69uvAmQhri+ghYOqLtUyJgIC2lDO68e3MIXE88wkgSAHzYp3ieeYCqyIIXtyyIiyXeLA1MNTVkfIJb947duPXERfTM7ZipAG+OsevYg09fpJKSnjxYgEDJ0iCQCSGWIDSFoiiCAFiylpYMw/BRaRBpGZZlLRGUBP8+AFZQOCBuAAAA0AMAnQEqGAAYAD85irxWryklo7AYCAHgJwloALUXXIE22q1C1NZAAP7oGX8UMM98oziBxSTJ/HYWclxF2X5GnRYtGG6+Cl/+cshuNZzTlzaXoRU3vyhTsQHFRhOmJcWFCy1uX/BVGaCkZ5HwAAA="
+    },
+    "tile-krishi-mitra": {
+      "id": "tile-krishi-mitra",
+      "aspectRatio": "1/1",
+      "widths": [
+        320,
+        480
+      ],
+      "formats": [
+        "avif",
+        "webp",
+        "jpg"
+      ],
+      "files": {
+        "320": {
+          "avif": {
+            "file": "tile-krishi-mitra-320.avif",
+            "bytes": 3287
+          },
+          "webp": {
+            "file": "tile-krishi-mitra-320.webp",
+            "bytes": 4494
+          },
+          "jpg": {
+            "file": "tile-krishi-mitra-320.jpg",
+            "bytes": 5294
+          }
+        },
+        "480": {
+          "avif": {
+            "file": "tile-krishi-mitra-480.avif",
+            "bytes": 5454
+          },
+          "webp": {
+            "file": "tile-krishi-mitra-480.webp",
+            "bytes": 7060
+          },
+          "jpg": {
+            "file": "tile-krishi-mitra-480.jpg",
+            "bytes": 9154
+          }
+        }
+      },
+      "lqip": "data:image/webp;base64,UklGRloBAABXRUJQVlA4WAoAAAAQAAAAFwAAFwAAQUxQSNMAAAABuYzofwCWbdumo30Z2+Zn0om0pbpt276ILkoNiJiACfgI3/3s33jiY5IEUD4YvhdLLqGIAIClB4qLeOap49Ky4MUb7YrniUtqEhoA4JJy4YvrmSutKaMGAK69uvAmQhri+ghYOqLtUyJgIC2lDO68e3MIXE88wkgSAHzYp3ieeYCqyIIXtyyIiyXeLA1MNTVkfIJb947duPXERfTM7ZipAG+OsevYg09fpJKSnjxYgEDJ0iCQCSGWIDSFoiiCAFiylpYMw/BRaRBpGZZlLRGUBP8+AFZQOCBgAAAAsAQAnQEqGAAYAD8xhrNTrqmkorAMAdAmCWIAtOgh2HbAaNYHoj9u4KnL0wOMAAD+0vumiE8m3SgoT1jg/fy/AWj2bVUXMOT9M2GhA5hqNzG5SgBPxG9B5nF0qK4viAAA"
+    },
+    "crop-rice": {
+      "id": "crop-rice",
+      "aspectRatio": "4/3",
+      "widths": [
+        320,
+        480,
+        640
+      ],
+      "formats": [
+        "avif",
+        "webp",
+        "jpg"
+      ],
+      "files": {
+        "320": {
+          "avif": {
+            "file": "crop-rice-320.avif",
+            "bytes": 3088
+          },
+          "webp": {
+            "file": "crop-rice-320.webp",
+            "bytes": 4128
+          },
+          "jpg": {
+            "file": "crop-rice-320.jpg",
+            "bytes": 4956
+          }
+        },
+        "480": {
+          "avif": {
+            "file": "crop-rice-480.avif",
+            "bytes": 5197
+          },
+          "webp": {
+            "file": "crop-rice-480.webp",
+            "bytes": 6484
+          },
+          "jpg": {
+            "file": "crop-rice-480.jpg",
+            "bytes": 8170
+          }
+        },
+        "640": {
+          "avif": {
+            "file": "crop-rice-640.avif",
+            "bytes": 6714
+          },
+          "webp": {
+            "file": "crop-rice-640.webp",
+            "bytes": 8856
+          },
+          "jpg": {
+            "file": "crop-rice-640.jpg",
+            "bytes": 12349
+          }
+        }
+      },
+      "lqip": "data:image/webp;base64,UklGRhoBAABXRUJQVlA4WAoAAAAQAAAAFwAAEQAAQUxQSJcAAAAFcBzJtqqcL7i7O9GQAYGzY+f6/X/8ovehAUTEBHh4t/Y2/W2aQCiA/fYdiVAI263J6YxcSUThmBNiNMZfLQaxm48PjH55JnXjRcyt4eWZpDGI1xScRxYYnUMgAXMPTrsgnEoH4W6XB3kPPtlrdxN4LpuDpbuFEo0V6qk+BFUiCKqyLEMCLpfLhS4CUhrCdCEiugCSH38TAFZQOCBcAAAAEAQAnQEqGAASAD85jrxVryomIzAYCAHgJwliALDsEOlYxpqzrJD5Z+gA/tQAko68CbHVLixIHh3n5KCnbAuogKuSlMVbvVwx0Wy54N1GrYQPROimu4gsnEwAAAA="
+    },
+    "crop-cotton": {
+      "id": "crop-cotton",
+      "aspectRatio": "4/3",
+      "widths": [
+        320,
+        480,
+        640
+      ],
+      "formats": [
+        "avif",
+        "webp",
+        "jpg"
+      ],
+      "files": {
+        "320": {
+          "avif": {
+            "file": "crop-cotton-320.avif",
+            "bytes": 2757
+          },
+          "webp": {
+            "file": "crop-cotton-320.webp",
+            "bytes": 3514
+          },
+          "jpg": {
+            "file": "crop-cotton-320.jpg",
+            "bytes": 4294
+          }
+        },
+        "480": {
+          "avif": {
+            "file": "crop-cotton-480.avif",
+            "bytes": 4547
+          },
+          "webp": {
+            "file": "crop-cotton-480.webp",
+            "bytes": 5420
+          },
+          "jpg": {
+            "file": "crop-cotton-480.jpg",
+            "bytes": 7296
+          }
+        },
+        "640": {
+          "avif": {
+            "file": "crop-cotton-640.avif",
+            "bytes": 5752
+          },
+          "webp": {
+            "file": "crop-cotton-640.webp",
+            "bytes": 7218
+          },
+          "jpg": {
+            "file": "crop-cotton-640.jpg",
+            "bytes": 10979
+          }
+        }
+      },
+      "lqip": "data:image/webp;base64,UklGRgoBAABXRUJQVlA4WAoAAAAQAAAAFwAAEQAAQUxQSJcAAAAFcBzJtqqcL7i7O9GQAYGzY+f6/X/8ovehAUTEBHh4t/Y2/W2aQCiA/fYdiVAI263J6YxcSUThmBNiNMZfLQaxm48PjH55JnXjRcyt4eWZpDGI1xScRxYYnUMgAXMPTrsgnEoH4W6XB3kPPtlrdxN4LpuDpbuFEo0V6qk+BFUiCKqyLEMCLpfLhS4CUhrCdCEiugCSH38TAFZQOCBMAAAAMAQAnQEqGAASAD85kLxVryomIzAYCAHgJwlnAMfkEOjQfAqqDN92R63AAP7UAiXUZDDCP6zERg5vvIzF0mjdPUNRJuHpsXiRnwAAAA=="
+    },
+    "crop-maize": {
+      "id": "crop-maize",
+      "aspectRatio": "4/3",
+      "widths": [
+        320,
+        480,
+        640
+      ],
+      "formats": [
+        "avif",
+        "webp",
+        "jpg"
+      ],
+      "files": {
+        "320": {
+          "avif": {
+            "file": "crop-maize-320.avif",
+            "bytes": 3209
+          },
+          "webp": {
+            "file": "crop-maize-320.webp",
+            "bytes": 4136
+          },
+          "jpg": {
+            "file": "crop-maize-320.jpg",
+            "bytes": 5048
+          }
+        },
+        "480": {
+          "avif": {
+            "file": "crop-maize-480.avif",
+            "bytes": 5048
+          },
+          "webp": {
+            "file": "crop-maize-480.webp",
+            "bytes": 6436
+          },
+          "jpg": {
+            "file": "crop-maize-480.jpg",
+            "bytes": 8486
+          }
+        },
+        "640": {
+          "avif": {
+            "file": "crop-maize-640.avif",
+            "bytes": 6596
+          },
+          "webp": {
+            "file": "crop-maize-640.webp",
+            "bytes": 8660
+          },
+          "jpg": {
+            "file": "crop-maize-640.jpg",
+            "bytes": 12594
+          }
+        }
+      },
+      "lqip": "data:image/webp;base64,UklGRiABAABXRUJQVlA4WAoAAAAQAAAAFwAAEQAAQUxQSJcAAAAFcBzJtqqcL7i7O9GQAYGzY+f6/X/8ovehAUTEBHh4t/Y2/W2aQCiA/fYdiVAI263J6YxcSUThmBNiNMZfLQaxm48PjH55JnXjRcyt4eWZpDGI1xScRxYYnUMgAXMPTrsgnEoH4W6XB3kPPtlrdxN4LpuDpbuFEo0V6qk+BFUiCKqyLEMCLpfLhS4CUhrCdCEiugCSH38TAFZQOCBiAAAAcAQAnQEqGAASAD85kLtVLyqmIzAYCAHgJwliAEJVALNq4fo86L6tvCXDegAA/sMI3Q6nc3Mok0R//dTDp7glspZfOvluWObV8CLNoWfoh5tRu0hWaHp1BiPmFC1yASAAAAA="
+    },
+    "crop-pomegranate": {
+      "id": "crop-pomegranate",
+      "aspectRatio": "4/3",
+      "widths": [
+        320,
+        480,
+        640
+      ],
+      "formats": [
+        "avif",
+        "webp",
+        "jpg"
+      ],
+      "files": {
+        "320": {
+          "avif": {
+            "file": "crop-pomegranate-320.avif",
+            "bytes": 2888
+          },
+          "webp": {
+            "file": "crop-pomegranate-320.webp",
+            "bytes": 3828
+          },
+          "jpg": {
+            "file": "crop-pomegranate-320.jpg",
+            "bytes": 4389
+          }
+        },
+        "480": {
+          "avif": {
+            "file": "crop-pomegranate-480.avif",
+            "bytes": 4686
+          },
+          "webp": {
+            "file": "crop-pomegranate-480.webp",
+            "bytes": 6018
+          },
+          "jpg": {
+            "file": "crop-pomegranate-480.jpg",
+            "bytes": 7499
+          }
+        },
+        "640": {
+          "avif": {
+            "file": "crop-pomegranate-640.avif",
+            "bytes": 5801
+          },
+          "webp": {
+            "file": "crop-pomegranate-640.webp",
+            "bytes": 8022
+          },
+          "jpg": {
+            "file": "crop-pomegranate-640.jpg",
+            "bytes": 10930
+          }
+        }
+      },
+      "lqip": "data:image/webp;base64,UklGRggBAABXRUJQVlA4WAoAAAAQAAAAFwAAEQAAQUxQSJcAAAAFcBzJtqqcL7i7O9GQAYGzY+f6/X/8ovehAUTEBHh4t/Y2/W2aQCiA/fYdiVAI263J6YxcSUThmBNiNMZfLQaxm48PjH55JnXjRcyt4eWZpDGI1xScRxYYnUMgAXMPTrsgnEoH4W6XB3kPPtlrdxN4LpuDpbuFEo0V6qk+BFUiCKqyLEMCLpfLhS4CUhrCdCEiugCSH38TAFZQOCBKAAAAsAMAnQEqGAASAD85jLxVrymmIzAYCAHgJwlAFp0CHTNwA1tL96IA/rA8qTRM7whUJSsM0J4X6Mbc3utCYaAU3OIGWoMEYIXAAAA="
+    },
+    "state-empty-plots": {
+      "id": "state-empty-plots",
+      "aspectRatio": "16/9",
+      "widths": [
+        480,
+        800
+      ],
+      "formats": [
+        "avif",
+        "webp",
+        "jpg"
+      ],
+      "files": {
+        "480": {
+          "avif": {
+            "file": "state-empty-plots-480.avif",
+            "bytes": 3642
+          },
+          "webp": {
+            "file": "state-empty-plots-480.webp",
+            "bytes": 4424
+          },
+          "jpg": {
+            "file": "state-empty-plots-480.jpg",
+            "bytes": 5724
+          }
+        },
+        "800": {
+          "avif": {
+            "file": "state-empty-plots-800.avif",
+            "bytes": 5461
+          },
+          "webp": {
+            "file": "state-empty-plots-800.webp",
+            "bytes": 7570
+          },
+          "jpg": {
+            "file": "state-empty-plots-800.jpg",
+            "bytes": 11238
+          }
+        }
+      },
+      "lqip": "data:image/webp;base64,UklGRvwAAABXRUJQVlA4WAoAAAAQAAAAFwAADQAAQUxQSJEAAAABuYzof8BxbdtKc4G4u2u/aS9j9xHuDu+tX0LEBEyAGQSbfkRZODUVIR/DwejqqfPoDJTrj9pYqvF9PFGeH+poq8X2cEH5GENbDY4HFRViQFOLzQF0pGFroaujzQMhlU9y9qVLAEBF28TS2AkwqwKQ8AAoqgDA1SCTSAoJSMQSMaB9fcCPJRKxRAJAIQPRCWEAAFZQOCBEAAAA0AMAnQEqGAAOAD85hLlTryilorAIAeAnCUATplAAacRDP/J3OLBAAP6OiEmPJBFhCrCc9o/8XT+YZZT1HyPtDSvsAAA="
+    }
+  }
+}
