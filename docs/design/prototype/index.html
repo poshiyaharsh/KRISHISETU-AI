@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KrishiSetu AI — Smarter Farming Prototype (Home)</title>
+  <style>
+    /* Design Tokens v2 (Identical to CSS variables specification) */
+    :root {
+      --ks-primary: #0F4A32;           /* Deep Paddy Green (WCAG AAA 11.2:1) */
+      --ks-primary-light: #185A3E;     /* Active Green (8.4:1) */
+      --ks-accent: #D97706;            /* Harvest Wheat Gold (4.6:1) */
+      --ks-accent-light: #FEF3C7;      /* Pale Gold Tint */
+      --ks-surface: #FFFFFF;           /* Card Surface */
+      --ks-surface-sunken: #F4F1EA;    /* Sunken Section Surface */
+      --ks-surface-raised: #FFFFFF;    /* Raised Surface */
+      --ks-ground: #FBFBF7;            /* Base Pearl/Cream Ground */
+      --ks-soil: #1D2B22;              /* Primary Text (13.5:1) */
+      --ks-soil-muted: #4D6854;        /* Secondary Text (5.4:1) */
+      --ks-leaf: #236E3B;              /* Success Badge (5.8:1) */
+      --ks-terracotta: #C2410C;        /* Alert & Warning (5.2:1) */
+      --ks-border: #E2DDD5;            /* Matte Card Border */
+      --ks-border-wheat: #D9A93F;      /* Seed Packet Top Stripe */
+
+      /* Layout Dimensions */
+      --header-h: 68px;
+      --bottomnav-h: 70px;
+      --radius-card: 18px;
+      --radius-pill: 9999px;
+      --font-stack: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Devanagari", "Noto Sans Gujarati", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background-color: var(--ks-ground);
+      color: var(--ks-soil);
+      line-height: 1.6;
+      font-size: 18px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: var(--bottomnav-h); /* Space for mobile bottom bar */
+    }
+
+    @media (min-width: 1024px) {
+      body {
+        padding-bottom: 0;
+      }
+    }
+
+    /* Accessibility Skip Link */
+    .skip-link {
+      position: absolute;
+      top: -999px;
+      left: 16px;
+      background: var(--ks-accent);
+      color: #000;
+      padding: 12px 20px;
+      font-weight: bold;
+      border-radius: 8px;
+      z-index: 1000;
+    }
+    .skip-link:focus {
+      top: 16px;
+    }
+
+    /* Header Bar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(251, 251, 247, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--ks-border);
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+    }
+
+    .header-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    @media (min-width: 768px) {
+      .header-container {
+        padding: 0 16px;
+        gap: 16px;
+      }
+    }
+
+    .brand-link {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      min-width: 0;
+      min-height: 48px;
+      flex-shrink: 1;
+    }
+
+    .brand-logo-svg {
+      height: 36px;
+      width: auto;
+      max-width: 150px;
+    }
+
+    @media (min-width: 480px) {
+      .brand-logo-svg {
+        height: 44px;
+        max-width: 220px;
+      }
+    }
+
+    /* Desktop Navigation Links */
+    .desktop-nav {
+      display: none;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
+    }
+
+    @media (min-width: 1024px) {
+      .desktop-nav {
+        display: flex;
+      }
+    }
+
+    .desktop-nav a {
+      color: var(--ks-soil);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 17px;
+      padding: 10px 14px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .desktop-nav a:hover, .desktop-nav a.active {
+      color: var(--ks-primary);
+      background: rgba(15, 74, 50, 0.08);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 480px) {
+      .header-actions {
+        gap: 12px;
+      }
+    }
+
+    /* 1-Tap Language Pill */
+    .lang-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--ks-surface);
+      border: 1.5px solid var(--ks-border);
+      color: var(--ks-primary);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      min-height: 44px;
+      transition: border-color 0.2s;
+    }
+
+    @media (min-width: 480px) {
+      .lang-pill-btn {
+        gap: 6px;
+        font-size: 15px;
+        padding: 8px 14px;
+      }
+    }
+
+    .lang-pill-btn:hover {
+      border-color: var(--ks-primary);
+    }
+
+    .user-avatar-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-pill);
+      background: var(--ks-primary);
+      color: #FFF;
+      font-weight: 700;
+      font-size: 16px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Hero Banner (Photo-Led Seed Packet Header) */
+    .hero-section {
+      width: 100%;
+      max-width: 1200px;
+      margin: 16px auto 24px;
+      padding: 0 16px;
+    }
+
+    .hero-card {
+      position: relative;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      min-height: 280px;
+      background: linear-gradient(135deg, #103E2B 0%, #185A3E 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 24px 20px;
+      border: 1px solid var(--ks-border);
+      box-shadow: 0 4px 14px rgba(15, 74, 50, 0.08);
+    }
+
+    @media (min-width: 768px) {
+      .hero-card {
+        min-height: 340px;
+        padding: 40px;
+      }
+    }
+
+    /* Background Field Photo with High-Contrast Overlay */
+    .hero-bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.45;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(15, 74, 50, 0.95) 0%, rgba(15, 74, 50, 0.6) 50%, rgba(15, 74, 50, 0.2) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      color: #FFFFFF;
+      max-width: 640px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(254, 243, 199, 0.2);
+      border: 1px solid var(--ks-accent);
+      color: #FDE68A;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-title {
+      font-size: clamp(24px, 5vw, 36px);
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 8px;
+      color: #FFFFFF;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(16px, 2.5vw, 19px);
+      color: #E2DDD5;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .hero-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--ks-accent);
+      color: #1D2B22;
+      font-weight: 800;
+      font-size: 18px;
+      padding: 14px 28px;
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      min-height: 52px;
+      transition: transform 0.15s, background 0.2s;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+    }
+
+    .hero-cta-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Main Container */
+    main {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+      flex: 1;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--ks-primary);
+    }
+
+    .section-sub {
+      font-size: 15px;
+      color: var(--ks-soil-muted);
+      font-weight: 600;
+    }
+
+    /* Core Task Tiles (Seed Packet Cards Grid) */
+    .task-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    @media (min-width: 768px) {
+      .task-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+      }
+    }
+
+    /* The "Seed Packet" Card Element */
+    .seed-packet-card {
+      background: var(--ks-surface);
+      border: 1.5px solid var(--ks-border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      transition: transform 0.15s, box-shadow 0.2s, border-color 0.2s;
+      box-shadow: 0 2px 6px rgba(29, 43, 34, 0.04);
+    }
+
+    .seed-packet-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(15, 74, 50, 0.1);
+      border-color: var(--ks-primary);
+    }
+
+    /* The Seed Packet Top Stripe */
+    .card-top-stripe {
+      height: 5px;
+      width: 100%;
+      background: var(--ks-border-wheat);
+    }
+    .card-top-stripe.green { background: var(--ks-leaf); }
+    .card-top-stripe.blue { background: #2563EB; }
+    .card-top-stripe.gold { background: var(--ks-accent); }
+    .card-top-stripe.paddy { background: var(--ks-primary); }
+
+    .card-photo-box {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      position: relative;
+      background: #EAE6DF;
+    }
+
+    .card-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-body {
+      padding: 14px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      background: var(--ks-surface-sunken);
+      color: var(--ks-soil-muted);
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ks-primary);
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: var(--ks-soil-muted);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .card-action-bar {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ks-accent);
+    }
+
+    /* Live Weather Glance Strip */
+    .weather-glance-bar {
+      background: var(--ks-surface);
+      border: 1.5px solid var(--ks-border);
+      border-radius: var(--radius-card);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      gap: 16px;
+    }
+
+    .weather-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .weather-icon-large {
+      font-size: 36px;
+      line-height: 1;
+    }
+
+    .weather-temp {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--ks-primary);
+    }
+
+    .weather-district {
+      font-size: 14px;
+      color: var(--ks-soil-muted);
+      font-weight: 600;
+    }
+
+    .weather-advisory-pill {
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      color: var(--ks-leaf);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Government Helpline Trust Card */
+    .helpline-card {
+      background: #F4F1EA;
+      border: 1.5px solid var(--ks-border);
+      border-radius: var(--radius-card);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 36px;
+      align-items: center;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .helpline-card {
+        flex-direction: row;
+        text-align: left;
+        justify-content: space-between;
+        padding: 24px 32px;
+      }
+    }
+
+    .helpline-info h3 {
+      font-size: 19px;
+      color: var(--ks-primary);
+      margin-bottom: 4px;
+    }
+
+    .helpline-info p {
+      font-size: 15px;
+      color: var(--ks-soil-muted);
+    }
+
+    .helpline-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ks-primary);
+      color: #FFFFFF;
+      font-size: 17px;
+      font-weight: 800;
+      padding: 12px 24px;
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      white-space: nowrap;
+      min-height: 48px;
+    }
+
+    /* Mobile Bottom Tab Bar (Fixed, 5 Tabs) */
+    .mobile-tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--bottomnav-h);
+      background: #FFFFFF;
+      border-top: 1px solid var(--ks-border);
+      display: flex;
+      align-items: stretch;
+      justify-content: space-around;
+      z-index: 100;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    @media (min-width: 1024px) {
+      .mobile-tab-bar {
+        display: none;
+      }
+    }
+
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--ks-soil-muted);
+      font-size: 12px;
+      font-weight: 700;
+      gap: 3px;
+      min-width: 0;
+      transition: color 0.15s;
+    }
+
+    .tab-item.active {
+      color: var(--ks-primary);
+    }
+
+    .tab-item.active .tab-icon {
+      transform: scale(1.1);
+    }
+
+    .tab-icon {
+      font-size: 22px;
+      line-height: 1;
+      transition: transform 0.15s;
+    }
+
+    .tab-label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      padding: 0 2px;
+    }
+
+    /* Desktop Floating Krishi Mitra Launcher */
+    .desktop-floating-chat {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 90;
+      background: var(--ks-primary);
+      color: #FFFFFF;
+      padding: 14px 22px;
+      border-radius: var(--radius-pill);
+      box-shadow: 0 4px 16px rgba(15, 74, 50, 0.35);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 16px;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    @media (min-width: 1024px) {
+      .desktop-floating-chat {
+        display: flex;
+      }
+    }
+
+    .desktop-floating-chat:hover {
+      background: var(--ks-primary-light);
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--ks-border);
+      padding: 24px 16px;
+      background: var(--ks-surface-sunken);
+      font-size: 14px;
+      color: var(--ks-soil-muted);
+      text-align: center;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="brand-link" aria-label="KrishiSetu AI Home">
+        <!-- Official Master Brand SVG -->
+        <svg class="brand-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" role="img" aria-label="KrishiSetu AI">
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M30 65V100M45 56.5V100M75 56.5V100M90 65V100" stroke="#0F4A32" stroke-width="2.5" opacity=".5"/>
+            <path d="M14 100A46 46 0 0 1 106 100" stroke="#0F4A32" stroke-width="7"/>
+            <path d="M8 100H112" stroke="#D9A93F" stroke-width="7"/>
+            <path d="M60 100V46" stroke="#3B8E4F" stroke-width="5"/>
+          </g>
+          <path d="M60 46C44 46 33 36 31 20C48 20 58 29 60 46Z" fill="#4FA35B"/>
+          <path d="M60 46C76 46 87 36 89 20C72 20 62 29 60 46Z" fill="#4FA35B"/>
+          <g fill="#0F4A32" font-family="system-ui, sans-serif" font-weight="800" font-size="44px">
+            <text x="130" y="82">KrishiSetu</text>
+          </g>
+          <g fill="#D9A93F" font-family="system-ui, sans-serif" font-weight="800" font-size="44px">
+            <text x="430" y="82">AI</text>
+          </g>
+        </svg>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav aria-label="Main Navigation">
+        <ul class="desktop-nav">
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="crop-advice.html">Crop Advice</a></li>
+          <li><a href="#weather">Weather</a></li>
+          <li><a href="#schemes">Schemes</a></li>
+          <li><a href="#nutrition">Nutrition</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <!-- 1-Tap Language Pill -->
+        <button type="button" class="lang-pill-btn" aria-label="Change Language. Current: English">
+          <span>🌐</span>
+          <span>English / हिन्दी</span>
+        </button>
+
+        <a href="#profile" class="user-avatar-btn" aria-label="My Account">
+          <span>👤</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-card">
+      <img
+        src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400'><rect width='800' height='400' fill='%23134E35'/><circle cx='400' cy='160' r='120' fill='%23D9A93F' opacity='0.25'/><path d='M0 400 Q200 280 400 340 T800 320 L800 400 Z' fill='%230F4A32'/></svg>"
+        alt="Lush green agricultural fields under morning sunlight"
+        class="hero-bg-img"
+        width="800"
+        height="400"
+      >
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <span class="hero-badge">🌱 Kharif & Rabi 2026 Ready</span>
+        <h1 class="hero-title">Smarter Farming.<br>Better Decisions.</h1>
+        <p class="hero-subtitle">Calibrated soil recommendations, live 7-day spray forecasts, and verified government subsidies for your land.</p>
+        <a href="crop-advice.html" class="hero-cta-btn">
+          <span>Find Best Crops for Your Field</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <!-- Live Weather Glance Strip -->
+    <div class="weather-glance-bar">
+      <div class="weather-meta">
+        <span class="weather-icon-large">⛅</span>
+        <div>
+          <div class="weather-temp">31°C</div>
+          <div class="weather-district">📍 Rajkot, Gujarat (Scattered Clouds)</div>
+        </div>
+      </div>
+      <div class="weather-advisory-pill">
+        <span>✓</span>
+        <span>Safe to spray today</span>
+      </div>
+    </div>
+
+    <!-- Core Tasks Grid (Seed Packet Cards) -->
+    <div class="section-header">
+      <h2 class="section-title">Core Agricultural Services</h2>
+      <span class="section-sub">Choose a service below</span>
+    </div>
+
+    <div class="task-grid">
+      <!-- Tile 1: Crop Advice -->
+      <a href="crop-advice.html" class="seed-packet-card">
+        <div class="card-top-stripe gold"></div>
+        <div class="card-photo-box">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='250' viewBox='0 0 400 250'><rect width='400' height='250' fill='%23E2EAD8'/><circle cx='200' cy='125' r='50' fill='%23236E3B'/><text x='200' y='140' font-size='48' text-anchor='middle'>🌱</text></svg>"
+            alt="Seedlings growing in rich soil"
+            class="card-photo"
+            width="400"
+            height="250"
+          >
+        </div>
+        <div class="card-body">
+          <span class="card-badge">AI Model 99.5%</span>
+          <h3 class="card-title">Crop Advice</h3>
+          <p class="card-desc">Enter your soil N-P-K & rainfall to see top recommended crops.</p>
+          <div class="card-action-bar">
+            <span>Start Test</span>
+            <span>→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Tile 2: Weather -->
+      <a href="#weather" class="seed-packet-card">
+        <div class="card-top-stripe blue"></div>
+        <div class="card-photo-box">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='250' viewBox='0 0 400 250'><rect width='400' height='250' fill='%23DCE7F7'/><circle cx='200' cy='125' r='50' fill='%232563EB'/><text x='200' y='140' font-size='48' text-anchor='middle'>⛅</text></svg>"
+            alt="Monsoon clouds over fields"
+            class="card-photo"
+            width="400"
+            height="250"
+          >
+        </div>
+        <div class="card-body">
+          <span class="card-badge">7-Day Forecast</span>
+          <h3 class="card-title">Farm Weather</h3>
+          <p class="card-desc">Rain probability, humidity, and safe pesticide spraying alerts.</p>
+          <div class="card-action-bar">
+            <span>Check Rain</span>
+            <span>→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Tile 3: Schemes -->
+      <a href="#schemes" class="seed-packet-card">
+        <div class="card-top-stripe paddy"></div>
+        <div class="card-photo-box">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='250' viewBox='0 0 400 250'><rect width='400' height='250' fill='%23DFEBE2'/><circle cx='200' cy='125' r='50' fill='%230F4A32'/><text x='200' y='140' font-size='48' text-anchor='middle'>📜</text></svg>"
+            alt="Farmers reviewing official documents"
+            class="card-photo"
+            width="400"
+            height="250"
+          >
+        </div>
+        <div class="card-body">
+          <span class="card-badge">Verified Portals</span>
+          <h3 class="card-title">Govt Schemes</h3>
+          <p class="card-desc">PM-KISAN, PM-KUSUM Solar, and subsidies tailored to your land.</p>
+          <div class="card-action-bar">
+            <span>View Schemes</span>
+            <span>→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Tile 4: Krishi Mitra AI -->
+      <a href="#chat" class="seed-packet-card">
+        <div class="card-top-stripe green"></div>
+        <div class="card-photo-box">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='250' viewBox='0 0 400 250'><rect width='400' height='250' fill='%23E3EFE6'/><circle cx='200' cy='125' r='50' fill='%23185A3E'/><text x='200' y='140' font-size='48' text-anchor='middle'>💬</text></svg>"
+            alt="Farmer using smartphone in field"
+            class="card-photo"
+            width="400"
+            height="250"
+          >
+        </div>
+        <div class="card-body">
+          <span class="card-badge">23 Languages</span>
+          <h3 class="card-title">Krishi Mitra AI</h3>
+          <p class="card-desc">Chat or ask questions in your own language about crops & pests.</p>
+          <div class="card-action-bar">
+            <span>Ask Question</span>
+            <span>→</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Official Helpline Trust Card -->
+    <div class="helpline-card">
+      <div class="helpline-info">
+        <h3>📞 Kisan Call Centre Toll-Free Helpline</h3>
+        <p>Free agricultural advice in 22 regional Indian languages (6:00 AM – 10:00 PM, all 7 days).</p>
+      </div>
+      <a href="tel:18001801551" class="helpline-btn">
+        <span>Call 1800-180-1551</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Tab Bar (Fixed, 5 Tabs) -->
+  <nav class="mobile-tab-bar" aria-label="Mobile Navigation">
+    <a href="index.html" class="tab-item active" aria-current="page">
+      <span class="tab-icon">🏠</span>
+      <span class="tab-label">Home</span>
+    </a>
+    <a href="crop-advice.html" class="tab-item">
+      <span class="tab-icon">🌱</span>
+      <span class="tab-label">Crop Advice</span>
+    </a>
+    <a href="#weather" class="tab-item">
+      <span class="tab-icon">⛅</span>
+      <span class="tab-label">Weather</span>
+    </a>
+    <a href="#schemes" class="tab-item">
+      <span class="tab-icon">📜</span>
+      <span class="tab-label">Schemes</span>
+    </a>
+    <a href="#chat" class="tab-item">
+      <span class="tab-icon">💬</span>
+      <span class="tab-label">Krishi Mitra</span>
+    </a>
+  </nav>
+
+  <!-- Desktop Floating Krishi Mitra Launcher -->
+  <a href="#chat" class="desktop-floating-chat" aria-label="Ask Krishi Mitra Assistant">
+    <span>💬</span>
+    <span>Ask Krishi Mitra</span>
+  </a>
+
+  <!-- Footer -->
+  <footer>
+    <p>KrishiSetu AI — Smarter Farming. Better Decisions. Brighter Tomorrow.</p>
+    <p style="margin-top: 4px; font-size: 12px;">© 2026 KrishiSetu AI. Built for Indian Farmers.</p>
+  </footer>
+</body>
+</html>

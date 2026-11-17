@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KrishiSetu AI — Crop Advice Prototype</title>
+  <style>
+    /* Design Tokens v2 */
+    :root {
+      --ks-primary: #0F4A32;           /* Deep Paddy Green */
+      --ks-primary-light: #185A3E;     /* Active Green */
+      --ks-accent: #D97706;            /* Harvest Wheat Gold */
+      --ks-accent-light: #FEF3C7;      /* Pale Gold Tint */
+      --ks-surface: #FFFFFF;           /* Card Surface */
+      --ks-surface-sunken: #F4F1EA;    /* Sunken Section Surface */
+      --ks-ground: #FBFBF7;            /* Base Pearl/Cream Ground */
+      --ks-soil: #1D2B22;              /* Primary Text */
+      --ks-soil-muted: #4D6854;        /* Secondary Text */
+      --ks-leaf: #236E3B;              /* Success Badge */
+      --ks-border: #E2DDD5;            /* Matte Card Border */
+      --ks-border-wheat: #D9A93F;      /* Seed Packet Top Stripe */
+
+      /* Layout Dimensions */
+      --header-h: 68px;
+      --bottomnav-h: 70px;
+      --radius-card: 18px;
+      --radius-pill: 9999px;
+      --font-stack: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Devanagari", "Noto Sans Gujarati", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background-color: var(--ks-ground);
+      color: var(--ks-soil);
+      line-height: 1.6;
+      font-size: 18px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: var(--bottomnav-h);
+    }
+
+    @media (min-width: 1024px) {
+      body {
+        padding-bottom: 0;
+      }
+    }
+
+    /* Accessibility Skip Link */
+    .skip-link {
+      position: absolute;
+      top: -999px;
+      left: 16px;
+      background: var(--ks-accent);
+      color: #000;
+      padding: 12px 20px;
+      font-weight: bold;
+      border-radius: 8px;
+      z-index: 1000;
+    }
+    .skip-link:focus {
+      top: 16px;
+    }
+
+    /* Header Bar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(251, 251, 247, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--ks-border);
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+    }
+
+    .header-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ks-soil);
+      min-height: 48px;
+    }
+
+    .brand-logo-svg {
+      height: 40px;
+      width: auto;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--ks-primary);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lang-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      min-height: 48px;
+      background: var(--ks-surface);
+      border: 1.5px solid var(--ks-border);
+      border-radius: var(--radius-pill);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ks-soil);
+      cursor: pointer;
+    }
+
+    /* Desktop Navigation Bar */
+    .desktop-nav {
+      display: none;
+      align-items: center;
+      gap: 20px;
+    }
+
+    @media (min-width: 1024px) {
+      .desktop-nav {
+        display: flex;
+      }
+    }
+
+    .desktop-nav a {
+      text-decoration: none;
+      color: var(--ks-soil);
+      font-weight: 600;
+      font-size: 16px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background-color 0.15s;
+    }
+
+    .desktop-nav a.active {
+      background: var(--ks-surface-sunken);
+      color: var(--ks-primary);
+      border-bottom: 2px solid var(--ks-primary);
+    }
+
+    /* Main Container */
+    main {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+      flex: 1;
+    }
+
+    .page-intro {
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-size: clamp(24px, 4vw, 34px);
+      font-weight: 800;
+      color: var(--ks-primary);
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    .page-subtitle {
+      font-size: 16px;
+      color: var(--ks-soil-muted);
+    }
+
+    /* Card Wrapper */
+    .form-card {
+      background: var(--ks-surface);
+      border: 1px solid var(--ks-border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      margin-bottom: 32px;
+    }
+
+    .form-header-stripe {
+      height: 6px;
+      background: linear-gradient(90deg, var(--ks-primary) 0%, var(--ks-border-wheat) 100%);
+    }
+
+    .form-content {
+      padding: 24px 20px;
+    }
+
+    @media (min-width: 768px) {
+      .form-content {
+        padding: 32px;
+      }
+    }
+
+    .section-heading {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ks-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-helper {
+      font-size: 15px;
+      color: var(--ks-soil-muted);
+      margin-bottom: 24px;
+    }
+
+    /* Stepper Field Grid */
+    .fields-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .fields-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+    }
+
+    /* Stepper Component */
+    .stepper-item {
+      background: var(--ks-surface-sunken);
+      border: 1px solid var(--ks-border);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .stepper-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .stepper-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ks-soil);
+    }
+
+    .stepper-unit {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ks-soil-muted);
+      background: #EAE6DE;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .stepper-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .btn-step {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
+      border-radius: 12px;
+      border: 1.5px solid var(--ks-border);
+      background: var(--ks-surface);
+      color: var(--ks-soil);
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.1s, transform 0.05s;
+    }
+
+    .btn-step:active {
+      transform: scale(0.95);
+      background: var(--ks-border);
+    }
+
+    .stepper-value-display {
+      flex: 1;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--ks-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Synchronized Range Slider with large touch target */
+    .stepper-slider {
+      width: 100%;
+      height: 28px;
+      padding: 10px 0;
+      background: transparent;
+      outline: none;
+      accent-color: var(--ks-primary);
+      cursor: pointer;
+    }
+
+    /* Submit CTA Button */
+    .submit-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      min-height: 54px;
+      padding: 14px 24px;
+      background: var(--ks-primary);
+      color: #FFFFFF;
+      font-size: 18px;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(15, 74, 50, 0.25);
+      transition: background-color 0.15s;
+      margin-top: 24px;
+    }
+
+    .submit-cta:active {
+      background: var(--ks-primary-light);
+    }
+
+    /* Recommendation Results Section */
+    .results-section {
+      margin-top: 36px;
+    }
+
+    .results-heading-box {
+      margin-bottom: 20px;
+    }
+
+    .results-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--ks-primary);
+    }
+
+    .results-sub {
+      font-size: 15px;
+      color: var(--ks-soil-muted);
+    }
+
+    /* Seed Packet Result Cards */
+    .result-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .seed-packet-result {
+      background: var(--ks-surface);
+      border: 1.5px solid var(--ks-border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 640px) {
+      .seed-packet-result {
+        flex-direction: row;
+      }
+    }
+
+    .result-photo-box {
+      position: relative;
+      background: #E3EFE6;
+      width: 100%;
+      height: 180px;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 640px) {
+      .result-photo-box {
+        width: 220px;
+        height: auto;
+      }
+    }
+
+    .result-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .match-pill {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: var(--ks-primary);
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .match-pill.alt {
+      background: var(--ks-soil);
+    }
+
+    .result-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .crop-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--ks-soil);
+    }
+
+    .season-badge {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ks-leaf);
+      background: #E3EFE6;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .crop-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .meta-item {
+      background: var(--ks-surface-sunken);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .meta-label {
+      color: var(--ks-soil-muted);
+      font-size: 12px;
+      display: block;
+    }
+
+    .meta-val {
+      font-weight: 700;
+      color: var(--ks-soil);
+    }
+
+    .result-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--ks-border);
+    }
+
+    .action-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--ks-primary);
+      padding: 8px 14px;
+      min-height: 44px;
+      border-radius: 8px;
+      background: var(--ks-surface-sunken);
+      border: 1px solid var(--ks-border);
+    }
+
+    .action-link.primary {
+      background: var(--ks-accent);
+      color: #000000;
+      border-color: var(--ks-accent);
+    }
+
+    /* Fixed Bottom Tab Bar for Mobile */
+    .mobile-tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--bottomnav-h);
+      background: var(--ks-surface);
+      border-top: 1px solid var(--ks-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 200;
+      padding: 0 4px;
+    }
+
+    @media (min-width: 1024px) {
+      .mobile-tab-bar {
+        display: none;
+      }
+    }
+
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--ks-soil-muted);
+      min-height: 48px;
+      min-width: 48px;
+      flex: 1;
+      padding: 4px 2px;
+      border-radius: 8px;
+    }
+
+    .tab-item.active {
+      color: var(--ks-primary);
+      font-weight: 800;
+    }
+
+    .tab-icon {
+      font-size: 20px;
+      margin-bottom: 2px;
+    }
+
+    .tab-label {
+      font-size: 11px;
+      line-height: 1.1;
+    }
+
+    /* Desktop Floating Chat Launcher */
+    .desktop-floating-chat {
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .desktop-floating-chat {
+        display: flex;
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--ks-primary);
+        color: #FFFFFF;
+        padding: 14px 20px;
+        min-height: 52px;
+        border-radius: var(--radius-pill);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        font-weight: 700;
+        font-size: 15px;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        z-index: 100;
+      }
+    }
+
+    footer {
+      border-top: 1px solid var(--ks-border);
+      padding: 24px 16px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--ks-soil-muted);
+      background: var(--ks-surface-sunken);
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="brand-link" aria-label="KrishiSetu AI Home">
+        <svg class="brand-logo-svg" viewBox="0 0 160 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="24" cy="24" r="22" fill="#0F4A32"/>
+          <path d="M14 34V14L28 24L14 34Z" fill="#D97706"/>
+          <path d="M22 28L32 14" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+          <path d="M22 20L32 34" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+          <text x="54" y="27" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#0F4A32">KrishiSetu</text>
+          <text x="54" y="40" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#D97706">AI ADVISORY</text>
+        </svg>
+      </a>
+
+      <!-- Desktop Top Nav -->
+      <nav class="desktop-nav" aria-label="Primary Desktop Navigation">
+        <a href="index.html">Home</a>
+        <a href="crop-advice.html" class="active" aria-current="page">Crop Advice</a>
+        <a href="#weather">Weather</a>
+        <a href="#schemes">Schemes</a>
+        <a href="#nutrition">Nutrition</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="lang-pill" aria-label="Current language English. Tap to switch language.">
+          <span>🌐</span>
+          <span>English</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Form Content -->
+  <main id="main-content">
+    <div class="page-intro">
+      <h1 class="page-title">Find the Best Crop for Your Land</h1>
+      <p class="page-subtitle">Adjust your soil nutrients and field conditions using the large touch controls below.</p>
+    </div>
+
+    <!-- Stepper Input Form -->
+    <div class="form-card">
+      <div class="form-header-stripe"></div>
+      <div class="form-content">
+        <div class="section-heading">
+          <span>🌾</span>
+          <span>Soil & Weather Inputs</span>
+        </div>
+        <p class="section-helper">From your Soil Health Card (SHC) or local agriculture test.</p>
+
+        <form id="crop-form" onsubmit="event.preventDefault(); showResults();">
+          <div class="fields-grid">
+            <!-- Stepper 1: Nitrogen -->
+            <div class="stepper-item">
+              <div class="stepper-header">
+                <label for="slider-n" class="stepper-label">Nitrogen (N)</label>
+                <span class="stepper-unit">kg/ha</span>
+              </div>
+              <div class="stepper-controls">
+                <button type="button" class="btn-step" onclick="adjustStep('n', -5, 0, 140)" aria-label="Decrease Nitrogen by 5">-</button>
+                <span class="stepper-value-display" id="val-n">90</span>
+                <button type="button" class="btn-step" onclick="adjustStep('n', 5, 0, 140)" aria-label="Increase Nitrogen by 5">+</button>
+              </div>
+              <input type="range" id="slider-n" class="stepper-slider" min="0" max="140" value="90" oninput="updateFromSlider('n')" aria-label="Nitrogen range slider">
+            </div>
+
+            <!-- Stepper 2: Phosphorus -->
+            <div class="stepper-item">
+              <div class="stepper-header">
+                <label for="slider-p" class="stepper-label">Phosphorus (P)</label>
+                <span class="stepper-unit">kg/ha</span>
+              </div>
+              <div class="stepper-controls">
+                <button type="button" class="btn-step" onclick="adjustStep('p', -5, 5, 145)" aria-label="Decrease Phosphorus by 5">-</button>
+                <span class="stepper-value-display" id="val-p">42</span>
+                <button type="button" class="btn-step" onclick="adjustStep('p', 5, 5, 145)" aria-label="Increase Phosphorus by 5">+</button>
+              </div>
+              <input type="range" id="slider-p" class="stepper-slider" min="5" max="145" value="42" oninput="updateFromSlider('p')" aria-label="Phosphorus range slider">
+            </div>
+
+            <!-- Stepper 3: Potassium -->
+            <div class="stepper-item">
+              <div class="stepper-header">
+                <label for="slider-k" class="stepper-label">Potassium (K)</label>
+                <span class="stepper-unit">kg/ha</span>
+              </div>
+              <div class="stepper-controls">
+                <button type="button" class="btn-step" onclick="adjustStep('k', -5, 5, 205)" aria-label="Decrease Potassium by 5">-</button>
+                <span class="stepper-value-display" id="val-k">43</span>
+                <button type="button" class="btn-step" onclick="adjustStep('k', 5, 5, 205)" aria-label="Increase Potassium by 5">+</button>
+              </div>
+              <input type="range" id="slider-k" class="stepper-slider" min="5" max="205" value="43" oninput="updateFromSlider('k')" aria-label="Potassium range slider">
+            </div>
+
+            <!-- Stepper 4: Soil pH -->
+            <div class="stepper-item">
+              <div class="stepper-header">
+                <label for="slider-ph" class="stepper-label">Soil pH Level</label>
+                <span class="stepper-unit">pH</span>
+              </div>
+              <div class="stepper-controls">
+                <button type="button" class="btn-step" onclick="adjustStep('ph', -0.2, 3.5, 9.9)" aria-label="Decrease pH by 0.2">-</button>
+                <span class="stepper-value-display" id="val-ph">6.5</span>
+                <button type="button" class="btn-step" onclick="adjustStep('ph', 0.2, 3.5, 9.9)" aria-label="Increase pH by 0.2">+</button>
+              </div>
+              <input type="range" id="slider-ph" class="stepper-slider" min="3.5" max="9.9" step="0.1" value="6.5" oninput="updateFromSlider('ph')" aria-label="Soil pH range slider">
+            </div>
+
+            <!-- Stepper 5: Rainfall -->
+            <div class="stepper-item">
+              <div class="stepper-header">
+                <label for="slider-rainfall" class="stepper-label">Expected Rainfall</label>
+                <span class="stepper-unit">mm</span>
+              </div>
+              <div class="stepper-controls">
+                <button type="button" class="btn-step" onclick="adjustStep('rainfall', -10, 20, 300)" aria-label="Decrease Rainfall by 10">-</button>
+                <span class="stepper-value-display" id="val-rainfall">200</span>
+                <button type="button" class="btn-step" onclick="adjustStep('rainfall', 10, 20, 300)" aria-label="Increase Rainfall by 10">+</button>
+              </div>
+              <input type="range" id="slider-rainfall" class="stepper-slider" min="20" max="300" step="5" value="200" oninput="updateFromSlider('rainfall')" aria-label="Rainfall range slider">
+            </div>
+
+            <!-- Stepper 6: Temperature -->
+            <div class="stepper-item">
+              <div class="stepper-header">
+                <label for="slider-temp" class="stepper-label">Average Temp</label>
+                <span class="stepper-unit">°C</span>
+              </div>
+              <div class="stepper-controls">
+                <button type="button" class="btn-step" onclick="adjustStep('temp', -1, 10, 45)" aria-label="Decrease Temperature by 1">-</button>
+                <span class="stepper-value-display" id="val-temp">24.5</span>
+                <button type="button" class="btn-step" onclick="adjustStep('temp', 1, 10, 45)" aria-label="Increase Temperature by 1">+</button>
+              </div>
+              <input type="range" id="slider-temp" class="stepper-slider" min="10" max="45" step="0.5" value="24.5" oninput="updateFromSlider('temp')" aria-label="Temperature range slider">
+            </div>
+          </div>
+
+          <button type="submit" class="submit-cta">
+            <span>✨ Get AI Crop Recommendations</span>
+            <span>→</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Recommendations Result Section -->
+    <div id="results" class="results-section">
+      <div class="results-heading-box">
+        <h2 class="results-title">Recommended Crops for Your Field</h2>
+        <p class="results-sub">Based on verified ICAR agronomic thresholds and our trained CRS machine learning model.</p>
+      </div>
+
+      <div class="result-cards-list">
+        <!-- Result 1: Rice (Top Match) -->
+        <article class="seed-packet-result" aria-label="Recommendation 1: Rice (Paddy) 94% match">
+          <div class="result-photo-box">
+            <span class="match-pill">★ 94% Best Match</span>
+            <img
+              src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23EAF3DE'/><circle cx='200' cy='140' r='60' fill='%230F4A32'/><text x='200' y='160' font-size='60' text-anchor='middle'>🌾</text></svg>"
+              alt="Rice Paddy field crop photo"
+              class="result-photo"
+              width="400"
+              height="300"
+            >
+          </div>
+          <div class="result-body">
+            <div>
+              <div class="result-header">
+                <h3 class="crop-name">Rice (Paddy / ડાંગર)</h3>
+                <span class="season-badge">Kharif Season</span>
+              </div>
+              <p style="font-size: 15px; color: var(--ks-soil-muted); margin: 6px 0 12px;">
+                Excellent match for your high nitrogen (90 kg/ha) and high moisture (200 mm) soil conditions.
+              </p>
+              <div class="crop-meta-grid">
+                <div class="meta-item">
+                  <span class="meta-label">Water Demand</span>
+                  <span class="meta-val">High (Flood / Drip)</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Harvest Duration</span>
+                  <span class="meta-val">120 – 140 Days</span>
+                </div>
+              </div>
+            </div>
+            <div class="result-actions">
+              <a href="#schemes" class="action-link primary">📜 View Subsidies</a>
+              <a href="#nutrition" class="action-link">🥗 Nutritional Profile</a>
+              <a href="#save" class="action-link">💾 Save to My Plots</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Result 2: Cotton -->
+        <article class="seed-packet-result" aria-label="Recommendation 2: Cotton 88% match">
+          <div class="result-photo-box">
+            <span class="match-pill alt">88% Alternative</span>
+            <img
+              src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23F4F1EA'/><circle cx='200' cy='140' r='60' fill='%234D6854'/><text x='200' y='160' font-size='60' text-anchor='middle'>🌱</text></svg>"
+              alt="Cotton crop photo"
+              class="result-photo"
+              width="400"
+              height="300"
+            >
+          </div>
+          <div class="result-body">
+            <div>
+              <div class="result-header">
+                <h3 class="crop-name">Cotton (કપાસ / कपास)</h3>
+                <span class="season-badge">Kharif Commercial</span>
+              </div>
+              <p style="font-size: 15px; color: var(--ks-soil-muted); margin: 6px 0 12px;">
+                Thrives in warm temperatures with moderate potassium; robust local mandi demand across western India.
+              </p>
+              <div class="crop-meta-grid">
+                <div class="meta-item">
+                  <span class="meta-label">Water Demand</span>
+                  <span class="meta-val">Moderate</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Harvest Duration</span>
+                  <span class="meta-val">150 – 180 Days</span>
+                </div>
+              </div>
+            </div>
+            <div class="result-actions">
+              <a href="#schemes" class="action-link">📜 View Subsidies</a>
+              <a href="#save" class="action-link">💾 Save to My Plots</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Result 3: Maize -->
+        <article class="seed-packet-result" aria-label="Recommendation 3: Maize 76% match">
+          <div class="result-photo-box">
+            <span class="match-pill alt">76% Alternative</span>
+            <img
+              src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23FEF3C7'/><circle cx='200' cy='140' r='60' fill='%23D97706'/><text x='200' y='160' font-size='60' text-anchor='middle'>🌽</text></svg>"
+              alt="Maize corn crop photo"
+              class="result-photo"
+              width="400"
+              height="300"
+            >
+          </div>
+          <div class="result-body">
+            <div>
+              <div class="result-header">
+                <h3 class="crop-name">Maize (Corn / મકાઈ)</h3>
+                <span class="season-badge">All-Season Cereal</span>
+              </div>
+              <p style="font-size: 15px; color: var(--ks-soil-muted); margin: 6px 0 12px;">
+                Low water requirement cereal, well-suited for fast crop rotation and cattle feed supply.
+              </p>
+              <div class="crop-meta-grid">
+                <div class="meta-item">
+                  <span class="meta-label">Water Demand</span>
+                  <span class="meta-val">Low – Moderate</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Harvest Duration</span>
+                  <span class="meta-val">90 – 110 Days</span>
+                </div>
+              </div>
+            </div>
+            <div class="result-actions">
+              <a href="#nutrition" class="action-link">🥗 Nutritional Profile</a>
+              <a href="#save" class="action-link">💾 Save to My Plots</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Tab Bar (Fixed, 5 Tabs) -->
+  <nav class="mobile-tab-bar" aria-label="Mobile Navigation">
+    <a href="index.html" class="tab-item">
+      <span class="tab-icon">🏠</span>
+      <span class="tab-label">Home</span>
+    </a>
+    <a href="crop-advice.html" class="tab-item active" aria-current="page">
+      <span class="tab-icon">🌱</span>
+      <span class="tab-label">Crop Advice</span>
+    </a>
+    <a href="#weather" class="tab-item">
+      <span class="tab-icon">⛅</span>
+      <span class="tab-label">Weather</span>
+    </a>
+    <a href="#schemes" class="tab-item">
+      <span class="tab-icon">📜</span>
+      <span class="tab-label">Schemes</span>
+    </a>
+    <a href="#chat" class="tab-item">
+      <span class="tab-icon">💬</span>
+      <span class="tab-label">Krishi Mitra</span>
+    </a>
+  </nav>
+
+  <!-- Desktop Floating Krishi Mitra Launcher -->
+  <a href="#chat" class="desktop-floating-chat" aria-label="Ask Krishi Mitra Assistant">
+    <span>💬</span>
+    <span>Ask Krishi Mitra</span>
+  </a>
+
+  <!-- Footer -->
+  <footer>
+    <p>Advisory Notice: Predictions are AI-assisted based on ICAR agronomic thresholds. Consult your local KVK extension officer before major decisions.</p>
+    <p style="margin-top: 6px; font-size: 12px;">© 2026 KrishiSetu AI. Built for Indian Farmers.</p>
+  </footer>
+
+  <script>
+    function adjustStep(id, delta, min, max) {
+      const slider = document.getElementById('slider-' + id);
+      const display = document.getElementById('val-' + id);
+      let val = parseFloat(slider.value) + delta;
+      if (val < min) val = min;
+      if (val > max) val = max;
+      val = Math.round(val * 10) / 10;
+      slider.value = val;
+      display.textContent = val;
+    }
+
+    function updateFromSlider(id) {
+      const slider = document.getElementById('slider-' + id);
+      const display = document.getElementById('val-' + id);
+      display.textContent = slider.value;
+    }
+
+    function showResults() {
+      const res = document.getElementById('results');
+      res.scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
