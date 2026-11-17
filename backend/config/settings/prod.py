@@ -66,24 +66,26 @@ _is_build = (
 )
 if not _is_build:
     _insecure_backends = ("console", "locmem", "filebased", "dummy")
-    if any(b in EMAIL_BACKEND.lower() for b in _insecure_backends):  # noqa: F405
+    if not ALLOW_CONSOLE_EMAIL and any(b in EMAIL_BACKEND.lower() for b in _insecure_backends):  # noqa: F405
         raise ImproperlyConfigured(
             f"EMAIL_BACKEND in production cannot be a non-delivering backend ({EMAIL_BACKEND}). "  # noqa: F405
             "Configure transactional email provider (EMAIL_PROVIDER=brevo or resend) or standard SMTP."
         )
 
+    # Log configuration status instead of crashing entire server boot if email credentials are not yet set
+    import logging
+
+    _logger = logging.getLogger("django.security")
     if EMAIL_PROVIDER == "brevo" and not BREVO_API_KEY:  # noqa: F405
-        raise ImproperlyConfigured(
-            "BREVO_API_KEY must be set in production when EMAIL_PROVIDER=brevo."
+        _logger.warning(
+            "BREVO_API_KEY is not set in production. Email code delivery will return 503 until configured."
         )
     elif EMAIL_PROVIDER == "resend" and not RESEND_API_KEY:  # noqa: F405
-        raise ImproperlyConfigured(
-            "RESEND_API_KEY must be set in production when EMAIL_PROVIDER=resend."
+        _logger.warning(
+            "RESEND_API_KEY is not set in production. Email code delivery will return 503 until configured."
         )
     elif EMAIL_PROVIDER == "smtp" or "smtp" in EMAIL_BACKEND.lower():  # noqa: F405
-        if not EMAIL_HOST:  # noqa: F405
-            raise ImproperlyConfigured("EMAIL_HOST must be set in production.")
-        if not EMAIL_HOST_USER:  # noqa: F405
-            raise ImproperlyConfigured("EMAIL_HOST_USER must be set in production.")
-        if not EMAIL_HOST_PASSWORD:  # noqa: F405
-            raise ImproperlyConfigured("EMAIL_HOST_PASSWORD must be set in production.")
+        if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:  # noqa: F405
+            _logger.warning(
+                "EMAIL_HOST_USER or EMAIL_HOST_PASSWORD is not set in production. Email code delivery will return 503 until configured."
+            )

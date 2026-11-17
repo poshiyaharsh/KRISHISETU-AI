@@ -49,3 +49,11 @@ services:
         sync: false
       - key: DEFAULT_FROM_EMAIL
         sync: false
+      - key: EMAIL_PROVIDER
+        value: smtp
+      - key: BREVO_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: GOOGLE_OAUTH_CLIENT_IDS
+        sync: false

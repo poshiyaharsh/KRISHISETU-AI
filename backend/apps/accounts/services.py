@@ -205,6 +205,14 @@ def send_otp_email(user_or_email: str, code: str, language: str = "en") -> None:
     recipient = user_or_email.strip().lower()
     masked = mask_recipient(recipient)
 
+    # Validate that transactional API keys are set if an HTTP provider is selected
+    if getattr(settings, "EMAIL_PROVIDER", "") == "brevo" and not getattr(settings, "BREVO_API_KEY", ""):
+        logger.error("Email delivery failed: BREVO_API_KEY is not configured. recipient=%s", masked)
+        raise OtpDeliveryError("email_delivery_failed")
+    if getattr(settings, "EMAIL_PROVIDER", "") == "resend" and not getattr(settings, "RESEND_API_KEY", ""):
+        logger.error("Email delivery failed: RESEND_API_KEY is not configured. recipient=%s", masked)
+        raise OtpDeliveryError("email_delivery_failed")
+
     lang = language.lower()[:2]
     if lang not in EMAIL_SUBJECTS:
         lang = "en"

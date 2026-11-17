@@ -218,10 +218,25 @@ GOOGLE_OAUTH_CLIENT_IDS = env.list(
 )
 
 # Email Provider Configuration (Brevo, Resend, SMTP, Console)
-ALLOW_CONSOLE_EMAIL = env.bool("ALLOW_CONSOLE_EMAIL", default=True)
-EMAIL_PROVIDER = env("EMAIL_PROVIDER", default="console" if DEBUG else "brevo").lower()
+ALLOW_CONSOLE_EMAIL = env.bool("ALLOW_CONSOLE_EMAIL", default=DEBUG)
 BREVO_API_KEY = env("BREVO_API_KEY", default="")
 RESEND_API_KEY = env("RESEND_API_KEY", default="")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+
+# Determine default provider:
+# 1. If BREVO_API_KEY is provided -> brevo
+# 2. If RESEND_API_KEY is provided -> resend
+# 3. If in DEBUG mode and ALLOW_CONSOLE_EMAIL -> console
+# 4. Otherwise -> smtp (default production backend, or custom EMAIL_BACKEND)
+_default_provider = "smtp"
+if BREVO_API_KEY:
+    _default_provider = "brevo"
+elif RESEND_API_KEY:
+    _default_provider = "resend"
+elif DEBUG and ALLOW_CONSOLE_EMAIL:
+    _default_provider = "console"
+
+EMAIL_PROVIDER = env("EMAIL_PROVIDER", default=_default_provider).lower()
 
 ANYMAIL = {}
 if EMAIL_PROVIDER == "brevo":
